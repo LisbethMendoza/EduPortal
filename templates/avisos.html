@@ -93,6 +93,8 @@
     <h2>Agregar Aviso</h2>
     <form action="." method="post">
       {% csrf_token %}
+      <input type="hidden" id="id_aviso" name="id_aviso">
+
       <label for="titulo">Título:</label>
       <input type="text" id="titulo" name="titulo" required>
 
@@ -104,7 +106,7 @@
 
       <div class="button-group">
         <input type="submit" name="accion" value="publicar" class="btn-publicar" onclick="setAction('{% url 'Insertar_aviso' %}')">
-        <input type="submit" name="accion" value="eliminar" class="btn-eliminar" onclick="setAction('{% url 'avisos' %}')">
+        <input type="submit" name="accion" value="eliminar" class="btn-eliminar" onclick="setAction('{% url 'eliminar_aviso' %}')">
       </div>
     </form>
   </div>
@@ -114,8 +116,70 @@
   function setAction(url) {
     form.action = url;
   }
+
+     //para obtener los datos del aviso
+    document.getElementById("titulo").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const titulo = this.value;
+
+      fetch(`/avisos/obtener_aviso/?titulo=${encodeURIComponent(titulo)}`)
+        .then(response => {
+          if (!response.ok) throw new Error("No encontrado");
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById("descripcion").value = data.descripcion;
+          document.getElementById("fecha_publi").value = data.fecha_publi;
+          document.getElementById("id_aviso").value = data.id_aviso;
+        })
+        .catch(error => {
+          alert("Aviso no encontrado");
+          document.getElementById("descripcion").value = '';
+          document.getElementById("fecha_publi").value = '';
+          document.getElementById("id_aviso").value = '';
+        });
+    }
+  });
+
+//Para eliminar un aviso
+  document.querySelector('.btn-eliminar').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const titulo = document.getElementById('titulo').value;
+
+    fetch("{% url 'eliminar_aviso' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: `titulo=${encodeURIComponent(titulo)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.success);
+            document.getElementById('titulo').value = '';
+            document.getElementById('descripcion').value = '';
+            document.getElementById('fecha_publi').value = '';
+            document.getElementById('id_aviso').value = '';
+            
+        } else if (data.limpiar) {
+            alert(data.limpiar);
+
+            document.getElementById('titulo').value = '';
+            document.getElementById('descripcion').value = '';
+            document.getElementById('fecha_publi').value = '';
+            document.getElementById('id_aviso').value = '';
+        }
+    });
+});
+
+
+
 </script>
-]
+
 
 </body>
 </html>
