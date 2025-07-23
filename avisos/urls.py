@@ -8,6 +8,7 @@ urlpatterns = [
     path('avisos/', views.aviso_adm, name='avisos'), #Poner esto en los demas form
     path('Insertar_aviso/', views.Insertar_aviso, name='Insertar_aviso'),
     path('obtener_aviso/', views.obtener_aviso_por_titulo, name='obtener_aviso'),
-
+    path('eliminar_aviso/', views.eliminar_aviso, name='eliminar_aviso'),
+     
 ]
  

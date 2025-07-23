@@ -44,6 +44,7 @@ def Insertar_aviso(request):
             fecha_publi = request.POST.get("fecha_publi")
             usuario_id = request.session.get('usuario_id')
 
+
             try:
                 usuario = Usuario.objects.get(id_usuario=usuario_id)
 
@@ -53,6 +54,8 @@ def Insertar_aviso(request):
                         aviso.titulo = titulo
                         aviso.descripcion = descripcion
                         aviso.fecha_publi = fecha_publi
+                        aviso.estado = 'activo'
+
                         aviso.save()
                     except Aviso.DoesNotExist:
                         return render(request, 'avisos.html', {
@@ -76,10 +79,6 @@ def Insertar_aviso(request):
                     'nombre': nombre_usuario,
                     'error': 'Usuario no válido'
                 })
-
-        elif accion == "eliminar":
-            return redirect('avisos')
-
     return render(request, 'avisos.html', {'nombre': nombre_usuario})
 
 
@@ -95,3 +94,26 @@ def obtener_aviso_por_titulo(request):
         })
     except Aviso.DoesNotExist:
         return JsonResponse({'error': 'Aviso no encontrado'}, status=404)
+    
+    
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def eliminar_aviso(request):
+    if request.method == "POST":
+        titulo = request.POST.get('titulo', '').strip()
+
+        try:
+            aviso = Aviso.objects.get(titulo__iexact=titulo)
+
+            if (aviso.estado or '').lower() != 'eliminado':
+                aviso.estado = 'eliminado'
+                aviso.save()
+                return JsonResponse({'success': 'Aviso fue eliminado para el publico'})
+            
+            else:
+                return JsonResponse({'limpiar': 'Aviso ya estaba eliminado'}, status=200)
+
+        except Aviso.DoesNotExist:
+            return JsonResponse({'limpiar': 'Aviso no encontrado'}, status=200)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

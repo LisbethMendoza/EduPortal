@@ -106,7 +106,7 @@
 
       <div class="button-group">
         <input type="submit" name="accion" value="publicar" class="btn-publicar" onclick="setAction('{% url 'Insertar_aviso' %}')">
-        <input type="submit" name="accion" value="eliminar" class="btn-eliminar" onclick="setAction('{% url 'avisos' %}')">
+        <input type="submit" name="accion" value="eliminar" class="btn-eliminar" onclick="setAction('{% url 'eliminar_aviso' %}')">
       </div>
     </form>
   </div>
@@ -141,6 +141,40 @@
         });
     }
   });
+
+//Para eliminar un aviso
+  document.querySelector('.btn-eliminar').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const titulo = document.getElementById('titulo').value;
+
+    fetch("{% url 'eliminar_aviso' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: `titulo=${encodeURIComponent(titulo)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.success);
+            document.getElementById('titulo').value = '';
+            document.getElementById('descripcion').value = '';
+            document.getElementById('fecha_publi').value = '';
+            document.getElementById('id_aviso').value = '';
+            
+        } else if (data.limpiar) {
+            alert(data.limpiar);
+
+            document.getElementById('titulo').value = '';
+            document.getElementById('descripcion').value = '';
+            document.getElementById('fecha_publi').value = '';
+            document.getElementById('id_aviso').value = '';
+        }
+    });
+});
 
 
 
