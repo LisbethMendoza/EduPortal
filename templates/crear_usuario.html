@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear Usuario</title>
+   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+ html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #e8f5e9;
+  background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* altura de la ventana visible */
+}
+
+.form-container {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 350px;
+}
+
+.form-container h2 {
+  text-align: center;
+  color: #30a8bd;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+input[type="submit"] {
+  flex: 1;
+  background-color: #30a8bd;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #0d8094;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Crear Usuario</h2>
+    <form action="" method="post">
+  {% csrf_token %}
+  <label for="correo">Correo electrónico:</label>
+  <input type="email" id="correo" name="correo" required>
+
+  <label for="usuario">Nombre de usuario:</label>
+  <input type="text" id="usuario" name="usuario" required>
+
+  <label for="contrasena">Contraseña:</label>
+  <input type="password" id="contrasena" name="contrasena" required>
+
+  <div class="form-buttons">
+    <input type="submit" name="accion" value="crear">
+    <input type="submit" name="accion" value="actualizar">
+   <!--<input type="submit" value="Eliminar Usuario"> -->
+  </div>
+  </form>
+  </div>
+  {% if mensaje %}
+  <p style="color: green;">{{ mensaje }}</p>
+  {% endif %}
+
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const correoInput = document.getElementById('correo');
+  const usuarioInput = document.getElementById('usuario');
+  const contrasenaInput = document.getElementById('contrasena');
+
+  async function buscarUsuario(param, valor) {
+    try {
+      const response = await fetch(`/usuario/obtener/?${param}=${encodeURIComponent(valor)}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        correoInput.value = data.correo;
+        usuarioInput.value = data.usuario;
+        contrasenaInput.value = data.contrasena;
+        alert("Datos del usuario cargados correctamente.");
+      } else {
+        alert(data.error || 'Error al buscar el usuario');
+      }
+    } catch (error) {
+      alert('Error de conexión');
+    }
+  }
+
+  // Detectar Enter en campo correo
+  correoInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // evitar envío del formulario
+      if (correoInput.value.trim() !== '') {
+        buscarUsuario('correo', correoInput.value);
+      }
+    }
+  });
+
+  // Detectar Enter en campo usuario
+  usuarioInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (usuarioInput.value.trim() !== '') {
+        buscarUsuario('usuario', usuarioInput.value);
+      }
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>

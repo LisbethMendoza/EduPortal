@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar Aviso</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-color: #e8f5e9;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 25px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 124, 128, 0.2);
+      width: 400px;
+    }
+
+    .form-container h2 {
+      color: #18798a;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #18798a;
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 2px solid #a5c6d6;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .button-group input[type="submit"],
+    .button-group button {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      color: white;
+    }
+
+    .btn-publicar {
+      background-color: #419dad;
+    }
+
+    .btn-publicar:hover {
+      background-color: #18798a;
+    }
+
+    .btn-eliminar {
+      background-color: #ef5350;
+    }
+
+    .btn-eliminar:hover {
+      background-color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Bienvenido, {{ nombre }}</h2>
+    <h2>Agregar Aviso</h2>
+    <form action="" method="post">
+      {% csrf_token %}
+      <label for="titulo">Título:</label>
+      <input type="text" id="titulo" name="titulo" required>
+
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+      <label for="fecha_publi">Fecha de Publicación:</label>
+      <input type="date" id="fecha_publi" name="fecha_publi" required>
+
+      <div class="button-group">
+        <input type="submit" name="accion" value="publicar" class="btn-publicar">
+        <input type="submit" name="accion" value="eliminar" class="btn-eliminar">   
+      </div>
+    </form>
+  </div>
+
+
+</body>
+</html>
+

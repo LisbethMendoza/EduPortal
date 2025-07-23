@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configurar Cupos</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      background-color: #f1f8f5;
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    .admin-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 9, 128, 0.2);
+      padding: 30px 40px;
+      width: 500px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #158599;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #158599;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 2px solid #a5c4d6;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background-color: #158599;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #18486e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <h2>Configurar Cupos por Grado</h2>
+    <form action="#" method="POST">
+      <label for="cupos_grado1">Cupos para Grado:</label>
+      <input type="number" id="cupos_grado1" name="cupos_grado1" min="0" required>
+
+      <label for="cupos_grado2">Cupos para Tecnico:</label>
+      <input type="number" id="cupos_grado2" name="cupos_grado2" min="0" required>
+
+      <button type="submit">Guardar Cupos</button>
+    </form>
+  </div>
+
+</body>
+</html>

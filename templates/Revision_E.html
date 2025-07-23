@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Administrativo</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-top: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .admin-container {
+      background-color: rgba(255, 255, 255, 0.788);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(3, 52, 117, 0.2);
+      width: 90%;
+      max-width: 800px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #30a8bd;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #18798a;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 2px solid #a5d6a7;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    .estado {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #18798a;
+    }
+
+    .botones {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .botones button {
+      width: 48%;
+      padding: 12px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-aprobar {
+      background-color: #30a8bd;
+      color: white;
+    }
+
+    .btn-aprobar:hover {
+      background-color: #38568e;
+    }
+
+    .btn-declinar {
+      background-color: #e53935;
+      color: white;
+    }
+
+    .btn-declinar:hover {
+      background-color: #b71c1c;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <h2>Consulta y Revisión de Estudiante</h2>
+
+    <label for="buscar">ID o Nombre del Estudiante:</label>
+    <input type="text" id="buscar" placeholder="Ej: 123 o Juan Pérez">
+
+    <button onclick="consultar()">Buscar</button>
+
+    <div id="resultado" style="display: none;">
+      <label>Nombre del Estudiante:</label>
+      <input type="text" id="nombre_e" readonly>
+
+      <label>Grado:</label>
+      <input type="text" id="grado" readonly>
+
+      <label>Técnico:</label>
+      <input type="text" id="tecnico" readonly>
+
+      <label>Período Escolar:</label>
+      <input type="text" id="periodo" readonly>
+
+      <label>Estado Actual:</label>
+      <input type="text" id="estado" readonly class="estado">
+      <div id="documentos" style="margin-top: 20px;">
+
+        <label>Documentos Subidos:</label>
+        <ul id="lista-docs" style="padding-left: 20px;"></ul>
+        </div>
+
+
+      <div class="botones">
+        <button class="btn-aprobar" onclick="actualizarEstado('Aprobado')">Aprobar</button>
+        <button class="btn-declinar" onclick="actualizarEstado('Declinado')">Declinar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+   const estudiantes = {
+  "123": {
+    nombre: "Juan Pérez",
+    grado: "2do Grado",
+    tecnico: "Informática",
+    periodo: "2025-2026",
+    estado: "Pendiente",
+    documentos: [
+      { nombre: "Acta de Nacimiento", url: "documentos/juan_acta.pdf" },
+      { nombre: "Foto 2x2", url: "documentos/juan_foto.pdf" }
+    ]
+  },
+  "124": {
+    nombre: "María Gómez",
+    grado: "1er Grado",
+    tecnico: "Contabilidad",
+    periodo: "2025-2026",
+    estado: "Pendiente",
+    documentos: []
+  }
+};
+
+
+    function consultar() {
+  const valor = document.getElementById("buscar").value.trim().toLowerCase();
+  const data = estudiantes[valor];
+
+  if (data) {
+    document.getElementById("resultado").style.display = "block";
+    document.getElementById("nombre_e").value = data.nombre;
+    document.getElementById("grado").value = data.grado;
+    document.getElementById("tecnico").value = data.tecnico;
+    document.getElementById("periodo").value = data.periodo;
+    document.getElementById("estado").value = data.estado;
+
+    // Cargar documentos (simulación)
+    const listaDocs = document.getElementById("lista-docs");
+    listaDocs.innerHTML = ""; // Limpiar anterior
+
+    if (data.documentos && data.documentos.length > 0) {
+      data.documentos.forEach(doc => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${doc.url}" target="_blank">${doc.nombre}</a>`;
+        listaDocs.appendChild(li);
+      });
+    } else {
+      listaDocs.innerHTML = "<li>No hay documentos disponibles.</li>";
+    }
+
+  } else {
+    alert("Estudiante no encontrado.");
+    document.getElementById("resultado").style.display = "none";
+  }
+}
+
+
+    function actualizarEstado(nuevoEstado) {
+      const nombre = document.getElementById("nombre_e").value;
+      document.getElementById("estado").value = nuevoEstado;
+      alert(`Estado del estudiante "${nombre}" actualizado a: ${nuevoEstado}`);
+      // Aquí puedes agregar una llamada AJAX a PHP para guardar el cambio real
+    }
+  </script>
+
+</body>
+</html>
