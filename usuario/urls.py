@@ -12,6 +12,7 @@ urlpatterns = [
     path('avisos/', views.aviso_adm, name='avisos'),
     path('chat/', views.chat, name='chat'),
     path('cantidad_estudiantes/', views.cantidad_estudiantes, name='cantidad_estudiantes'),
-    
+    path('logout/', views.logout_usuario, name='logout'),
+
 ]
 
