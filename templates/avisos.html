@@ -91,7 +91,7 @@
   <div class="form-container">
     <h2>Bienvenido, {{ nombre }}</h2>
     <h2>Agregar Aviso</h2>
-    <form action="" method="post">
+    <form action="." method="post">
       {% csrf_token %}
       <label for="titulo">Título:</label>
       <input type="text" id="titulo" name="titulo" required>
@@ -103,12 +103,19 @@
       <input type="date" id="fecha_publi" name="fecha_publi" required>
 
       <div class="button-group">
-        <input type="submit" name="accion" value="publicar" class="btn-publicar">
-        <input type="submit" name="accion" value="eliminar" class="btn-eliminar">   
+        <input type="submit" name="accion" value="publicar" class="btn-publicar" onclick="setAction('{% url 'Insertar_aviso' %}')">
+        <input type="submit" name="accion" value="eliminar" class="btn-eliminar" onclick="setAction('{% url 'avisos' %}')">
       </div>
     </form>
   </div>
 
+ <script>
+  const form = document.querySelector('form[action="."]');
+  function setAction(url) {
+    form.action = url;
+  }
+</script>
+]
 
 </body>
 </html>
