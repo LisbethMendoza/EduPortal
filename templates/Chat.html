@@ -2,78 +2,223 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Agregar Pregunta al ChatBot</title>
- <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
   <style>
     body {
       background-color: #f1f8e9;
       background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
+      align-items: flex-start;
+      gap: 40px;
+      padding: 40px 40px 40px 80px;
+      min-height: 100vh;
+      margin: 0;
     }
 
-    .form-container {
+    .form-container, .table-container {
       background: #ffffff;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 400px;
+    }
+
+    .form-container {
+      width: 450px;
+      margin-left: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-container {
+      width: 650px;
+      max-height: 80vh;
+      overflow-y: auto;
     }
 
     h2 {
       text-align: center;
       color: #0d8094;
+      margin-bottom: 25px;
     }
 
     label {
       font-weight: bold;
-      display: block;
       margin-top: 15px;
+      display: block;
+    }
+
+    input[type="number"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+      resize: none;
+      font-family: Arial, sans-serif;
+    }
+
+    input[type="number"] {
+      max-width: 150px;
     }
 
     textarea {
-      width: 100%;
-      height: 60px;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: none;
+      height: 70px;
+    }
+
+    .botones-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 25px;
     }
 
     button {
-      margin-top: 20px;
-      width: 100%;
-      background-color: #0d8094;
-      color: white;
+      flex: 1;
+      padding: 12px 0;
+      font-size: 16px;
       border: none;
-      padding: 12px;
       border-radius: 6px;
       cursor: pointer;
+      color: white;
+      transition: background-color 0.3s ease;
     }
 
-    button:hover {
+    .btn-guardar {
+      background-color: #0d8094;
+      margin-right: 4%;
+    }
+
+    .btn-guardar:hover {
       background-color: #0a6e80;
     }
+
+    .btn-eliminar {
+      background-color: #cc0f0f;
+    }
+
+    .btn-eliminar:hover {
+      background-color: #b61b1b;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      table-layout: fixed; /* para columnas fijas */
+      word-wrap: break-word;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px 10px;
+      text-align: left;
+      font-size: 16px;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #e0f2f1;
+      color: #0d8094;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    /* Scrollbar para tabla (solo para overflow-y) */
+    .table-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background-color: rgba(13, 128, 148, 0.5);
+      border-radius: 4px;
+    }
+
   </style>
 </head>
 <body>
 
   <div class="form-container">
     <h2>Agregar Pregunta</h2>
-    <form action="#" method="post">
+    <form action="{% url 'agregar_pregunta' %}" method="post">
+      {% csrf_token %}
+      <label for="id_input">ID (para búsquedas o actualizaciones):</label>
+      <input type="number" name="id_input" id="id_input" placeholder="Ingrese ID" />
+
       <label for="pregunta">Pregunta:</label>
-      <textarea name="pregunta" required></textarea>
+      <textarea name="pregunta" placeholder="¿Qué es ...?" required></textarea>
 
       <label for="respuesta">Respuesta:</label>
-      <textarea name="respuesta" required></textarea>
+      <textarea name="respuesta" placeholder="Escriba la respuesta aquí ..." required></textarea>
 
-      <button type="submit">Guardar</button>
+      <div class="botones-container">
+        <button type="submit" class="btn-guardar" name="accion" value="guardar">Guardar</button>
+        <button type="submit" class="btn-eliminar" name="accion" value="eliminar">Eliminar</button>
+      </div>
     </form>
   </div>
+
+  <div class="table-container">
+    <h2>Preguntas Guardadas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%;">#</th>
+          <th style="width: 45%;">Pregunta</th>
+          <th style="width: 50%;">Respuesta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mensaje in mensajes %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ mensaje.pregunta }}</td>
+          <td>{{ mensaje.respuesta }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" style="text-align:center;">No hay preguntas registradas.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+document.getElementById('id_input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault(); // para que no recargue la página al hacer submit
+
+    const id = this.value;
+    if (!id) return;
+
+    fetch(`/chat/obtener_pregunta/${id}/`)
+      .then(response => {
+        if (!response.ok) throw new Error('Pregunta no encontrada');
+        return response.json();
+      })
+      .then(data => {
+        // Coloca los datos en los campos textarea
+        document.querySelector('textarea[name="pregunta"]').value = data.pregunta;
+        document.querySelector('textarea[name="respuesta"]').value = data.respuesta;
+      })
+      .catch(error => {
+        alert(error.message);
+        // Limpia los campos si no se encontró
+        document.querySelector('textarea[name="pregunta"]').value = '';
+        document.querySelector('textarea[name="respuesta"]').value = '';
+      });
+  }
+});
+</script>
+
 
 </body>
 </html>
