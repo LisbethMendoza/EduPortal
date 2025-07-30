@@ -15,8 +15,8 @@ urlpatterns = [
     path('logout/', views.logout_usuario, name='logout'),
     path('recuperar/', views.recuperar, name='recuperar'),
     path('enviar-enlace/', views.enviar_enlace, name='enviar_enlace'),
-    
     path('restablecer/', views.restablecer, name='restablecer'),
 ]
+
 
 

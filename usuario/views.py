@@ -172,17 +172,19 @@ def restablecer(request):
         if correo and nueva_clave:
             try:
                 usuario = Usuario.objects.get(correo=correo)
-                usuario.contrasena = nueva_clave 
+                usuario.contrasena = nueva_clave
                 usuario.save()
 
                 del request.session['correo_recuperacion']
-                return render(request, 'Login.html', {'mensaje': 'Contraseña actualizada correctamente'})
+                messages.success(request, 'Contraseña actualizada correctamente')
+                return redirect('login')  # ← Redirige correctamente
             except Usuario.DoesNotExist:
                 return render(request, 'restablecer.html', {'error': 'Usuario no encontrado'})
         else:
             return render(request, 'restablecer.html', {'error': 'No se pudo validar el usuario'})
     
     return render(request, 'restablecer.html')
+
 
 
 
@@ -215,9 +217,10 @@ def enviar_enlace(request):
             fail_silently=False,
         )
 
-        messages.success(request, 'Correo de recuperación enviado')
+        messages.success(request, '')
         return redirect('login')
     
     return redirect('login')
+
 
 
