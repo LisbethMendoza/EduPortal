@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Recuperar Contraseña</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .recovery-container {
+      background-color: rgba(255, 255, 255, 0.788);
+      padding: 30px 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 60, 128, 0.2);
+      width: 300px;
+      text-align: center;
+    }
+
+    .logo-circular {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #668ebb;
+      margin: 0 auto 15px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .logo-circular img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .recovery-header {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #306dbd;
+      font-weight: bold;
+    }
+
+    input[type="email"],
+    input[type="submit"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input[type="email"] {
+      border: 2px solid #306dbd;
+    }
+
+    input[type="submit"] {
+      background-color: #306dbd;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #306dbd;
+    }
+
+    .volver-link {
+      display: block;
+      margin-top: 10px;
+      color: #306dbd;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .volver-link:hover {
+      text-decoration: underline;
+      color: #447ac0ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="recovery-container">
+    <div class="logo-circular">
+      <img src="{% static 'imagenes/Logo.jpg' %}" alt="Logo Liceo">
+    </div>
+    <div class="recovery-header">Recuperar Contraseña</div>
+    <form action="{% url 'enviar_enlace' %}" method="post">
+         {% csrf_token %}
+      <input type="email" name="correo" placeholder="Ingresa tu correo" required>
+      <input type="submit" value="Enviar enlace de recuperación">
+    </form>
+    <a href="{% url 'login' %}" class="volver-link"> Volver al inicio de sesión</a>
+  </div>
+</body>
+</html>
