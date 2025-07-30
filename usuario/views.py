@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Usuario
 from django.db import DatabaseError
 from django.http import JsonResponse
-
+from django.contrib import messages
 
 
 def usuario_form(request):
@@ -187,6 +187,8 @@ def restablecer(request):
 
 
 
+
+
 #----------------CORREO ELECTRONICO INFIGURACION---------------------
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
@@ -213,6 +215,9 @@ def enviar_enlace(request):
             fail_silently=False,
         )
 
-        return render(request, 'Login.html', {'mensaje': 'Correo de recuperación enviado'})
+        messages.success(request, 'Correo de recuperación enviado')
+        return redirect('login')
     
     return redirect('login')
+
+
