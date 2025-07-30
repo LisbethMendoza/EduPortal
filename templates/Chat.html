@@ -148,7 +148,7 @@
   <div class="form-container">
     <h2>Agregar Pregunta</h2>
     <form action="{% url 'agregar_pregunta' %}" method="post">
-      {% csrf_token %}
+       {% csrf_token %}
       <label for="id_input">ID (para búsquedas o actualizaciones):</label>
       <input type="number" name="id_input" id="id_input" placeholder="Ingrese ID" />
 
@@ -166,30 +166,65 @@
   </div>
 
   <div class="table-container">
-    <h2>Preguntas Guardadas</h2>
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 5%;">#</th>
-          <th style="width: 45%;">Pregunta</th>
-          <th style="width: 50%;">Respuesta</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for mensaje in mensajes %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td>{{ mensaje.pregunta }}</td>
-          <td>{{ mensaje.respuesta }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3" style="text-align:center;">No hay preguntas registradas.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  <h2>Preguntas Guardadas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 5%;">#</th>
+        <th style="width: 45%;">Pregunta</th>
+        <th style="width: 50%;">Respuesta</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-preguntas">
+      {% for mensaje in mensajes %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ mensaje.pregunta }}</td>
+        <td>{{ mensaje.respuesta }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" style="text-align:center;">No hay preguntas registradas.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Plantilla oculta para usarla desde el backend (NO LA TOQUES) -->
+<script type="text/template" id="template-tbody">
+  {% for mensaje in mensajes %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ mensaje.pregunta }}</td>
+    <td>{{ mensaje.respuesta }}</td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="3" style="text-align:center;">No hay preguntas registradas.</td>
+  </tr>
+  {% endfor %}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  fetch("{% url 'cargar_tbody' %}")
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('tbody-preguntas').innerHTML = data.tbody;
+    })
+    .catch(error => {
+      console.error("Error al cargar las preguntas:", error);
+    });
+});
+</script>
+
+
+
+
+
+
+
 
   <script>
 document.getElementById('id_input').addEventListener('keypress', function(e) {
@@ -217,8 +252,12 @@ document.getElementById('id_input').addEventListener('keypress', function(e) {
       });
   }
 });
+
 </script>
+
+
 
 
 </body>
 </html>
+

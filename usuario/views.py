@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .models import Usuario
 from django.db import DatabaseError
 from django.http import JsonResponse
-
+from django.contrib import messages
 
 
 def usuario_form(request):
@@ -101,8 +101,6 @@ def login_usuario(request):
 
 
 
-
-
 def pagina_admin(request):
     if 'usuario_id' not in request.session:
         return redirect('login')
@@ -157,8 +155,69 @@ def cantidad_estudiantes(request):
 
 
 
-
-
 def logout_usuario(request):
     request.session.flush()  
     return redirect('login') 
+
+
+def recuperar(request):
+    return render(request, 'recuperar.html') 
+
+
+def restablecer(request):
+    if request.method == 'POST':
+        nueva_clave = request.POST.get('nueva_contrasena')
+        correo = request.session.get('correo_recuperacion')
+
+        if correo and nueva_clave:
+            try:
+                usuario = Usuario.objects.get(correo=correo)
+                usuario.contrasena = nueva_clave 
+                usuario.save()
+
+                del request.session['correo_recuperacion']
+                return render(request, 'Login.html', {'mensaje': 'Contraseña actualizada correctamente'})
+            except Usuario.DoesNotExist:
+                return render(request, 'restablecer.html', {'error': 'Usuario no encontrado'})
+        else:
+            return render(request, 'restablecer.html', {'error': 'No se pudo validar el usuario'})
+    
+    return render(request, 'restablecer.html')
+
+
+
+
+
+
+#----------------CORREO ELECTRONICO INFIGURACION---------------------
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.urls import reverse
+
+def enviar_enlace(request):
+    if request.method == 'POST':
+        correo = request.POST.get('correo')
+
+        request.session['correo_recuperacion'] = correo
+
+        enlace = request.build_absolute_uri(reverse('restablecer'))
+
+        asunto = 'Recuperación de contraseña'
+        mensaje = f"Hola,\n\nHaz clic en este enlace para restablecer tu contraseña:\n{enlace}\n\nSi no fuiste tú, ignora este mensaje."
+
+ 
+        send_mail(
+            subject=asunto,
+            message=mensaje,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[correo],
+            fail_silently=False,
+        )
+
+        messages.success(request, 'Correo de recuperación enviado')
+        return redirect('login')
+    
+    return redirect('login')
+
+

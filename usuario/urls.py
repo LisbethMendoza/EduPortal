@@ -13,6 +13,10 @@ urlpatterns = [
     path('chat/', views.chat, name='chat'),
     path('cantidad_estudiantes/', views.cantidad_estudiantes, name='cantidad_estudiantes'),
     path('logout/', views.logout_usuario, name='logout'),
-
+    path('recuperar/', views.recuperar, name='recuperar'),
+    path('enviar-enlace/', views.enviar_enlace, name='enviar_enlace'),
+    
+    path('restablecer/', views.restablecer, name='restablecer'),
 ]
+
 

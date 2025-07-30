@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from usuario.models import Usuario
-from django.http import JsonResponse,Http404
+from django.http import JsonResponse
 from .models import ChatBotMensaje
 
 def aviso_adm(request): #Poner esto en los demas form
@@ -65,9 +65,9 @@ def agregar_pregunta(request):
                 print("🗑️ Pregunta eliminada:", pregunta)
             except ChatBotMensaje.DoesNotExist:
                 print("❌ No se encontró la pregunta para eliminar:", pregunta)
+            return redirect("agregar_pregunta")
 
         return redirect("agregar_pregunta")
-
     mensajes_activos = ChatBotMensaje.objects.filter(estado='activo').order_by('id_chat')
     return render(request, 'Chat.html', {'mensajes': mensajes_activos})
 
@@ -85,3 +85,29 @@ def obtener_pregunta(request, id_chat):
         return JsonResponse({'error': 'No se encontró la pregunta'}, status=404)
 
 
+from django.http import JsonResponse
+from django.template import Context, Template
+
+def cargar_tbody(request):
+    mensajes = ChatBotMensaje.objects.filter(estado='activo').order_by('id_chat')
+    
+    # Simular un fragmento con Template en lugar de archivo
+    html = """
+    {% for mensaje in mensajes %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ mensaje.pregunta }}</td>
+      <td>{{ mensaje.respuesta }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="3" style="text-align:center;">No hay preguntas registradas.</td>
+    </tr>
+    {% endfor %}
+    """
+
+    template = Template(html)
+    context = Context({'mensajes': mensajes})
+    tbody_html = template.render(context)
+
+    return JsonResponse({'tbody': tbody_html})
