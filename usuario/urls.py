@@ -4,7 +4,7 @@ from usuario import views
 
 urlpatterns = [
     path('insertar_usuario/', views.usuario_form, name='insertar_usuario'),
-    path('usuario/obtener/', views.obtener_usuario, name='obtener_usuario'),
+    path('obtener/', views.obtener_usuario, name='obtener_usuario'),
     path('login/', views.login_usuario, name='login'),
     path('pagina_admin', views.pagina_admin, name='pagina_admin'),
     path('crear_usuario/', views.crear_usuario, name='crear_usuario'),
@@ -15,8 +15,8 @@ urlpatterns = [
     path('logout/', views.logout_usuario, name='logout'),
     path('recuperar/', views.recuperar, name='recuperar'),
     path('enviar-enlace/', views.enviar_enlace, name='enviar_enlace'),
-    
     path('restablecer/', views.restablecer, name='restablecer'),
 ]
+
 
 

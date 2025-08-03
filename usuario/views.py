@@ -4,7 +4,7 @@ from django.db import DatabaseError
 from django.http import JsonResponse
 from django.contrib import messages
 
-
+#-------------Crear y actualizar Usuarios------------------------------
 def usuario_form(request):
     mensaje = ""
     error = ""
@@ -55,7 +55,7 @@ def usuario_form(request):
         'usuario_data': usuario_data
     })
 
-
+#----------------Obtener los datos de ----------------------------------
 def obtener_usuario(request):
     if request.method == 'GET':
         correo = request.GET.get('correo')
@@ -154,7 +154,7 @@ def cantidad_estudiantes(request):
     return render(request, 'Cant_Estudiantes.html', {'nombre': nombre})
 
 
-
+#--------------Cierra sesion----------------------------
 def logout_usuario(request):
     request.session.flush()  
     return redirect('login') 
@@ -163,7 +163,7 @@ def logout_usuario(request):
 def recuperar(request):
     return render(request, 'recuperar.html') 
 
-
+#--------------Restablece la contrasena----------------------------
 def restablecer(request):
     if request.method == 'POST':
         nueva_clave = request.POST.get('nueva_contrasena')
@@ -172,17 +172,19 @@ def restablecer(request):
         if correo and nueva_clave:
             try:
                 usuario = Usuario.objects.get(correo=correo)
-                usuario.contrasena = nueva_clave 
+                usuario.contrasena = nueva_clave
                 usuario.save()
 
                 del request.session['correo_recuperacion']
-                return render(request, 'Login.html', {'mensaje': 'Contraseña actualizada correctamente'})
+                messages.success(request, 'Contraseña actualizada correctamente')
+                return redirect('login')  # ← Redirige correctamente
             except Usuario.DoesNotExist:
                 return render(request, 'restablecer.html', {'error': 'Usuario no encontrado'})
         else:
             return render(request, 'restablecer.html', {'error': 'No se pudo validar el usuario'})
     
     return render(request, 'restablecer.html')
+
 
 
 
@@ -215,9 +217,10 @@ def enviar_enlace(request):
             fail_silently=False,
         )
 
-        messages.success(request, 'Correo de recuperación enviado')
+        messages.success(request, '')
         return redirect('login')
     
     return redirect('login')
+
 
 
