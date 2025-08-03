@@ -133,8 +133,8 @@
   <header>
     <h1>EduPortal</h1>
     <nav>
-      <a href="registro.html" target="_blank">Inscripcion/Reinscripcion</a><img src="Imagenes/logoE.ico.webp" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
-      <a href="CSolicitud.html" target="_blank">Consulta Solicitud</a><img src="Imagenes/logoE.ico.webp" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
+      <a href="registro.html" target="_blank">Inscripcion/Reinscripcion</a><img src="{% static 'imagenes/logoE.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
+      <a href="CSolicitud.html" target="_blank">Consulta Solicitud</a><img src="{% static 'imagenes/logoE.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
      </nav>
   </header>
 
@@ -148,7 +148,7 @@
       <h2>Chat</h2>
      <div class="chat-box" id="chat-box">
   <p>
- <img src="Imagenes/bot.ico.webp" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+ <img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
     <em>Bienvenido, ¿en qué puedo ayudarte?</em>
   </p>
 </div>
@@ -166,7 +166,7 @@
       const mensaje = input.value.trim();
       if (mensaje !== "") {
         const nuevoMensaje = document.createElement("p");
-        nuevoMensaje.innerHTML = `<img src="Imagenes/usuario.ico.png" alt="Usuario" 
+        nuevoMensaje.innerHTML = `<img src=" {% static 'Imagenes/usuario.ico.png' %}" alt="Usuario" 
              style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
              ${mensaje}`;
         chatBox.appendChild(nuevoMensaje);
