@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>EduPortal</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #f4f9f4;
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    header {
+      background-color: #388e3c;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    nav a {
+      margin-left: 15px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      min-height: calc(100vh - 70px);
+    }
+
+    .aviso {
+      flex: 1;
+      background-color: rgba(255, 255, 255, 0.788);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      min-height: 500px;
+    }
+
+    .aviso h2 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+
+    .chat {
+      flex: 1;
+      background-color: rgba(255, 255, 255, 0.788);
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      min-height: 300px;
+      padding: 20px;
+    }
+
+    .chat h2 {
+      margin-top: 0;
+      color: #2e7d32;
+    }
+
+    .chat-box {
+      flex: 1;
+      border: 1px solid #a5d6a7;
+      border-radius: 8px;
+      padding: 10px;
+      overflow-y: auto;
+      background-color: #f0fdf4;
+      margin-bottom: 10px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #a5d6a7;
+    }
+
+    .chat-input button {
+      padding: 10px 15px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .chat-input button:hover {
+      background-color: #388e3c;
+    }
+
+    footer {
+    background-color: #2e7d32;
+    color: white; 
+    text-align: center;
+    padding: 15px 10px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial;
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>EduPortal</h1>
+    <nav>
+      <a href="registro.html" target="_blank">Inscripcion/Reinscripcion</a><img src="Imagenes/logoE.ico.webp" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
+      <a href="CSolicitud.html" target="_blank">Consulta Solicitud</a><img src="Imagenes/logoE.ico.webp" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
+     </nav>
+  </header>
+
+  <div class="container">
+    <div class="aviso">
+      <h2>Aviso</h2>
+      <p>Aun no hay avisos Publicados</p>
+    </div>
+
+    <div class="chat">
+      <h2>Chat</h2>
+     <div class="chat-box" id="chat-box">
+  <p>
+ <img src="Imagenes/bot.ico.webp" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+    <em>Bienvenido, ¿en qué puedo ayudarte?</em>
+  </p>
+</div>
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Escribe tu mensaje aquí...">
+        <button onclick="enviarMensaje()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function enviarMensaje() {
+      const input = document.getElementById("userInput");
+      const chatBox = document.getElementById("chat-box");
+      const mensaje = input.value.trim();
+      if (mensaje !== "") {
+        const nuevoMensaje = document.createElement("p");
+        nuevoMensaje.innerHTML = `<img src="Imagenes/usuario.ico.png" alt="Usuario" 
+             style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+             ${mensaje}`;
+        chatBox.appendChild(nuevoMensaje);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        input.value = "";
+      }
+    }
+  </script>
+  
+  <footer>
+        <p>( 2025&copy;) -Todos los derechos son reservados -  EduPortal & Lisbeth Mendoza 2021-1072 & Oscarina Rincon 2021-0320  </p>
+    </footer>
+</body>
+</html>
