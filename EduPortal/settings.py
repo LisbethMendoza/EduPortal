@@ -43,6 +43,12 @@ INSTALLED_APPS = [
     'usuario',
     'avisos',
     'chat',
+    'documento',
+    'estudiante',
+    'grado',
+    'inscripcion',
+    'padre',
+    'tecnico',
     ]
 
 MIDDLEWARE = [
