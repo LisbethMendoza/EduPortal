@@ -133,32 +133,62 @@
   <header>
     <h1>EduPortal</h1>
     <nav>
-      <a href="registro.html" target="_blank">Inscripcion/Reinscripcion</a><img src="{% static 'imagenes/logoE.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
-      <a href="CSolicitud.html" target="_blank">Consulta Solicitud</a><img src="{% static 'imagenes/logoE.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
+      <a href="{% url 'registro' %}" target="_blank">Inscripcion/Reinscripcion</a><img src="{% static 'imagenes/logoE.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
+      <a href="{% url 'Csolicitud' %}" target="_blank">Consulta Solicitud</a><img src="{% static 'imagenes/logoE.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px; margin-left: 10px;">
      </nav>
   </header>
 
-  <div class="container">
-    <div class="aviso">
+      <div class="container">
+
+      <div class="aviso">
       <h2>Aviso</h2>
-      <p>Aun no hay avisos Publicados</p>
+      <p id="aviso-cargando">Cargando avisos...</p>
     </div>
 
-    <div class="chat">
-      <h2>Chat</h2>
-     <div class="chat-box" id="chat-box">
-  <p>
- <img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
-    <em>Bienvenido, ¿en qué puedo ayudarte?</em>
-  </p>
-</div>
-      <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Escribe tu mensaje aquí...">
-        <button onclick="enviarMensaje()">Enviar</button>
-      </div>
+  <div class="chat">
+    <h2>Chat</h2>
+    <div class="chat-box" id="chat-box">
+      <p>
+        <img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+        <em>Bienvenido, ¿en qué puedo ayudarte?</em>
+      </p>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Escribe tu mensaje aquí...">
+      <button onclick="enviarMensaje()">Enviar</button>
     </div>
   </div>
+</div>
 
+<script>
+fetch('/Consulta_avisos')
+  .then(response => response.json())
+  .then(data => {
+    const container = document.querySelector('.aviso');
+    container.innerHTML = '<h2>Aviso</h2>'; 
+
+    if (data.length > 0) {
+      data.forEach(aviso => {
+        container.innerHTML += `
+          <div style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ccc;">
+            <h3 style="margin: 0; color: #000000ff;">${aviso.titulo}</h3>
+            <p style="margin: 5px 0;">${aviso.descripcion}</p>
+            <small style="color: #555;"><em>Publicado el ${aviso.fecha_publi}</em></small>
+          </div>
+        `;
+      });
+    } else {
+      container.innerHTML += '<p>No hay avisos activos.</p>';
+    }
+  });
+</script>
+
+
+
+
+
+
+<!--Para que aparezca la conversasion-->
   <script>
     function enviarMensaje() {
       const input = document.getElementById("userInput");

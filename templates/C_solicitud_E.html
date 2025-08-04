@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Estado</title>
+  <link rel="icon" href="Imagenes/logo.ico.jpg" type="image/x-icon">
+  <style>
+    body {
+      background-image: url("Imagenes/Fondo.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-top: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .consulta-container {
+      background-color: rgba(255, 255, 255, 0.788);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #a5d6a7;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="consulta-container">
+    <h2>Consultar Estado de Solicitud</h2>
+
+    <form id="formConsulta">
+      <label for="busqueda">ID del Estudiante o Nombre:</label>
+      <input type="text" id="busqueda" name="busqueda" placeholder="Ej: 123 o Juan Pérez" required>
+
+      <button type="submit">Consultar</button>
+    </form>
+
+    <div class="resultado" id="resultadoEstado"></div>
+  </div>
+
+  <script>
+    document.getElementById("formConsulta").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const valor = document.getElementById("busqueda").value.trim().toLowerCase();
+      const resultadoDiv = document.getElementById("resultadoEstado");
+
+      // Simulación: puedes reemplazar este bloque con consulta a una base de datos real
+      const datosFalsos = {
+        "123": "Aprobada",
+        "juan pérez": "Pendiente",
+        "456": "Rechazada",
+        "maria gomez": "Aprobada"
+      };
+
+      if (valor in datosFalsos) {
+        resultadoDiv.textContent = `Estado de la solicitud: ${datosFalsos[valor]}`;
+      } else {
+        resultadoDiv.textContent = "No se encontró información para ese estudiante.";
+      }
+    });
+  </script>
+
+</body>
+</html>

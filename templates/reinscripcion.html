@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Reinscripción</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-top: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .grid-container {
+      background-color: rgba(255, 255, 255, 0.473);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
+      max-width: 600px;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 25px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .form-box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 2px solid #a5d6a7;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    input[readonly] {
+      background-color: #f0f0f0;
+      color: #555;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 2px solid #a5d6a7;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-family: Arial, sans-serif;
+    resize: none;
+    background-color: #f0f0f0;
+    color: #555;
+    }
+
+    .conteo-estudiantes {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  background-color: rgba(46, 125, 50, 0.9);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+  </style>
+</head>
+<body>
+
+  <form class="grid-container" action="#" method="POST">
+    <h2>Formulario de Reinscripción</h2>
+
+    <div class="form-box">
+      <h3 style="text-align: center; color: #2e7d32;">Datos del Estudiante</h3>
+
+      <label for="id_estudiante">ID del Estudiante:</label>
+      <input type="text" id="id_estudiante" name="id_estudiante" required>
+
+      <label for="nombre_e">Nombre del Estudiante:</label>
+      <input type="text" id="nombre_e" name="nombre_e" required>
+
+      <label for="id_grado">Grado:</label>
+      <select id="id_grado" name="id_grado" required>
+        <option value="">Seleccione</option>
+        <option value="1">1er Grado</option>
+        <option value="2">2do Grado</option>
+        <option value="3">3er Grado</option>
+        <option value="4">4to Grado</option>
+        <!-- Agrega más grados si lo deseas -->
+      </select>
+
+      <label for="id_tecnico">Técnico:</label>
+      <select id="id_tecnico" name="id_tecnico" required>
+        <option value="">Seleccione</option>
+        <option value="0">No aplica</option>
+        <option value="1">Informática</option>
+        <option value="2">Contabilidad</option>
+      </select>
+
+      <label for="periodo">Período Escolar:</label>
+      <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
+
+      <textarea id="tipodoc" name="tipodoc" readonly rows="2">
+        Foto de recibo de haber hecho transferencia o pagado la Reinscripcion. 
+        </textarea>
+
+         <label for="archivo_pdf">Foto (PDF):</label>
+        <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
+        </div>
+
+      <label for="estado">Estado:</label>
+      <input type="text" id="estado" name="estado" value="Pendiente" readonly>
+
+
+    </div>
+
+    <button type="submit">Enviar Reinscripción</button>
+  </form>
+  
+   <div class="conteo-estudiantes">
+      Estudiantes en Grado: 30 | Técnicos: 20
+    </div>
+</body>
+</html>

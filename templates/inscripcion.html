@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Inscripción</title>
+   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <style>
+    body {
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding-top: 60px; 
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; 
+      min-height: 100vh;
+      overflow-y: auto; 
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      background-color: rgba(255, 255, 255, 0.473);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
+      max-width: 1100px; 
+      width: 95%;
+    }
+
+    h2 {
+      grid-column: span 2;
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 25px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .form-box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 2px solid #a5d6a7;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    input[readonly] {
+      background-color: #f0f0f0;
+      color: #555;
+    }
+
+    button {
+      grid-column: span 2;
+      padding: 12px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 2px solid #a5d6a7;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-family: Arial, sans-serif;
+    resize: none;
+    background-color: #f0f0f0;
+    color: #555;
+    }
+
+    .conteo-estudiantes {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  background-color: rgba(46, 125, 50, 0.9);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+
+  </style>
+ 
+  <form class="grid-container" action="#" method="POST" enctype="multipart/form-data">
+    <h2>Formulario de Inscripción</h2>
+
+    <!-- Cuadro 1: Datos del Estudiante -->
+    <div class="form-box">
+      <h3>Estudiante</h3>
+
+      <label for="id_estudiante">ID del Estudiante:</label>
+      <input type="text" id="id_estudiante" name="id_estudiante" required>
+
+      <label for="nombre_e">Nombres:</label>
+      <input type="text" id="nombre_e" name="nombre_e" required>
+
+      <label for="apellido_e">Apellidos:</label>
+      <input type="text" id="apellido_e" name="apellido_e" required>
+
+      <label for="fecha_naci">Fecha de Nacimiento:</label>
+      <input type="date" id="fecha_naci" name="fecha_naci" required>
+
+      <label for="id_grado">Grado:</label>
+      <select id="id_grado" name="id_grado" required>
+        <option value="">Seleccione</option>
+        <option value="1">1er Grado</option>
+        <option value="2">2do Grado</option>
+      </select>
+
+      <label for="id_tecnico">Técnico:</label>
+      <select id="id_tecnico" name="id_tecnico" required>
+        <option value="">No Aplica</option>
+        <option value="1">Informática</option>
+        <option value="2">Contabilidad</option>
+      </select>
+    </div>
+
+    <!-- Cuadro 2: Datos del Padre -->
+    <div class="form-box">
+      <h3>Padre/Madre</h3>
+      <label for="nombre_p">Nombres:</label>
+      <input type="text" id="nombre_p" name="nombre_p" required>
+
+      <label for="apellido_p">Apellidos:</label>
+      <input type="text" id="apellido_p" name="apellido_p" required>
+
+      <label for="cedula">Numero de Cédula:</label>
+      <input type="text" id="cedula" name="cedula" required>
+
+       <label for="archivo_pdf">Foto de Cédula (PDF):</label>
+      <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
+    </div>
+
+    <!-- Cuadro 3: Información de Inscripción -->
+    <div class="form-box">
+      <h3>Inscripción</h3>
+      <label for="periodo">Período Escolar:</label>
+      <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
+
+      <label for="fecha_inscrip">Fecha de Solicitud:</label>
+      <input type="date" id="fecha_inscrip" name="fecha_inscrip" required>
+
+      <label for="estado">Estado:</label>
+      <input type="text" id="estado" name="estado" value="Pendiente" readonly>
+    </div>
+
+    <!-- Cuadro 4: Subida de Documentos -->
+        <div class="form-box">
+        <h3>Documento PDF</h3>
+        <label for="tipodoc">Documentación:</label>
+        <textarea id="tipodoc" name="tipodoc" readonly rows="4">
+        Foto 2x2, Acta de nacimiento (Certificada), Carta de buena conducta, Record de Nota (si ha cursado 1ro en adelante en otro centro educativo)
+        Foto de recibo de haber hecho transferencia o pagado la Inscripcion. 
+        </textarea>
+
+        <label for="archivo_pdf">Archivo (PDF):</label>
+        <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
+        </div>
+
+    <button type="submit">Enviar Inscripción</button>
+
+        <div class="conteo-estudiantes">
+      Estudiantes en Grado: 30 | Técnicos: 20
+    </div>
+  </form>
+
+</body>
+</html>
