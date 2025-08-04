@@ -104,6 +104,9 @@
       <label for="fecha_publi">Fecha de Publicación:</label>
       <input type="date" id="fecha_publi" name="fecha_publi" required>
 
+      <label for="fecha_fin">Fecha de Finalización:</label>
+      <input type="date" id="fecha_fin" name="fecha_fin" required >
+
       <div class="button-group">
         <input type="submit" name="accion" value="publicar" class="btn-publicar" onclick="setAction('{% url 'Insertar_aviso' %}')">
         <input type="submit" name="accion" value="eliminar" class="btn-eliminar" onclick="setAction('{% url 'eliminar_aviso' %}')">
@@ -131,13 +134,16 @@
         .then(data => {
           document.getElementById("descripcion").value = data.descripcion;
           document.getElementById("fecha_publi").value = data.fecha_publi;
+          document.getElementById("fecha_fin").value = data.fecha_fin;
           document.getElementById("id_aviso").value = data.id_aviso;
         })
         .catch(error => {
           alert("Aviso no encontrado");
           document.getElementById("descripcion").value = '';
           document.getElementById("fecha_publi").value = '';
+          document.getElementById("fecha_fin").value = '';
           document.getElementById("id_aviso").value = '';
+
         });
     }
   });
@@ -163,6 +169,7 @@
             document.getElementById('titulo').value = '';
             document.getElementById('descripcion').value = '';
             document.getElementById('fecha_publi').value = '';
+            document.getElementById('fecha_fin').value = '';
             document.getElementById('id_aviso').value = '';
             
         } else if (data.limpiar) {
@@ -171,13 +178,11 @@
             document.getElementById('titulo').value = '';
             document.getElementById('descripcion').value = '';
             document.getElementById('fecha_publi').value = '';
+            document.getElementById('fecha_fin').value = '';
             document.getElementById('id_aviso').value = '';
         }
     });
 });
-
-
-
 </script>
 
 

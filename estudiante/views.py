@@ -21,5 +21,5 @@ def Link_reinscripcion(request):
 
 
 def Consulta_avisos(request):
-    avisos = Aviso.objects.filter(estado="activo").values('titulo', 'descripcion', 'fecha_publi')
+    avisos = Aviso.objects.filter(estado="activo").values('titulo', 'descripcion', 'fecha_publi', 'fecha_fin')
     return JsonResponse(list(avisos), safe=False)

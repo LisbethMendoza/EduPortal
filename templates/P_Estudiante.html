@@ -173,7 +173,8 @@ fetch('/Consulta_avisos')
           <div style="margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #ccc;">
             <h3 style="margin: 0; color: #000000ff;">${aviso.titulo}</h3>
             <p style="margin: 5px 0;">${aviso.descripcion}</p>
-            <small style="color: #555;"><em>Publicado el ${aviso.fecha_publi}</em></small>
+            <small style="color: #555;"><em>Publicado el ${aviso.fecha_publi} | </em></small>
+            <small style="color: #555;"><em>Culmina el ${aviso.fecha_fin}</em></small>
           </div>
         `;
       });
@@ -182,6 +183,7 @@ fetch('/Consulta_avisos')
     }
   });
 </script>
+
 
 
 

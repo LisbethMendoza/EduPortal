@@ -42,6 +42,7 @@ def Insertar_aviso(request):
             titulo = request.POST.get("titulo")
             descripcion = request.POST.get("descripcion")
             fecha_publi = request.POST.get("fecha_publi")
+            fecha_fin = request.POST.get("fecha_fin")
             usuario_id = request.session.get('usuario_id')
 
 
@@ -54,6 +55,7 @@ def Insertar_aviso(request):
                         aviso.titulo = titulo
                         aviso.descripcion = descripcion
                         aviso.fecha_publi = fecha_publi
+                        aviso.fecha_fin = fecha_fin
                         aviso.estado = 'activo'
 
                         aviso.save()
@@ -68,6 +70,7 @@ def Insertar_aviso(request):
                         titulo=titulo,
                         descripcion=descripcion,
                         fecha_publi=fecha_publi,
+                        fecha_fin=fecha_fin, 
                         estado='activo'
                     )
                     aviso.save()
@@ -91,6 +94,7 @@ def obtener_aviso_por_titulo(request):
             'titulo': aviso.titulo,
             'descripcion': aviso.descripcion,
             'fecha_publi': aviso.fecha_publi.strftime('%Y-%m-%d'),
+            'fecha_fin': aviso.fecha_fin.strftime('%Y-%m-%d'),
         })
     except Aviso.DoesNotExist:
         return JsonResponse({'error': 'Aviso no encontrado'}, status=404)

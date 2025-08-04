@@ -7,6 +7,7 @@ class Aviso(models.Model):
     titulo = models.CharField(max_length=100)
     descripcion = models.TextField()
     fecha_publi = models.DateField()
+    fecha_fin = models.DateField(null=True, blank=True)
     estado = models.CharField(max_length=20, blank=True, null=True) 
 
     def __str__(self):
