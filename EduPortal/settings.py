@@ -15,6 +15,11 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
@@ -43,11 +48,12 @@ INSTALLED_APPS = [
     'usuario',
     'avisos',
     'chat',
-    'documento',
     'estudiante',
     'grado',
     'inscripcion',
     'tecnico',
+    'reinscripcion',
+    'tutor',
     ]
 
 MIDDLEWARE = [

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Grado
 from django.contrib import messages
+from tecnico.models import Tecnico
 
 def Insert_update_delete(request):
     if request.method == 'POST':
@@ -28,3 +29,9 @@ def Insert_update_delete(request):
                 messages.error(request, "El grado no existe.")
 
     return render(request, 'Cant_Estudiantes.html')
+
+
+def C_Grado(request):
+ grados = Grado.objects.filter(estado='activo')
+ tecnicos = Tecnico.objects.filter(estado='activo')
+ return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})

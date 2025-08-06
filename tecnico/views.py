@@ -28,3 +28,5 @@ def Insert_update_delete(request):
                 messages.error(request, "El técnico no existe.")
 
     return render(request, 'Cant_Estudiantes.html')
+
+

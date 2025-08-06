@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 
+from grado import views #Esto es para mostratr los grados en el formulario de inscripcion
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +29,8 @@ urlpatterns = [
     path('', include('estudiante.urls')),
     path('grado/', include('grado.urls')),
     path('tecnico/', include('tecnico.urls')),
+    
+    #Esto es para mostratr los grados en el formulario de inscripcion
+    path('inscripcion/', views.C_Grado, name='inscripcion'),
+
 ]

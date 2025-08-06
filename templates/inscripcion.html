@@ -127,9 +127,6 @@
     <div class="form-box">
       <h3>Estudiante</h3>
 
-      <label for="id_estudiante">ID del Estudiante:</label>
-      <input type="text" id="id_estudiante" name="id_estudiante" required>
-
       <label for="nombre_e">Nombres:</label>
       <input type="text" id="nombre_e" name="nombre_e" required>
 
@@ -139,29 +136,36 @@
       <label for="fecha_naci">Fecha de Nacimiento:</label>
       <input type="date" id="fecha_naci" name="fecha_naci" required>
 
-      <label for="id_grado">Grado:</label>
-      <select id="id_grado" name="id_grado" required>
+     
+    <label for="id_grado">Grado:</label>
+    <select id="id_grado" name="id_grado">
         <option value="">Seleccione</option>
-        <option value="1">1er Grado</option>
-        <option value="2">2do Grado</option>
-      </select>
+        {% for grado in grados %}
+            <option value="{{ grado.id }}">{{ grado.grado }}</option>
+        {% endfor %}
+    </select>
 
-      <label for="id_tecnico">Técnico:</label>
-      <select id="id_tecnico" name="id_tecnico" required>
-        <option value="">No Aplica</option>
-        <option value="1">Informática</option>
-        <option value="2">Contabilidad</option>
-      </select>
+
+    <label for="id_tecnico">Técnico:</label>
+    <select id="id_tecnico" name="id_tecnico" required>
+      <option value="">Seleccione</option>
+      {% for tecnico in tecnicos %}
+        <option value="{{ tecnico.id_tecnico }}">{{ tecnico.nombre }}</option>
+      {% endfor %}
+    </select>
     </div>
 
     <!-- Cuadro 2: Datos del Padre -->
     <div class="form-box">
-      <h3>Padre/Madre</h3>
+      <h3>Tutor</h3>
       <label for="nombre_p">Nombres:</label>
       <input type="text" id="nombre_p" name="nombre_p" required>
 
       <label for="apellido_p">Apellidos:</label>
       <input type="text" id="apellido_p" name="apellido_p" required>
+
+      <label for="apellido_p">Parentesco:</label>
+      <input type="text" id="aperentesco" name="aperentesco" required>
 
       <label for="cedula">Numero de Cédula:</label>
       <input type="text" id="cedula" name="cedula" required>
@@ -185,7 +189,7 @@
 
     <!-- Cuadro 4: Subida de Documentos -->
         <div class="form-box">
-        <h3>Documento PDF</h3>
+        <h3>Documento en PDF</h3>
         <label for="tipodoc">Documentación:</label>
         <textarea id="tipodoc" name="tipodoc" readonly rows="4">
         Foto 2x2, Acta de nacimiento (Certificada), Carta de buena conducta, Record de Nota (si ha cursado 1ro en adelante en otro centro educativo)
@@ -194,7 +198,9 @@
 
         <label for="archivo_pdf">Archivo (PDF):</label>
         <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
+        <label for="archivo_pdf">"Subir todo en un mismo archico pdf"</label>
         </div>
+        
 
     <button type="submit">Enviar Inscripción</button>
 
@@ -202,6 +208,9 @@
       Estudiantes en Grado: 30 | Técnicos: 20
     </div>
   </form>
+
+
+
 
 </body>
 </html>
