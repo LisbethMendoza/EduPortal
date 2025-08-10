@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Documentación</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #2e7d32;
+      margin-bottom: 30px;
+    }
+    .container {
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    a.download-link {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 6px 15px;    /* menos espacio vertical y horizontal */
+        background-color: #66bb6a;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+        font-size: 0.9rem;    /* un poco más pequeño */
+        }
+
+    a.download-link:hover {
+      background-color: #388e3c;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #2e7d32;
+    }
+    input[type="file"] {
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    button {
+      background-color: #66bb6a;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+    .instructions {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      font-weight: 600;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Entrega de Documentación</h1>
+
+    <div class="instructions">
+      <p>1. Descarga el  <strong>Formulario</strong> haciendo clic en el botón abajo.</p>
+      <p>2. Llena el archivo con la información requerida.</p>
+      <p>3. Guarda tu archivo completado en formato <strong>PDF</strong>.</p>
+      <p>4. Finalmente, sube el archivo PDF usando el formulario.</p>
+    </div>
+
+    <!-- Enlace para descargar archivo .doc -->
+    <a href="{% static 'documentos/tu_archivo.doc' %}" download class="download-link">
+      Descargar Formulario
+    </a>
+
+    <!-- Formulario para subir PDF -->
+    
+     {% if mensaje %}
+      <p style="color: green;">{{ mensaje }}</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" action="{% url 'documentacion_view' inscripcion.id_inscripcion %}">
+      {% csrf_token %}
+      <label for="pdf-file">Sube tu archivo PDF aquí:</label>
+      <input type="file" id="pdf-file" name="pdf_file" accept="application/pdf" required />
+      <button type="submit">Subir PDF</button>
+    </form>
+  </div>
+
+</body>
+</html>

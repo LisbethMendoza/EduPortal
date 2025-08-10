@@ -10,6 +10,10 @@ class Inscripcion(models.Model):
     fecha_inscripcion = models.DateField()
     estado = models.CharField(max_length=50, default='Pendiente')
     documento_pdf = models.FileField(upload_to='documentos/inscripciones/')
+    seccion = models.CharField(max_length=1, blank=True, null=True)
 
     def __str__(self):
         return f"Inscripción de {self.estudiante} - {self.periodo_escolar}"
+    
+    
+    

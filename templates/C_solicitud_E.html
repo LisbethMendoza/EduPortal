@@ -1,12 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Consulta de Estado</title>
-  <link rel="icon" href="Imagenes/logo.ico.jpg" type="image/x-icon">
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
     body {
-      background-image: url("Imagenes/Fondo.jpg");
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;

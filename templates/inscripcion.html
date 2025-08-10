@@ -6,105 +6,120 @@
   <title>Formulario de Inscripción</title>
    <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
-    body {
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding-top: 60px; 
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; 
-      min-height: 100vh;
-      overflow-y: auto; 
-    }
+ body {
+  background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  overflow-y: auto;
+}
 
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      background-color: rgba(255, 255, 255, 0.473);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
-      max-width: 1100px; 
-      width: 95%;
-    }
+/* Contenedor principal */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
+  max-width: 1100px;
+  width: 95%;
+}
 
-    h2 {
-      grid-column: span 2;
-      text-align: center;
-      color: #2e7d32;
-      margin-bottom: 25px;
-      font-size: 2rem;
-      font-weight: bold;
-    }
+/* Título principal */
+h2 {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #2e7d32;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  border-bottom: 3px solid #a5d6a7;
+  padding-bottom: 10px;
+}
 
-    .form-box {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+/* Cada sección de formulario */
+.form-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
 
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #2e7d32;
-    }
+.form-box h3 {
+  color: #388e3c;
+  border-left: 5px solid #66bb6a;
+  padding-left: 10px;
+  margin-bottom: 15px;
+}
 
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      border: 2px solid #a5d6a7;
-      border-radius: 8px;
-      box-sizing: border-box;
-      font-size: 1rem;
-    }
+/* Etiquetas */
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #2e7d32;
+}
 
-    input[readonly] {
-      background-color: #f0f0f0;
-      color: #555;
-    }
+/* Inputs y selects */
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 2px solid #a5d6a7;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
 
-    button {
-      grid-column: span 2;
-      padding: 12px;
-      background-color: #66bb6a;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 15px;
-    }
+input[readonly], textarea[readonly] {
+  background-color: #f0f0f0;
+  color: #555;
+}
 
-    button:hover {
-      background-color: #388e3c;
-    }
+/* Textarea */
+textarea {
+  font-family: Arial, sans-serif;
+  resize: none;
+}
 
-    textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 2px solid #a5d6a7;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    font-family: Arial, sans-serif;
-    resize: none;
-    background-color: #f0f0f0;
-    color: #555;
-    }
+/* Contenedor para centrar el botón */
+.boton-container {
+  grid-column: 1 / -1; /* Ocupa todo el ancho del grid */
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  margin-top: 20px;
+}
 
-    .conteo-estudiantes {
+/* Botón / enlace */
+.btn-link {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #66bb6a;
+  color: white;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.btn-link:hover {
+  background-color: #388e3c;
+}
+
+/* Cuadro de conteo */
+.conteo-estudiantes {
   position: fixed;
   top: 10px;
   right: 20px;
@@ -117,15 +132,16 @@
   z-index: 1000;
 }
 
-
   </style>
  
-  <form class="grid-container" action="#" method="POST" enctype="multipart/form-data">
-    <h2>Formulario de Inscripción</h2>
-
+  <form method="post" enctype="multipart/form-data" action="{% url 'inscripcion_p' %}" class ="grid-container">
+    {% csrf_token %}
+     <h2>Formulario de Inscripción</h2>
     <!-- Cuadro 1: Datos del Estudiante -->
     <div class="form-box">
       <h3>Estudiante</h3>
+        <label for="codigo">Código del Estudiante:</label>
+        <input type="text" id="codigo" name="codigo" value="{{ codigo }}" required>
 
       <label for="nombre_e">Nombres:</label>
       <input type="text" id="nombre_e" name="nombre_e" required>
@@ -137,13 +153,21 @@
       <input type="date" id="fecha_naci" name="fecha_naci" required>
 
      
-    <label for="id_grado">Grado:</label>
-    <select id="id_grado" name="id_grado">
+    <label for="id_grado">Nivel:</label>
+    <select id="id_grado" name="id_grado" required>
         <option value="">Seleccione</option>
         {% for grado in grados %}
-            <option value="{{ grado.id }}">{{ grado.grado }}</option>
+            <option value="{{ grado.id_grado }}">{{ grado.grado }}</option>
         {% endfor %}
     </select>
+
+     <label for="seccion" id="label_seccion" style="display:none;">Sección:</label>
+      <select id="seccion" name="seccion" style="display:none;">
+        <option value="">Seleccione sección</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+      </select>
 
 
     <label for="id_tecnico">Técnico:</label>
@@ -155,23 +179,22 @@
     </select>
     </div>
 
-    <!-- Cuadro 2: Datos del Padre -->
+    <!-- Cuadro 2: Datos del Tutor -->
     <div class="form-box">
       <h3>Tutor</h3>
+
       <label for="nombre_p">Nombres:</label>
       <input type="text" id="nombre_p" name="nombre_p" required>
 
       <label for="apellido_p">Apellidos:</label>
       <input type="text" id="apellido_p" name="apellido_p" required>
 
-      <label for="apellido_p">Parentesco:</label>
-      <input type="text" id="aperentesco" name="aperentesco" required>
+      <label for="parentesco">Parentesco:</label>
+      <input type="text" id="parentesco" name="parentesco" required>
 
       <label for="cedula">Numero de Cédula:</label>
       <input type="text" id="cedula" name="cedula" required>
 
-       <label for="archivo_pdf">Foto de Cédula (PDF):</label>
-      <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
     </div>
 
     <!-- Cuadro 3: Información de Inscripción -->
@@ -186,30 +209,140 @@
       <label for="estado">Estado:</label>
       <input type="text" id="estado" name="estado" value="Pendiente" readonly>
     </div>
-
-    <!-- Cuadro 4: Subida de Documentos -->
-        <div class="form-box">
-        <h3>Documento en PDF</h3>
-        <label for="tipodoc">Documentación:</label>
-        <textarea id="tipodoc" name="tipodoc" readonly rows="4">
-        Foto 2x2, Acta de nacimiento (Certificada), Carta de buena conducta, Record de Nota (si ha cursado 1ro en adelante en otro centro educativo)
-        Foto de recibo de haber hecho transferencia o pagado la Inscripcion. 
-        </textarea>
-
-        <label for="archivo_pdf">Archivo (PDF):</label>
-        <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
-        <label for="archivo_pdf">"Subir todo en un mismo archico pdf"</label>
-        </div>
-        
-
-    <button type="submit">Enviar Inscripción</button>
+    
+    <div class="boton-container">
+      <button type="submit">Siguiente</button>
+    </div>
 
         <div class="conteo-estudiantes">
       Estudiantes en Grado: 30 | Técnicos: 20
     </div>
+
+
+
   </form>
 
+<script>
+document.getElementById('codigo').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const codigo = this.value;
 
+        fetch(`/inscripcion/buscar_estudiante/?codigo=${codigo}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const estudiante = data.data;
+
+                    // Datos del estudiante
+                    document.getElementById('nombre_e').value = estudiante.nombre;
+                    document.getElementById('apellido_e').value = estudiante.apellido;
+                    document.getElementById('fecha_naci').value = estudiante.fecha_nacimiento;
+                    document.getElementById('id_grado').value = estudiante.id_grado;
+
+                    // Disparar el evento 'change' para que toggleCampos se ejecute
+                    const event = new Event('change');
+                    document.getElementById('id_grado').dispatchEvent(event);
+
+                    document.getElementById('id_tecnico').value = estudiante.id_tecnico;
+
+                    // Datos del tutor
+                    if (estudiante.tutor) {
+                        document.getElementById('nombre_p').value = estudiante.tutor.nombre;
+                        document.getElementById('apellido_p').value = estudiante.tutor.apellido;
+                        document.getElementById('parentesco').value = estudiante.tutor.parentesco;
+                        document.getElementById('cedula').value = estudiante.tutor.cedula;
+                    }
+
+                    // Datos de la inscripción
+                    if (estudiante.inscripcion) {
+                        document.getElementById('periodo').value = estudiante.inscripcion.periodo_escolar;
+                        document.getElementById('fecha_inscrip').value = estudiante.inscripcion.fecha_inscripcion;
+                        document.getElementById('estado').value = estudiante.inscripcion.estado;
+
+                        // Asignar la sección solo si está visible
+                        const seccionSelect = document.getElementById('seccion');
+                        if (seccionSelect.style.display !== 'none') {
+                            seccionSelect.value = estudiante.inscripcion.seccion || '';
+                        }
+                    }
+
+                } else {
+                    alert('Estudiante no encontrado');
+                }
+            })
+            .catch(error => {
+                console.error('Error al buscar el estudiante:', error);
+            });
+    }
+});
+</script>
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const codigoInput = document.getElementById('codigo');
+
+    fetch('/inscripcion/generar_codigo/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.codigo) {
+                codigoInput.value = data.codigo;
+            }
+        })
+        .catch(error => {
+            console.error('Error al generar el código:', error);
+        });
+});
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const gradoSelect = document.getElementById('id_grado');
+    const tecnicoSelect = document.getElementById('id_tecnico');
+    const tecnicoLabel = tecnicoSelect.previousElementSibling;
+
+    const seccionSelect = document.getElementById('seccion');
+    const seccionLabel = document.getElementById('label_seccion');
+
+    function toggleCampos() {
+      const valor = gradoSelect.options[gradoSelect.selectedIndex].text.toLowerCase();
+
+      // Mostrar técnico solo si es 4to, 5to o 6to
+      if (valor.includes('4to') || valor.includes('5to') || valor.includes('6to')) {
+        tecnicoSelect.style.display = 'inline-block';
+        tecnicoLabel.style.display = 'inline-block';
+        tecnicoSelect.required = true;
+      } else {
+        tecnicoSelect.style.display = 'none';
+        tecnicoLabel.style.display = 'none';
+        tecnicoSelect.required = false;
+        tecnicoSelect.value = '';
+      }
+
+      // Mostrar sección solo si es 1ro, 2do o 3ro
+      if (valor.includes('1ro') || valor.includes('2do') || valor.includes('3ro')) {
+        seccionSelect.style.display = 'inline-block';
+        seccionLabel.style.display = 'inline-block';
+        seccionSelect.required = true;
+      } else {
+        seccionSelect.style.display = 'none';
+        seccionLabel.style.display = 'none';
+        seccionSelect.required = false;
+        //seccionSelect.value = '';
+      }
+    }
+
+    // Ejecutar al cargar la página por si hay valor ya seleccionado
+    toggleCampos();
+
+    // Escuchar cambios en el select de grado
+    gradoSelect.addEventListener('change', toggleCampos);
+  });
+</script>
 
 
 </body>

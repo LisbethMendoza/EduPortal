@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from grado import views #Esto es para mostratr los grados en el formulario de inscripcion
 
@@ -29,8 +31,12 @@ urlpatterns = [
     path('', include('estudiante.urls')),
     path('grado/', include('grado.urls')),
     path('tecnico/', include('tecnico.urls')),
+    path('inscripcion/', include('inscripcion.urls')),
     
     #Esto es para mostratr los grados en el formulario de inscripcion
     path('inscripcion/', views.C_Grado, name='inscripcion'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
