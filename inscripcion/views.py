@@ -8,6 +8,9 @@ from inscripcion.models import Inscripcion
 import random
 import string
 from django.http import JsonResponse
+import os
+from django.http import FileResponse, Http404
+from django.conf import settings
 
 
 def generar_codigo():
@@ -28,6 +31,23 @@ def documentacion_view(request, inscripcion_id):
             mensaje = "PDF subido correctamente."
 
     return render(request, 'documentacion.html', {'inscripcion': inscripcion})
+
+
+def descargar_formulario(request):
+    ruta_archivo = os.path.join(settings.MEDIA_ROOT, 'documentos', 'Formulario_de_Inscripcion.docx')
+    print("Buscando archivo en:", ruta_archivo)
+    print("¿Existe archivo?:", os.path.exists(ruta_archivo))
+
+    if os.path.exists(ruta_archivo):
+        return FileResponse(
+            open(ruta_archivo, 'rb'),
+            as_attachment=True,
+            filename='Formulario_de_Inscripcion.docx'
+        )
+    else:
+        print("Archivo NO encontrado en la ruta anterior")
+        raise Http404("El archivo no existe")
+
 
 
 def generar_codigo_api(request):

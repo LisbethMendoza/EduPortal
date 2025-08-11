@@ -59,20 +59,7 @@
       margin-bottom: 20px;
       cursor: pointer;
     }
-    button {
-      background-color: #66bb6a;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #388e3c;
-    }
+    
     .instructions {
       background-color: #e8f5e9;
       color: #2e7d32;
@@ -83,37 +70,150 @@
       line-height: 1.4;
       font-size: 1rem;
     }
+
+    .upload-box {
+  background: rgba(0, 255, 42, 0.07);
+  border: 3px dashed #388e3c;
+  border-radius: 16px;
+  width: 320px;     
+  height: 200px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 34, 0.2);
+  position: relative;
+  user-select: none;
+  margin: 30px auto;
+}
+
+.upload-box:hover {
+  background-color: #d9e8ff;
+  border-color: #388e3c;
+  box-shadow: 0 0 30px rgba(0, 179, 45, 0.4);
+}
+
+/* Estilo input file oculto */
+#pdf-file {
+  display: none;
+}
+
+.upload-icon {
+  font-size: 48px; 
+  color: #388e3c;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+.upload-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #388e3c;
+  text-align: center;
+  user-select: none;
+}
+
+/* Cuando se arrastra un archivo encima */
+.upload-box.dragover {
+  background-color: #bbd8ff;
+  border-color: #388e3c;
+  box-shadow: 0 0 35px rgba(0, 153, 20, 0.7);
+}
+
+button.upload-btn {
+  background-color: #388e3c;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 320px; 
+  max-width: 100%;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 153, 20, 0.7);
+  user-select: none;
+  font-weight: 700;
+  margin: 0 auto;
+}
+
+button.upload-btn:hover {
+  background-color: #388e3c;;
+  box-shadow: 0 6px 18px rgba(0, 153, 20, 0.7);
+}
+
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Entrega de Documentación</h1>
+   <h1>Entrega de Documentación</h1>
 
-    <div class="instructions">
-      <p>1. Descarga el  <strong>Formulario</strong> haciendo clic en el botón abajo.</p>
-      <p>2. Llena el archivo con la información requerida.</p>
-      <p>3. Guarda tu archivo completado en formato <strong>PDF</strong>.</p>
-      <p>4. Finalmente, sube el archivo PDF usando el formulario.</p>
-    </div>
+<div class="instructions">
+  <p>1. Descarga el  <strong>Formulario</strong> haciendo clic en el botón abajo.</p>
+  <p>2. Llena el archivo con la información requerida.</p>
+  <p>3. Guarda tu archivo completado en formato <strong>PDF</strong>.</p>
+  <p>4. Finalmente, sube el archivo PDF usando el formulario.</p>
+</div>
 
-    <!-- Enlace para descargar archivo .doc -->
-    <a href="{% static 'documentos/tu_archivo.doc' %}" download class="download-link">
-      Descargar Formulario
-    </a>
+<a href="{% url 'descargar_formulario' %}" download class="download-link">
+  Descargar Formulario
+</a>
 
-    <!-- Formulario para subir PDF -->
-    
-     {% if mensaje %}
-      <p style="color: green;">{{ mensaje }}</p>
-    {% endif %}
-    <form method="post" enctype="multipart/form-data" action="{% url 'documentacion_view' inscripcion.id_inscripcion %}">
-      {% csrf_token %}
-      <label for="pdf-file">Sube tu archivo PDF aquí:</label>
-      <input type="file" id="pdf-file" name="pdf_file" accept="application/pdf" required />
-      <button type="submit">Subir PDF</button>
-    </form>
+{% if mensaje %}
+  <p style="color: green;">{{ mensaje }}</p>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" action="{% url 'documentacion_view' inscripcion.id_inscripcion %}">
+  {% csrf_token %}
+
+  <!-- Área de subir archivo con diseño personalizado -->
+  <div class="upload-box" id="uploadBox" tabindex="0" aria-label="Área para subir archivos PDF">
+    <!-- SVG icon -->
+    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="60" height="60" aria-hidden="true" focusable="false">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v.01M12 4v16m8-8v.01M4 12l8-8 8 8M12 20v-8" />
+    </svg>
+    <div class="upload-text">Haz clic o arrastra tu archivo PDF aquí</div>
+    <input type="file" accept="application/pdf" id="pdf-file" name="pdf_file" required style="display:none" />
   </div>
+  <button type="submit" class="upload-btn">Subir PDF</button>
+  
+</form>
+
+  </div>
+
+  <script>
+  const uploadBox = document.getElementById('uploadBox');
+  const pdfInput = document.getElementById('pdf-file');
+
+  uploadBox.addEventListener('click', () => pdfInput.click());
+
+  uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+  });
+
+  uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+  });
+
+  uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      if (files[0].type === 'application/pdf') {
+        pdfInput.files = files;
+      } else {
+        alert('Solo se permiten archivos PDF.');
+      }
+    }
+  });
+</script>
+
 
 </body>
 </html>

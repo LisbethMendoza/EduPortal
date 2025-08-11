@@ -11,3 +11,4 @@ class Reinscripcion(models.Model):
 
     def __str__(self):
         return f"Reinscripción de {self.estudiante} - {self.periodo_escolar}"
+    
