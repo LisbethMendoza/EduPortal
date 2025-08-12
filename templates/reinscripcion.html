@@ -96,19 +96,19 @@
     }
 
     button {
-      margin-top: 30px;
-      padding: 14px;
+      margin-top: 20px;
+      padding: 10px 30px; /* más pequeño en alto y ancho */
       background-color: #66bb6a;
       color: white;
       border: none;
-      border-radius: 10px;
-      font-size: 1.2rem;
+      border-radius: 8px;
+      font-size: 2rem; /* texto un poco más pequeño */
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      width: 100%;
+      width: auto; /* ajusta al contenido */
       box-shadow: 0 4px 6px rgba(102, 187, 106, 0.5);
-      max-width: 600px;
+      max-width: 200px; /* límite máximo */
       align-self: center;
       display: block;
     }
@@ -153,7 +153,7 @@
 </head>
 <body>
 
-  <form class="grid-container" action="#" method="POST">
+  <form class="grid-container" action="{% url 'documentacion_re' %}" method="POST">
     {% csrf_token %}
     <h2>Formulario de Reinscripción</h2>
 
@@ -164,18 +164,18 @@
       <input type="text" id="id_estudiante" name="id_estudiante" required>
 
       <label for="nombre_e">Nombre del Estudiante:</label>
-      <input type="text" id="nombre_e" name="nombre_e" required>
+      <input type="text" id="nombre_e" name="nombre_e" required readonly> 
 
       <label for="id_grado">Nivel:</label>
-        <select id="id_grado" name="id_grado" required>
-            <option value="" disabled selected>Seleccione</option>
+        <select id="id_grado" name="id_grado" required >
+            <option value="" disabled selected >Seleccione</option>
             {% for grado in grados %}
               <option value="{{ grado.id_grado }}">{{ grado.grado }}</option>
             {% endfor %}
         </select>
 
       <label for="seccion" id="label_seccion" style="display:none;">Sección:</label>
-      <select id="seccion" name="seccion" style="display:none;">
+      <select id="seccion" name="seccion" style="display:none;" >
         <option value="" disabled selected>Seleccione sección</option>
         <option value="A">A</option>
         <option value="B">B</option>
@@ -183,7 +183,7 @@
       </select>
 
       <label for="id_tecnico">Técnico:</label>
-      <select id="id_tecnico" name="id_tecnico" required>
+      <select id="id_tecnico" name="id_tecnico" required >
           <option value="" disabled selected>Seleccione</option>
           {% for tecnico in tecnicos %}
             <option value="{{ tecnico.id_tecnico }}">{{ tecnico.nombre }}</option>
@@ -198,10 +198,10 @@
       <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
 
       <label for="estado">Estado:</label>
-      <input type="text" id="estado" name="estado" value="Pendiente" readonly>
+      <input type="text" id="estado" name="estado" value="Pendiente" readonly >
     </div>
 
-    <button type="submit">Siguiente</button>
+    <button type="submit" >Siguiente</button>
   </form>
 
   <div class="conteo-estudiantes">
@@ -255,6 +255,51 @@
 </script>
 
 
+<script>
+document.getElementById('id_estudiante').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const codigo = this.value.trim();
+
+        fetch(`/reinscripcion/buscar-estudiante/?codigo=${encodeURIComponent(codigo)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const estudiante = data.data;
+                    document.getElementById('nombre_e').value = estudiante.nombre;
+                    document.getElementById('id_grado').value = estudiante.grado_id || "";
+                    parar evento change para que se actualicen campos dependientes (como sección o técnico)
+                    const eventChange = new Event('change');
+                    document.getElementById('id_grado').dispatchEvent(eventChange);
+                    document.getElementById('id_tecnico').value = estudiante.tecnico_id || "";
+                    document.getElementById('periodo').value = estudiante.inscripcion.periodo_escolar || '';
+                    document.getElementById('estado').value = estudiante.inscripcion.estado || 'Pendiente';
+                    const seccionSelect = document.getElementById('seccion');
+                    if (seccionSelect && seccionSelect.style.display !== 'none') {
+                        seccionSelect.value = estudiante.inscripcion.seccion || '';
+                    } else if(seccionSelect) {
+                        seccionSelect.value = '';
+                    }
+                } else {
+                    alert('Estudiante no encontrado');
+
+                    document.getElementById('nombre_e').value = '';
+                    document.getElementById('id_grado').value = '';
+                    document.getElementById('id_tecnico').value = '';
+                    document.getElementById('periodo').value = '';
+                    document.getElementById('estado').value = 'Pendiente';
+                    const seccionSelect = document.getElementById('seccion');
+                    if (seccionSelect) {
+                        seccionSelect.value = '';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error al buscar el estudiante:', error);
+            });
+    }
+});
+</script>
 
 
 

@@ -22,7 +22,7 @@
     }
 
     .grid-container {
-      background-color: rgba(255, 255, 255, 0.47);
+      background-color: rgba(255, 255, 255, 0.94);
       padding: 30px 35px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
@@ -66,6 +66,10 @@
       margin-bottom: 8px;
       font-size: 1rem;
       width: 100%;
+    }
+
+    label + label {
+     margin-top: 20px;
     }
 
     /* Área para subir archivo con estilo cuadro con borde dashed */
@@ -121,18 +125,18 @@
     }
 
     button {
-      margin-top: 10px;
-      padding: 14px;
-      background-color: #66bb6a;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      width: 100%;
-      font-weight: 700;
-    }
+       margin-top: 10px;
+        padding: 8px 16px; 
+        background-color: #66bb6a;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem; 
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: auto; 
+        font-weight: 700;
+          }
 
     button:hover {
       background-color: #388e3c;
@@ -158,9 +162,9 @@
   <form class="grid-container" action="#" method="POST" enctype="multipart/form-data">
     <h2>Formulario de Reinscripción</h2>
 
-    <textarea id="tipodoc" name="tipodoc" readonly>
-Foto de recibo de haber hecho transferencia o pagado la Reinscripción.
-    </textarea>
+    <label id="tipodoc" name="tipodoc" readonly>
+     <li>Subir en documento pdf una foto de la calificacion pasada</li>
+    </label>
 
     <label for="archivo_pdf">Subir Foto (PDF):</label>
     <div class="upload-box" id="uploadBox" tabindex="0" aria-label="Área para subir archivos PDF">
