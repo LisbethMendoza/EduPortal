@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Formulario de Reinscripción</title>
-  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
   <style>
     body {
       background-image: url("{% static 'imagenes/Fondo.jpg' %}");
@@ -22,157 +22,242 @@
     }
 
     .grid-container {
-      background-color: rgba(255, 255, 255, 0.473);
-      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px 40px;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
-      max-width: 600px;
+      box-shadow: 0 0 25px rgba(0, 128, 0, 0.3);
+      max-width: 900px;
       width: 90%;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
     }
 
     h2 {
+      width: 100%;
       text-align: center;
       color: #2e7d32;
-      margin-bottom: 25px;
-      font-size: 2rem;
-      font-weight: bold;
+      margin-bottom: 30px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
 
     .form-box {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 100%;
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.08);
+      flex: 1 1 400px;
+      box-sizing: border-box;
+      min-width: 280px;
+    }
+
+    .form-box h3 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 20px;
+      font-weight: 600;
     }
 
     label {
       display: block;
-      margin-top: 10px;
-      font-weight: bold;
+      margin-top: 15px;
+      font-weight: 600;
       color: #2e7d32;
+      font-size: 1rem;
     }
 
-    input, select {
+    input, select, textarea {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
+      padding: 10px 12px;
+      margin-top: 6px;
+      margin-bottom: 12px;
       border: 2px solid #a5d6a7;
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 1rem;
+      font-family: Arial, sans-serif;
+      transition: border-color 0.3s ease;
     }
 
-    input[readonly] {
+    input:focus, select:focus, textarea:focus {
+      border-color: #388e3c;
+      outline: none;
+      background-color: #f9fff9;
+    }
+
+    input[readonly], textarea[readonly] {
       background-color: #f0f0f0;
       color: #555;
+      cursor: not-allowed;
     }
 
     button {
-      margin-top: 20px;
-      padding: 12px;
+      margin-top: 30px;
+      padding: 14px;
       background-color: #66bb6a;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 600;
       cursor: pointer;
       transition: background-color 0.3s ease;
       width: 100%;
+      box-shadow: 0 4px 6px rgba(102, 187, 106, 0.5);
+      max-width: 600px;
+      align-self: center;
+      display: block;
     }
 
     button:hover {
       background-color: #388e3c;
+      box-shadow: 0 6px 10px rgba(56, 142, 60, 0.7);
     }
 
     textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 2px solid #a5d6a7;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    font-family: Arial, sans-serif;
-    resize: none;
-    background-color: #f0f0f0;
-    color: #555;
+      resize: vertical;
+      min-height: 80px;
+      background-color: #fff;
     }
 
     .conteo-estudiantes {
-  position: fixed;
-  top: 10px;
-  right: 20px;
-  background-color: rgba(46, 125, 50, 0.9);
-  color: white;
-  padding: 10px 15px;
-  border-radius: 10px;
-  font-size: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  z-index: 1000;
-}
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      background-color: rgba(46, 125, 50, 0.9);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-size: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      user-select: none;
+    }
 
+    /* Responsive: en pantallas menores a 750px apilar columnas */
+    @media (max-width: 750px) {
+      .grid-container {
+        flex-direction: column;
+        padding: 20px 25px;
+      }
+
+      button {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
   <form class="grid-container" action="#" method="POST">
+    {% csrf_token %}
     <h2>Formulario de Reinscripción</h2>
 
     <div class="form-box">
-      <h3 style="text-align: center; color: #2e7d32;">Datos del Estudiante</h3>
+      <h3>Datos del Estudiante</h3>
 
-      <label for="id_estudiante">ID del Estudiante:</label>
+      <label for="id_estudiante">Codigo del Estudiante:</label>
       <input type="text" id="id_estudiante" name="id_estudiante" required>
 
       <label for="nombre_e">Nombre del Estudiante:</label>
       <input type="text" id="nombre_e" name="nombre_e" required>
 
-      <label for="id_grado">Grado:</label>
-      <select id="id_grado" name="id_grado" required>
-        <option value="">Seleccione</option>
-        <option value="1">1er Grado</option>
-        <option value="2">2do Grado</option>
-        <option value="3">3er Grado</option>
-        <option value="4">4to Grado</option>
-        <!-- Agrega más grados si lo deseas -->
+      <label for="id_grado">Nivel:</label>
+        <select id="id_grado" name="id_grado" required>
+            <option value="" disabled selected>Seleccione</option>
+            {% for grado in grados %}
+              <option value="{{ grado.id_grado }}">{{ grado.grado }}</option>
+            {% endfor %}
+        </select>
+
+      <label for="seccion" id="label_seccion" style="display:none;">Sección:</label>
+      <select id="seccion" name="seccion" style="display:none;">
+        <option value="" disabled selected>Seleccione sección</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
       </select>
 
       <label for="id_tecnico">Técnico:</label>
       <select id="id_tecnico" name="id_tecnico" required>
-        <option value="">Seleccione</option>
-        <option value="0">No aplica</option>
-        <option value="1">Informática</option>
-        <option value="2">Contabilidad</option>
+          <option value="" disabled selected>Seleccione</option>
+          {% for tecnico in tecnicos %}
+            <option value="{{ tecnico.id_tecnico }}">{{ tecnico.nombre }}</option>
+          {% endfor %}
       </select>
+    </div>
+
+    <div class="form-box">
+      <h3>Información Adicional</h3>
 
       <label for="periodo">Período Escolar:</label>
       <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
 
-      <textarea id="tipodoc" name="tipodoc" readonly rows="2">
-        Foto de recibo de haber hecho transferencia o pagado la Reinscripcion. 
-        </textarea>
-
-         <label for="archivo_pdf">Foto (PDF):</label>
-        <input type="file" id="archivo_pdf" name="archivo_pdf" accept="application/pdf" required>
-        </div>
-
       <label for="estado">Estado:</label>
       <input type="text" id="estado" name="estado" value="Pendiente" readonly>
-
-
     </div>
 
-    <button type="submit">Enviar Reinscripción</button>
+    <button type="submit">Siguiente</button>
   </form>
+
+  <div class="conteo-estudiantes">
+    Estudiantes en Grado: 30 | Técnicos: 20
+  </div>
+
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const gradoSelect = document.getElementById('id_grado');
+    const tecnicoSelect = document.getElementById('id_tecnico');
+    const tecnicoLabel = tecnicoSelect.previousElementSibling;
+
+    const seccionSelect = document.getElementById('seccion');
+    const seccionLabel = document.getElementById('label_seccion');
+
+    function toggleCampos() {
+      const valor = gradoSelect.options[gradoSelect.selectedIndex].text.toLowerCase();
+
+      // Mostrar técnico solo si es 4to, 5to o 6to
+      if (valor.includes('4to') || valor.includes('5to') || valor.includes('6to')) {
+        tecnicoSelect.style.display = 'inline-block';
+        tecnicoLabel.style.display = 'inline-block';
+        tecnicoSelect.required = true;
+      } else {
+        tecnicoSelect.style.display = 'none';
+        tecnicoLabel.style.display = 'none';
+        tecnicoSelect.required = false;
+        tecnicoSelect.value = '';
+      }
+
+      // Mostrar sección solo si es 1ro, 2do o 3ro
+      if (valor.includes('1ro') || valor.includes('2do') || valor.includes('3ro')) {
+        seccionSelect.style.display = 'inline-block';
+        seccionLabel.style.display = 'inline-block';
+        seccionSelect.required = true;
+      } else {
+        seccionSelect.style.display = 'none';
+        seccionLabel.style.display = 'none';
+        seccionSelect.required = false;
+        //seccionSelect.value = '';
+      }
+    }
+
+    // Ejecutar al cargar la página por si hay valor ya seleccionado
+    toggleCampos();
+
+    // Escuchar cambios en el select de grado
+    gradoSelect.addEventListener('change', toggleCampos);
+  });
+</script>
+
+
+
+
+
   
-   <div class="conteo-estudiantes">
-      Estudiantes en Grado: 30 | Técnicos: 20
-    </div>
 </body>
 </html>
