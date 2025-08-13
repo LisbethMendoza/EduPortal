@@ -159,7 +159,8 @@
 </head>
 <body>
 
-  <form class="grid-container" action="#" method="POST" enctype="multipart/form-data">
+  <form class="grid-container" action="{% url 'documentacion_re' %}" method="POST" enctype="multipart/form-data">
+     {% csrf_token %}
     <h2>Formulario de Reinscripción</h2>
 
     <label id="tipodoc" name="tipodoc" readonly>
@@ -214,3 +215,4 @@
 
 </body>
 </html>
+

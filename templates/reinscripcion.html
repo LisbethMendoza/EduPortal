@@ -153,7 +153,7 @@
 </head>
 <body>
 
-  <form class="grid-container" action="{% url 'documentacion_re' %}" method="POST">
+  <form class="grid-container" action="{% url 'reinscripcion_insert' %}" method="POST">
     {% csrf_token %}
     <h2>Formulario de Reinscripción</h2>
 
@@ -266,21 +266,28 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
             .then(data => {
                 if (data.success) {
                     const estudiante = data.data;
-                    document.getElementById('nombre_e').value = estudiante.nombre;
+
+                    // Llenar campos
+                    document.getElementById('nombre_e').value = estudiante.nombre || '';
                     document.getElementById('id_grado').value = estudiante.grado_id || "";
-                    parar evento change para que se actualicen campos dependientes (como sección o técnico)
+
+                    // Disparar evento change por si tienes campos dependientes
                     const eventChange = new Event('change');
                     document.getElementById('id_grado').dispatchEvent(eventChange);
+
                     document.getElementById('id_tecnico').value = estudiante.tecnico_id || "";
-                    document.getElementById('periodo').value = estudiante.inscripcion.periodo_escolar || '';
-                    document.getElementById('estado').value = estudiante.inscripcion.estado || 'Pendiente';
+                    document.getElementById('periodo').value = estudiante.periodo_escolar || '';
+                    document.getElementById('estado').value = estudiante.estado || 'Pendiente';
+
                     const seccionSelect = document.getElementById('seccion');
                     if (seccionSelect && seccionSelect.style.display !== 'none') {
-                        seccionSelect.value = estudiante.inscripcion.seccion || '';
-                    } else if(seccionSelect) {
+                        seccionSelect.value = estudiante.seccion || '';
+                    } else if (seccionSelect) {
                         seccionSelect.value = '';
                     }
+
                 } else {
+                    // Si no encuentra estudiante
                     alert('Estudiante no encontrado');
 
                     document.getElementById('nombre_e').value = '';
@@ -288,6 +295,7 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
                     document.getElementById('id_tecnico').value = '';
                     document.getElementById('periodo').value = '';
                     document.getElementById('estado').value = 'Pendiente';
+
                     const seccionSelect = document.getElementById('seccion');
                     if (seccionSelect) {
                         seccionSelect.value = '';
@@ -300,6 +308,7 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
     }
 });
 </script>
+
 
 
 
