@@ -199,8 +199,14 @@
 
       <label for="estado">Estado:</label>
       <input type="text" id="estado" name="estado" value="Pendiente" readonly >
+
+      <a id="btn_contrato" href="#" target="_blank" style="display:none; padding:10px 15px; background:#66bb6a; color:white; border-radius:6px; text-decoration:none;">
+      Firmar Contrato
+      </a>
+
     </div>
 
+  
     <button type="submit" >Siguiente</button>
   </form>
 
@@ -221,7 +227,6 @@
     function toggleCampos() {
       const valor = gradoSelect.options[gradoSelect.selectedIndex].text.toLowerCase();
 
-      // Mostrar técnico solo si es 4to, 5to o 6to
       if (valor.includes('4to') || valor.includes('5to') || valor.includes('6to')) {
         tecnicoSelect.style.display = 'inline-block';
         tecnicoLabel.style.display = 'inline-block';
@@ -233,7 +238,6 @@
         tecnicoSelect.value = '';
       }
 
-      // Mostrar sección solo si es 1ro, 2do o 3ro
       if (valor.includes('1ro') || valor.includes('2do') || valor.includes('3ro')) {
         seccionSelect.style.display = 'inline-block';
         seccionLabel.style.display = 'inline-block';
@@ -242,14 +246,10 @@
         seccionSelect.style.display = 'none';
         seccionLabel.style.display = 'none';
         seccionSelect.required = false;
-        //seccionSelect.value = '';
       }
     }
-
-    // Ejecutar al cargar la página por si hay valor ya seleccionado
     toggleCampos();
 
-    // Escuchar cambios en el select de grado
     gradoSelect.addEventListener('change', toggleCampos);
   });
 </script>
@@ -264,6 +264,8 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
         fetch(`/reinscripcion/buscar-estudiante/?codigo=${encodeURIComponent(codigo)}`)
             .then(response => response.json())
             .then(data => {
+                const btnContrato = document.getElementById('btn_contrato');
+
                 if (data.success) {
                     const estudiante = data.data;
 
@@ -286,6 +288,10 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
                         seccionSelect.value = '';
                     }
 
+                    // Mostrar botón de contrato
+                    btnContrato.href = `/reinscripcion/contrato/${estudiante.codigo}/`;
+                    btnContrato.style.display = 'inline-block';
+
                 } else {
                     // Si no encuentra estudiante
                     alert('Estudiante no encontrado');
@@ -300,14 +306,24 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
                     if (seccionSelect) {
                         seccionSelect.value = '';
                     }
+
+                    // Ocultar botón de contrato
+                    btnContrato.style.display = 'none';
+                    btnContrato.href = '#';
                 }
             })
             .catch(error => {
                 console.error('Error al buscar el estudiante:', error);
+
+                // Ocultar botón de contrato si hay error
+                const btnContrato = document.getElementById('btn_contrato');
+                btnContrato.style.display = 'none';
+                btnContrato.href = '#';
             });
     }
 });
 </script>
+
 
 
 
