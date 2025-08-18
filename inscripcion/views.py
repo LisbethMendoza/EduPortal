@@ -19,34 +19,6 @@ def generar_codigo():
         if not Estudiante.objects.filter(codigo=codigo).exists():
             return codigo
         
-def documentacion_view(request, inscripcion_id):
-    
-    inscripcion = Inscripcion.objects.get(id_inscripcion=inscripcion_id)
-
-    if request.method == 'POST':
-        archivo_pdf = request.FILES.get('pdf_file')
-        if archivo_pdf:
-            inscripcion.documento_pdf = archivo_pdf
-            inscripcion.save()
-            mensaje = "PDF subido correctamente."
-
-    return render(request, 'documentacion.html', {'inscripcion': inscripcion})
-
-
-def descargar_formulario(request):
-    ruta_archivo = os.path.join(settings.MEDIA_ROOT, 'documentos', 'Formulario_de_Inscripcion.docx')
-    print("Buscando archivo en:", ruta_archivo)
-    print("¿Existe archivo?:", os.path.exists(ruta_archivo))
-
-    if os.path.exists(ruta_archivo):
-        return FileResponse(
-            open(ruta_archivo, 'rb'),
-            as_attachment=True,
-            filename='Formulario_de_Inscripcion.docx'
-        )
-    else:
-        print("Archivo NO encontrado en la ruta anterior")
-        raise Http404("El archivo no existe")
 
 
 
@@ -74,14 +46,13 @@ def guardar_tutor(request):
                 'error': "Por favor seleccione un grado."
             })
 
-        tutor = crear_tutor(data)  # ya no pasamos files porque no hay pdf aquí
+        tutor = crear_tutor(data)  
         estudiante = crear_estudiante(data, tutor)
-        inscripcion = crear_inscripcion(data, estudiante, tutor)  # Sin files
+        inscripcion = crear_inscripcion(data, estudiante, tutor)  
 
         print("Inscripción creada/actualizada:", inscripcion)
 
-        # Redirige a la vista de subir PDF, pasando el id de la inscripción
-        return redirect('documentacion_view', inscripcion_id=inscripcion.id_inscripcion)
+        return redirect('subir_documentos_view', inscripcion_id=inscripcion.id_inscripcion)
 
     # MÉTODO GET: cargar datos del estudiante si se recibe
     id_est = request.GET.get("id_estudiante")
@@ -102,18 +73,45 @@ def guardar_tutor(request):
     })
 
 
-def subir_pdf_view(request, inscripcion_id):
+def subir_documentos_view(request, inscripcion_id):
     inscripcion = Inscripcion.objects.get(id_inscripcion=inscripcion_id)
 
     if request.method == 'POST':
-        archivo_pdf = request.FILES.get('pdf_file')
-        if archivo_pdf:
-            inscripcion.documento_pdf = archivo_pdf
-            inscripcion.save()
-            # Redirigir a página de éxito o detalle
-            return redirect('inscripcion_exitosa')
+        cedula_tutor = request.FILES.get('cedula_tutor')
+        foto_estudiante = request.FILES.get('foto_estudiante')
+        record_notas = request.FILES.get('record_notas')
+        acta_nacimiento = request.FILES.get('acta_nacimiento')
+        certificado_medico = request.FILES.get('certificado_medico')
+
+        # Función auxiliar para eliminar archivo existente
+        def reemplazar_archivo(campo, nuevo_archivo):
+            archivo_antiguo = getattr(inscripcion, campo)
+            if archivo_antiguo:
+                ruta = os.path.join(settings.MEDIA_ROOT, archivo_antiguo.name)
+                if os.path.isfile(ruta):
+                    os.remove(ruta) 
+            setattr(inscripcion, campo, nuevo_archivo) 
+
+        if cedula_tutor:
+            reemplazar_archivo('cedula_tutor', cedula_tutor)
+        if foto_estudiante:
+            reemplazar_archivo('foto_estudiante', foto_estudiante)
+        if record_notas:
+            reemplazar_archivo('record_notas', record_notas)
+        if acta_nacimiento:
+            reemplazar_archivo('acta_nacimiento', acta_nacimiento)
+        if certificado_medico:
+            reemplazar_archivo('certificado_medico', certificado_medico)
+
+        inscripcion.save()
+
+        return render(request, 'documentacion.html', {
+            'inscripcion': inscripcion,
+            'mensaje': 'Documentos actualizados con éxito'
+        })
 
     return render(request, 'documentacion.html', {'inscripcion': inscripcion})
+
 
 
 def crear_estudiante(data, tutor):
@@ -126,7 +124,6 @@ def crear_estudiante(data, tutor):
         else:
             estudiante = Estudiante.objects.get(codigo=codigo)
 
-        # Si existe, actualiza
         estudiante.nombre = data.get("nombre_e")
         estudiante.apellido = data.get("apellido_e")
         estudiante.fecha_nacimiento = data.get("fecha_naci")
@@ -138,7 +135,6 @@ def crear_estudiante(data, tutor):
         return estudiante
 
     except Estudiante.DoesNotExist:
-        # Si no existe, lo crea
         return Estudiante.objects.create(
             codigo=codigo,
             nombre=data.get("nombre_e"),
@@ -181,7 +177,7 @@ def buscar_estudiante_por_codigo(request):
         estudiante = Estudiante.objects.get(codigo=codigo)
         tutor = estudiante.tutor
 
-        # Buscar la inscripción más reciente del estudiante (si existe)
+        
         inscripcion = Inscripcion.objects.filter(estudiante=estudiante).order_by('-fecha_inscripcion').first()
 
         data = {
@@ -200,8 +196,13 @@ def buscar_estudiante_por_codigo(request):
                 'periodo_escolar': inscripcion.periodo_escolar if inscripcion else '',
                 'fecha_inscripcion': inscripcion.fecha_inscripcion.strftime('%Y-%m-%d') if inscripcion else '',
                 'estado': inscripcion.estado if inscripcion else '',
-                'documento_pdf': inscripcion.documento_pdf.url if inscripcion and inscripcion.documento_pdf else '',
-                'seccion': inscripcion.seccion if inscripcion else '' 
+                'seccion': inscripcion.seccion if inscripcion else '',
+                
+                'cedula_tutor': inscripcion.cedula_tutor.url if inscripcion and inscripcion.cedula_tutor else '',
+                'foto_estudiante': inscripcion.foto_estudiante.url if inscripcion and inscripcion.foto_estudiante else '',
+                'record_notas': inscripcion.record_notas.url if inscripcion and inscripcion.record_notas else '',
+                'acta_nacimiento': inscripcion.acta_nacimiento.url if inscripcion and inscripcion.acta_nacimiento else '',
+                'certificado_medico': inscripcion.certificado_medico.url if inscripcion and inscripcion.certificado_medico else '', 
             }
         }
 

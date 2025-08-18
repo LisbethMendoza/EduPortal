@@ -18,202 +18,163 @@
     }
     h1 {
       color: #2e7d32;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: bold;
     }
+
+    .subtitulo {
+      text-align: center;
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 25px;
+      font-style: italic;
+}
     .container {
       background-color: white;
       padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
-      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      max-width: 600px;
       width: 100%;
-      text-align: center;
     }
-    a.download-link {
-        display: inline-block;
-        margin-bottom: 10px;
-        padding: 6px 15px;    /* menos espacio vertical y horizontal */
-        background-color: #66bb6a;
-        color: white;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: background-color 0.3s ease;
-        font-size: 0.9rem;    /* un poco más pequeño */
-        }
-
-    a.download-link:hover {
-      background-color: #388e3c;
-    }
-    form {
+    .upload-field {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
+      background: #fafafa;
+      transition: 0.2s ease;
+    }
+    .upload-field:hover {
+      background: #f0fff4;
+      border-color: #2e7d32;
     }
     label {
       font-weight: bold;
-      margin-bottom: 8px;
       color: #2e7d32;
+      flex: 1;
     }
     input[type="file"] {
-      margin-bottom: 20px;
+      flex: 1.2;
+    }
+    .checkmark {
+      font-size: 22px;
+      color: green;
+      display: none;
+      margin-left: 10px;
+    }
+    button.upload-btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+      margin-top: 20px;
     }
-    
-    .instructions {
-      background-color: #e8f5e9;
-      color: #2e7d32;
-      font-weight: 600;
-      padding: 15px 20px;
-      border-radius: 8px;
-      margin-bottom: 25px;
-      line-height: 1.4;
-      font-size: 1rem;
+    button.upload-btn:hover {
+      background-color: #1b5e20;
     }
 
-    .upload-box {
-  background: rgba(0, 255, 42, 0.07);
-  border: 3px dashed #388e3c;
-  border-radius: 16px;
-  width: 320px;     
-  height: 200px; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  box-shadow: 0 0 20px rgba(0, 255, 34, 0.2);
-  position: relative;
-  user-select: none;
-  margin: 30px auto;
-}
-
-.upload-box:hover {
-  background-color: #d9e8ff;
-  border-color: #388e3c;
-  box-shadow: 0 0 30px rgba(0, 179, 45, 0.4);
-}
-
-/* Estilo input file oculto */
-#pdf-file {
-  display: none;
-}
-
-.upload-icon {
-  font-size: 48px; 
-  color: #388e3c;
-  margin-bottom: 20px;
-  user-select: none;
-}
-
-.upload-text {
-  font-size: 18px;
-  font-weight: 600;
-  color: #388e3c;
-  text-align: center;
-  user-select: none;
-}
-
-/* Cuando se arrastra un archivo encima */
-.upload-box.dragover {
-  background-color: #bbd8ff;
-  border-color: #388e3c;
-  box-shadow: 0 0 35px rgba(0, 153, 20, 0.7);
-}
-
-button.upload-btn {
-  background-color: #388e3c;
-  color: white;
-  border: none;
-  padding: 10px 0;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 16px;
-  width: 320px; 
-  max-width: 100%;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 14px rgba(0, 153, 20, 0.7);
-  user-select: none;
-  font-weight: 700;
-  margin: 0 auto;
-}
-
-button.upload-btn:hover {
-  background-color: #388e3c;;
-  box-shadow: 0 6px 18px rgba(0, 153, 20, 0.7);
-}
-
+    .required {
+      color: red;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-left: 6px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-   <h1>Entrega de Documentación</h1>
+    <h1>Entrega de Documentación</h1> 
+    <p class="subtitulo">En esta pestaña deberás subir los documentos requeridos para culminar tu inscripción.</p>
 
-<div class="instructions">
-  <p>1. Descarga el  <strong>Formulario</strong> haciendo clic en el botón abajo.</p>
-  <p>2. Llena el archivo con la información requerida.</p>
-  <p>3. Guarda tu archivo completado en formato <strong>PDF</strong>.</p>
-  <p>4. Finalmente, sube el archivo PDF usando el formulario.</p>
-</div>
+    {% if mensaje %}
+      <p style="color: green; text-align: center;">{{ mensaje }}</p>
+    {% endif %}
 
-<a href="{% url 'descargar_formulario' %}" download class="download-link">
-  Descargar Formulario
-</a>
+    <form method="post" enctype="multipart/form-data" action="{% url 'subir_documentos_view' inscripcion.id_inscripcion %}">
+      {% csrf_token %}
 
-{% if mensaje %}
-  <p style="color: green;">{{ mensaje }}</p>
-{% endif %}
+      <!-- Foto Cédula del Tutor -->
+      <div class="upload-field">
+        <label for="cedula_tutor">Foto Cédula del Tutor </label>
+        <input type="file" name="cedula_tutor" id="cedula_tutor" required>
+        <span class="required" id="req_cedula">*</span>
+        <span class="checkmark" id="check_cedula">✔</span>
+      </div>
 
-<form method="post" enctype="multipart/form-data" action="{% url 'documentacion_view' inscripcion.id_inscripcion %}">
-  {% csrf_token %}
+      <!-- Foto 2x2 del Estudiante -->
+      <div class="upload-field">
+        <label for="foto_estudiante">Foto 2x2 del Estudiante </label>
+        <input type="file" name="foto_estudiante" id="foto_estudiante" required>
+        <span class="required" id="req_foto">*</span>
+        <span class="checkmark" id="check_foto">✔</span>
+      </div>
 
-  <!-- Área de subir archivo con diseño personalizado -->
-  <div class="upload-box" id="uploadBox" tabindex="0" aria-label="Área para subir archivos PDF">
-    <!-- SVG icon -->
-    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="60" height="60" aria-hidden="true" focusable="false">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v.01M12 4v16m8-8v.01M4 12l8-8 8 8M12 20v-8" />
-    </svg>
-    <div class="upload-text">Haz clic o arrastra tu archivo PDF aquí</div>
-    <input type="file" accept="application/pdf" id="pdf-file" name="pdf_file" required style="display:none" />
-  </div>
-  <button type="submit" class="upload-btn">Subir PDF</button>
-  
-</form>
+      <!-- Record de Notas (opcional) -->
+      <div class="upload-field">
+        <label for="record_notas">Record de Notas (opcional)</label>
+        <input type="file" name="record_notas" id="record_notas">
+        <span class="checkmark" id="check_record">✔</span>
+      </div>
 
+      <!-- Acta de Nacimiento -->
+      <div class="upload-field">
+        <label for="acta_nacimiento">Acta de Nacimiento (Original) </label>
+        <input type="file" name="acta_nacimiento" id="acta_nacimiento" required>
+        <span class="required" id="req_acta">*</span>
+        <span class="checkmark" id="check_acta">✔</span>
+      </div>
+
+      <!-- Certificado Médico -->
+      <div class="upload-field">
+        <label for="certificado_medico">Certificado Médico</label>
+        <input type="file" name="certificado_medico" id="certificado_medico" required>
+        <span class="required" id="req_medico">*</span>
+        <span class="checkmark" id="check_medico">✔</span>
+      </div>
+
+      <button type="submit" class="upload-btn">Subir Documentos</button>
+    </form>
   </div>
 
   <script>
-  const uploadBox = document.getElementById('uploadBox');
-  const pdfInput = document.getElementById('pdf-file');
+   function addCheck(inputId, checkId, requiredId) {
+  const input = document.getElementById(inputId);
+  const check = document.getElementById(checkId);
+  const required = document.getElementById(requiredId);
 
-  uploadBox.addEventListener('click', () => pdfInput.click());
-
-  uploadBox.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadBox.classList.add('dragover');
-  });
-
-  uploadBox.addEventListener('dragleave', () => {
-    uploadBox.classList.remove('dragover');
-  });
-
-  uploadBox.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadBox.classList.remove('dragover');
-
-    const files = e.dataTransfer.files;
-    if (files.length) {
-      if (files[0].type === 'application/pdf') {
-        pdfInput.files = files;
-      } else {
-        alert('Solo se permiten archivos PDF.');
-      }
+  input.addEventListener("change", () => {
+    if (input.files.length > 0) {
+      check.style.display = "inline";  
+      required.style.display = "none"; 
+    } else {
+      check.style.display = "none";     
+      required.style.display = "inline"; 
     }
   });
-</script>
+}
+
+addCheck("cedula_tutor", "check_cedula", "req_cedula");
+addCheck("foto_estudiante", "check_foto", "req_foto");
+addCheck("record_notas", "check_record"); 
+addCheck("acta_nacimiento", "check_acta", "req_acta");
+addCheck("certificado_medico", "check_medico", "req_medico");
+
+  </script>
 
 
+  
 </body>
 </html>
