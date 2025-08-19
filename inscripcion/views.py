@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from .models import Tutor
 from estudiante.models import Estudiante
 from grado.models import Grado
 from tecnico.models import Tecnico
 from estudiante.models import Grado, Tecnico
 from inscripcion.models import Inscripcion
+from reinscripcion.models import Reinscripcion
 import random
 import string
 from django.http import JsonResponse
@@ -237,3 +238,48 @@ def crear_inscripcion(data, estudiante, tutor):
             seccion=seccion 
         )
         
+#--------------------------------PARTE ADMINISTRATIVA-----------------------------------------------------------------------------
+
+def obtener_estudiantes_pendientes(request):
+    estudiantes = []
+    seen_ids = set()
+
+    # Inscripciones pendientes
+    inscripciones = Inscripcion.objects.filter(estado="Pendiente").select_related("estudiante")
+    for insc in inscripciones:
+        e = insc.estudiante
+        if e.id not in seen_ids:
+            estudiantes.append({"id": e.id, "codigo": e.codigo, "tipo": "Inscripción"})
+            seen_ids.add(e.id)
+
+    # Reinscripciones pendientes
+    reinscripciones = Reinscripcion.objects.filter(estado="Pendiente").select_related("estudiante")
+    for reinsc in reinscripciones:
+        e = reinsc.estudiante
+        if e.id not in seen_ids:
+            estudiantes.append({"id": e.id, "codigo": e.codigo, "tipo": "Reinscripción"})
+            seen_ids.add(e.id)
+
+    return JsonResponse({"estudiantes": estudiantes})
+
+
+def detalle_estudiante(request):
+    estudiantes = Estudiante.objects.all().order_by('nombre')
+    estudiante_id = request.GET.get('estudiante')  
+    estudiante = None
+    inscripciones = []
+    reinscripciones = []
+
+    if estudiante_id:
+        estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+        inscripciones = Inscripcion.objects.filter(estudiante=estudiante)
+        if not inscripciones.exists():
+            reinscripciones = Reinscripcion.objects.filter(estudiante=estudiante)
+
+    context = {
+        'estudiantes': estudiantes,
+        'estudiante': estudiante,
+        'inscripciones': inscripciones,
+        'reinscripciones': reinscripciones
+    }
+    return render(request, 'Revision_E.html', context)

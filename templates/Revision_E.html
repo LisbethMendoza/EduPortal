@@ -3,201 +3,256 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Administrativo</title>
-  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
-  <style>
-    body {
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding-top: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+  <title>Estudiantes Pendientes</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
+ <style>
+  body {
+    background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
 
-    .admin-container {
-      background-color: rgba(255, 255, 255, 0.788);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(3, 52, 117, 0.2);
-      width: 90%;
-      max-width: 800px;
-    }
+  .select-container {
+    background-color: rgba(255,255,255,0.95);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 30, 128, 0.3);
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    margin-bottom: 40px;
+  }
 
-    h2 {
-      text-align: center;
-      color: #30a8bd;
-      margin-bottom: 20px;
-    }
+  h2 {
+    color: #30a8bd;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
 
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #18798a;
-    }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #30a8bd;
+  }
 
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      border: 2px solid #a5d6a7;
-      border-radius: 8px;
-      box-sizing: border-box;
-      font-size: 1rem;
-    }
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #a5b4d6ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
 
-    .estado {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin-top: 10px;
-      color: #18798a;
-    }
+  select:focus {
+    border-color: #30a8bd;
+    outline: none;
+    background-color: #f9fff9;
+  }
 
-    .botones {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
+  .details-container {
+   display: flex;
+  flex-wrap: wrap; 
+  gap: 20px;
+  justify-content: flex-start; 
+  width: 95%;
+  max-width: 1400px;
+  }
 
-    .botones button {
-      width: 48%;
-      padding: 12px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+  .card {
+    background-color: rgba(255,255,255,0.95);
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.08);
+    flex: 0 1 250px;
+    min-width: 280px;
+    box-sizing: border-box;
+  }
 
-    .btn-aprobar {
-      background-color: #30a8bd;
-      color: white;
-    }
+  h3 {
+    color: #30a8bd;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #a5b6d6ff;
+    padding-bottom: 5px;
+  }
 
-    .btn-aprobar:hover {
-      background-color: #38568e;
-    }
+  p {
+    margin: 5px 0;
+  }
 
-    .btn-declinar {
-      background-color: #e53935;
-      color: white;
-    }
+  .documento {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 5px;
+    color: #30a8bd;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
 
-    .btn-declinar:hover {
-      background-color: #b71c1c;
-    }
+  .documento:hover {
+    color: #8d86c7ff;
+    text-decoration: underline;
+  }
 
-  </style>
-</head>
+  .conteo-estudiantes {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    background-color: rgba(46, 89, 125, 0.9);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    user-select: none;
+  }
+
+  @media (max-width: 900px) {
+    .details-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+
 <body>
-
-  <div class="admin-container">
-    <h2>Consulta y Revisión de Estudiante</h2>
-
-    <label for="buscar">ID o Nombre del Estudiante:</label>
-    <input type="text" id="buscar" placeholder="Ej: 123 o Juan Pérez">
-
-    <button onclick="consultar()">Buscar</button>
-
-    <div id="resultado" style="display: none;">
-      <label>Nombre del Estudiante:</label>
-      <input type="text" id="nombre_e" readonly>
-
-      <label>Grado:</label>
-      <input type="text" id="grado" readonly>
-
-      <label>Técnico:</label>
-      <input type="text" id="tecnico" readonly>
-
-      <label>Período Escolar:</label>
-      <input type="text" id="periodo" readonly>
-
-      <label>Estado Actual:</label>
-      <input type="text" id="estado" readonly class="estado">
-      <div id="documentos" style="margin-top: 20px;">
-
-        <label>Documentos Subidos:</label>
-        <ul id="lista-docs" style="padding-left: 20px;"></ul>
-        </div>
-
-
-      <div class="botones">
-        <button class="btn-aprobar" onclick="actualizarEstado('Aprobado')">Aprobar</button>
-        <button class="btn-declinar" onclick="actualizarEstado('Declinado')">Declinar</button>
-      </div>
-    </div>
+  <div class="conteo-estudiantes">
+    Estudiantes Pendientes: 0
   </div>
 
+  <div class="select-container">
+    <h2>Selecciona un Estudiante Pendiente</h2>
+    <label for="estudiante">Estudiante:</label>
+    <form method="get" action="{% url 'detalle_estudiante' %}">
+  <select name="estudiante" id="estudiante" onchange="this.form.submit()">
+      <option value="">-- Selecciona --</option>
+      {% for e in estudiantes %}
+        <option value="{{ e.id }}" {% if estudiante and estudiante.id == e.id %}selected{% endif %}>
+            {{ e.nombre }} {{ e.apellido }} ({{ e.codigo }})
+        </option>
+      {% endfor %}
+  </select>
+    </form>
+  </div>
+
+  <div class="details-container">
+    <!-- Datos Personales -->
+    <div class="card">
+      <h3>Datos del Estudiante</h3>
+      <label>Nombre:</label>
+      <p>{{ estudiante.nombre }} {{ estudiante.apellido }}</p>
+      <label>Código:</label>
+      <p>{{ estudiante.codigo }}</p>
+      <label>Fecha de Nacimiento:</label>
+      <p>{{ estudiante.fecha_nacimiento }}</p>
+      <label>Grado:</label>
+      <p>{{ estudiante.grado.grado }}</p>
+      <label>Técnico:</label>
+      <p>{% if estudiante.tecnico %}{{ estudiante.tecnico.nombre }}{% else %}-{% endif %}</p>
+    </div>
+
+    <!-- Tutor -->
+    <div class="card">
+      <h3>Datos del Tutor</h3>
+      <label>Nombre:</label>
+      <p>{{ estudiante.tutor.nombre }} {{ estudiante.tutor.apellido }}</p>
+      <label>Parentesco:</label>
+      <p>{{ estudiante.tutor.parentesco }}</p>
+      <label>Cédula:</label>
+      <p>{{ estudiante.tutor.cedula }}</p>
+    </div>
+
+    <!-- Documentos -->
+    <div class="card">
+      <h3>Documentos</h3>
+      {% if inscripciones %}
+        {% for insc in inscripciones %}
+          {% if insc.cedula_tutor %}<a class="documento" href="{{ insc.cedula_tutor.url }}" target="_blank">Cédula Tutor</a>{% endif %}
+          {% if insc.foto_estudiante %}<a class="documento" href="{{ insc.foto_estudiante.url }}" target="_blank">Foto</a>{% endif %}
+          {% if insc.record_notas %}<a class="documento" href="{{ insc.record_notas.url }}" target="_blank">Record Notas</a>{% endif %}
+          {% if insc.acta_nacimiento %}<a class="documento" href="{{ insc.acta_nacimiento.url }}" target="_blank">Acta Nacimiento</a>{% endif %}
+          {% if insc.certificado_medico %}<a class="documento" href="{{ insc.certificado_medico.url }}" target="_blank">Certificado Médico</a>{% endif %}
+        {% endfor %}
+      {% elif reinscripciones %}
+        {% for reins in reinscripciones %}
+          {% if reins.documento_pdf %}<a class="documento" href="{{ reins.documento_pdf.url }}" target="_blank">Documento Reinscripción</a>{% endif %}
+        {% endfor %}
+      {% else %}
+        <p>No hay documentos disponibles.</p>
+      {% endif %}
+    </div>
+
+    <!-- Condicional Inscripción / Reinscripción -->
+    {% if inscripciones %}
+    <div class="card">
+      <h3>Inscripción</h3>
+      {% for insc in inscripciones %}
+        <label>Período Escolar:</label>
+        <p>{{ insc.periodo_escolar }}</p>
+        <label>Estado:</label>
+        <p>{{ insc.estado }}</p>
+        <label>Sección:</label>
+        <p>{{ insc.seccion|default:"-" }}</p>
+        <hr style="margin: 10px 0;">
+      {% empty %}
+        <p>No tiene inscripciones registradas.</p>
+      {% endfor %}
+    </div>
+    {% elif reinscripciones %}
+    <div class="card">
+      <h3>Reinscripción</h3>
+      {% for reins in reinscripciones %}
+        <label>Período Escolar:</label>
+        <p>{{ reins.periodo_escolar }}</p>
+        <label>Estado:</label>
+        <p>{{ reins.estado }}</p>
+        <label>Fecha Reinscripción:</label>
+        <p>{{ reins.fecha_reinscripcion }}</p>
+        <hr style="margin: 10px 0;">
+      {% empty %}
+        <p>No tiene reinscripciones registradas.</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <bottom style="width: 100%; text-align: center; margin-top: 20px;">
+      <a href="{% url 'insertar_usuario' %}" class="documento">Rechazado</a>
+      
+      <bottom style="width: 100%; text-align: center; margin-top: 20px;">
+        <a href="{% url 'estudiantes_pendientes' %}" class="documento">Aceptado</a>
+  </div>
+
+
   <script>
-   const estudiantes = {
-  "123": {
-    nombre: "Juan Pérez",
-    grado: "2do Grado",
-    tecnico: "Informática",
-    periodo: "2025-2026",
-    estado: "Pendiente",
-    documentos: [
-      { nombre: "Acta de Nacimiento", url: "documentos/juan_acta.pdf" },
-      { nombre: "Foto 2x2", url: "documentos/juan_foto.pdf" }
-    ]
-  },
-  "124": {
-    nombre: "María Gómez",
-    grado: "1er Grado",
-    tecnico: "Contabilidad",
-    periodo: "2025-2026",
-    estado: "Pendiente",
-    documentos: []
-  }
-};
-
-
-    function consultar() {
-  const valor = document.getElementById("buscar").value.trim().toLowerCase();
-  const data = estudiantes[valor];
-
-  if (data) {
-    document.getElementById("resultado").style.display = "block";
-    document.getElementById("nombre_e").value = data.nombre;
-    document.getElementById("grado").value = data.grado;
-    document.getElementById("tecnico").value = data.tecnico;
-    document.getElementById("periodo").value = data.periodo;
-    document.getElementById("estado").value = data.estado;
-
-    // Cargar documentos (simulación)
-    const listaDocs = document.getElementById("lista-docs");
-    listaDocs.innerHTML = ""; // Limpiar anterior
-
-    if (data.documentos && data.documentos.length > 0) {
-      data.documentos.forEach(doc => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${doc.url}" target="_blank">${doc.nombre}</a>`;
-        listaDocs.appendChild(li);
+    fetch("{% url 'estudiantes_pendientes' %}")
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById('estudiante');
+        const contador = document.querySelector('.conteo-estudiantes');
+        data.estudiantes.forEach(e => {
+          const option = document.createElement('option');
+          option.value = e.id;
+          option.textContent = e.codigo;
+          select.appendChild(option);
+        });
+        contador.textContent = `Estudiantes Pendientes: ${data.estudiantes.length}`;
       });
-    } else {
-      listaDocs.innerHTML = "<li>No hay documentos disponibles.</li>";
-    }
-
-  } else {
-    alert("Estudiante no encontrado.");
-    document.getElementById("resultado").style.display = "none";
-  }
-}
 
 
-    function actualizarEstado(nuevoEstado) {
-      const nombre = document.getElementById("nombre_e").value;
-      document.getElementById("estado").value = nuevoEstado;
-      alert(`Estado del estudiante "${nombre}" actualizado a: ${nuevoEstado}`);
-      // Aquí puedes agregar una llamada AJAX a PHP para guardar el cambio real
-    }
   </script>
 
 </body>
