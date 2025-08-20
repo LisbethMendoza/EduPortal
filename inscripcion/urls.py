@@ -12,5 +12,7 @@ urlpatterns = [
 
     path('usuario/estudiantes_pendientes/', views.obtener_estudiantes_pendientes, name='estudiantes_pendientes'),
     path('detalle_estudiante', views.detalle_estudiante, name='detalle_estudiante'),
+    path('cambiar_estado/<str:tipo>/<int:id>/<str:nuevo_estado>/', views.cambiar_estado, name='cambiar_estado'),
 
 ]
+

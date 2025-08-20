@@ -127,6 +127,43 @@
       align-items: center;
     }
   }
+
+    .btn {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 25px; /* redondeado tipo pill */
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  /* Botón verde (Aceptar) */
+  .btn-aceptar {
+    background-color: #28a745;
+    color: white;
+    border: none;
+  }
+
+  .btn-aceptar:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  /* Botón rojo (Rechazar) */
+  .btn-rechazar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+  }
+
+  .btn-rechazar:hover {
+    background-color: #b52a37;
+    transform: translateY(-2px);
+  }
 </style>
 
 <body>
@@ -159,10 +196,8 @@
       <p>{{ estudiante.codigo }}</p>
       <label>Fecha de Nacimiento:</label>
       <p>{{ estudiante.fecha_nacimiento }}</p>
-      <label>Grado:</label>
+      <label>Nivel:</label>
       <p>{{ estudiante.grado.grado }}</p>
-      <label>Técnico:</label>
-      <p>{% if estudiante.tecnico %}{{ estudiante.tecnico.nombre }}{% else %}-{% endif %}</p>
     </div>
 
     <!-- Tutor -->
@@ -197,43 +232,71 @@
     </div>
 
     <!-- Condicional Inscripción / Reinscripción -->
-    {% if inscripciones %}
-    <div class="card">
-      <h3>Inscripción</h3>
-      {% for insc in inscripciones %}
-        <label>Período Escolar:</label>
-        <p>{{ insc.periodo_escolar }}</p>
-        <label>Estado:</label>
-        <p>{{ insc.estado }}</p>
-        <label>Sección:</label>
-        <p>{{ insc.seccion|default:"-" }}</p>
-        <hr style="margin: 10px 0;">
-      {% empty %}
-        <p>No tiene inscripciones registradas.</p>
-      {% endfor %}
-    </div>
-    {% elif reinscripciones %}
-    <div class="card">
-      <h3>Reinscripción</h3>
-      {% for reins in reinscripciones %}
-        <label>Período Escolar:</label>
-        <p>{{ reins.periodo_escolar }}</p>
-        <label>Estado:</label>
-        <p>{{ reins.estado }}</p>
-        <label>Fecha Reinscripción:</label>
-        <p>{{ reins.fecha_reinscripcion }}</p>
-        <hr style="margin: 10px 0;">
-      {% empty %}
-        <p>No tiene reinscripciones registradas.</p>
-      {% endfor %}
-    </div>
+{% if inscripciones %}
+<div class="card">
+  <h3>Inscripción</h3>
+  {% for insc in inscripciones %}
+    <label>Período Escolar:</label>
+    <p>{{ insc.periodo_escolar }}</p>
+    
+    <label>Estado:</label>
+    <p>{{ insc.estado }}</p>
+
+    {% if mostrar == "seccion" %}
+      <label>Sección:</label>
+      <p>{{ insc.seccion|default:"-" }}</p>
+    {% else %}
+      <label>Técnico:</label>
+      <p>{% if estudiante.tecnico %}{{ estudiante.tecnico.nombre }}{% else %}-{% endif %}</p>
     {% endif %}
 
-    <bottom style="width: 100%; text-align: center; margin-top: 20px;">
-      <a href="{% url 'insertar_usuario' %}" class="documento">Rechazado</a>
-      
-      <bottom style="width: 100%; text-align: center; margin-top: 20px;">
-        <a href="{% url 'estudiantes_pendientes' %}" class="documento">Aceptado</a>
+    <hr style="margin: 10px 0;">
+  {% empty %}
+    <p>No tiene inscripciones registradas.</p>
+  {% endfor %}
+</div>
+
+{% elif reinscripciones %}
+<div class="card">
+  <h3>Reinscripción</h3>
+  {% for reins in reinscripciones %}
+    <label>Período Escolar:</label>
+    <p>{{ reins.periodo_escolar }}</p>
+    
+    <label>Estado:</label>
+    <p>{{ reins.estado }}</p>
+
+    {% if mostrar == "seccion" %}
+      <label>Sección:</label>
+      <p>{{ seccion_ultima|default:"-" }}</p>
+    {% else %}
+      <label>Técnico:</label>
+      <p>{% if estudiante.tecnico %}{{ estudiante.tecnico.nombre }}{% else %}-{% endif %}</p>
+    {% endif %}
+
+    <label>Fecha Reinscripción:</label>
+    <p>{{ reins.fecha_reinscripcion }}</p>
+    <hr style="margin: 10px 0;">
+  {% empty %}
+    <p>No tiene reinscripciones registradas.</p>
+  {% endfor %}
+</div>
+{% endif %}
+
+
+    <div style="width: 100%; text-align: center; margin-top: 20px;">
+  {% if inscripciones %}
+    {% for insc in inscripciones %}
+      <a href="{% url 'cambiar_estado' 'inscripcion' insc.id_inscripcion 'Rechazado' %}" class="btn btn-rechazar">Rechazado</a>
+      <a href="{% url 'cambiar_estado' 'inscripcion' insc.id_inscripcion 'Aprobado' %}" class="btn btn-aceptar">Aceptado</a>
+    {% endfor %}
+  {% elif reinscripciones %}
+    {% for reins in reinscripciones %}
+      <a href="{% url 'cambiar_estado' 'reinscripcion' reins.id_reinscripcion 'Rechazado' %}" class="btn btn-rechazar">Rechazado</a>
+      <a href="{% url 'cambiar_estado' 'reinscripcion' reins.id_reinscripcion 'Aprobado' %}" class="btn btn-aceptar">Aceptado</a>
+    {% endfor %}
+  {% endif %}
+</div>
   </div>
 
 

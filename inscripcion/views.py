@@ -240,6 +240,7 @@ def crear_inscripcion(data, estudiante, tutor):
         
 #--------------------------------PARTE ADMINISTRATIVA-----------------------------------------------------------------------------
 
+
 def obtener_estudiantes_pendientes(request):
     estudiantes = []
     seen_ids = set()
@@ -264,22 +265,64 @@ def obtener_estudiantes_pendientes(request):
 
 
 def detalle_estudiante(request):
-    estudiantes = Estudiante.objects.all().order_by('nombre')
-    estudiante_id = request.GET.get('estudiante')  
+    estudiante_id = request.GET.get("estudiante")
     estudiante = None
-    inscripciones = []
-    reinscripciones = []
+    mostrar = None
+    inscripciones = None
+    reinscripciones = None
+    seccion_ultima = None
+
+    # Filtrar solo pendientes
+    inscripciones_pendientes = Inscripcion.objects.filter(estado="Pendiente")
+    reinscripciones_pendientes = Reinscripcion.objects.filter(estado="Pendiente")
+
+    # Obtener lista de estudiantes pendientes
+    estudiantes = set()
+    for insc in inscripciones_pendientes:
+        estudiantes.add(insc.estudiante)
+    for reinsc in reinscripciones_pendientes:
+        estudiantes.add(reinsc.estudiante)
 
     if estudiante_id:
-        estudiante = get_object_or_404(Estudiante, id=estudiante_id)
-        inscripciones = Inscripcion.objects.filter(estudiante=estudiante)
-        if not inscripciones.exists():
-            reinscripciones = Reinscripcion.objects.filter(estudiante=estudiante)
+        estudiante = Estudiante.objects.get(id=estudiante_id)
 
-    context = {
-        'estudiantes': estudiantes,
-        'estudiante': estudiante,
-        'inscripciones': inscripciones,
-        'reinscripciones': reinscripciones
-    }
-    return render(request, 'Revision_E.html', context)
+        # Filtrar solo las inscripciones/reinscripciones del estudiante seleccionado
+        inscripciones = inscripciones_pendientes.filter(estudiante=estudiante)
+        reinscripciones = reinscripciones_pendientes.filter(estudiante=estudiante)
+
+        # Traer la sección de la última inscripción (si existe)
+        ultima_insc = Inscripcion.objects.filter(estudiante=estudiante).order_by('-fecha_inscripcion').first()
+        seccion_ultima = ultima_insc.seccion if ultima_insc else None
+
+        # Decidir qué mostrar
+        if estudiante.grado.grado in ["1ro", "2do", "3ro"]:
+            mostrar = "seccion"
+        else:
+            mostrar = "tecnico"
+
+    return render(request, "Revision_E.html", {
+        "estudiante": estudiante,
+        "estudiantes": estudiantes,
+        "inscripciones": inscripciones,
+        "reinscripciones": reinscripciones,
+        "mostrar": mostrar,
+        "seccion_ultima": seccion_ultima,
+    })
+    
+    
+from django.contrib import messages
+def cambiar_estado(request, tipo, id, nuevo_estado):
+    if tipo == "inscripcion":
+        registro = get_object_or_404(Inscripcion, id_inscripcion=id)
+    elif tipo == "reinscripcion":
+        registro = get_object_or_404(Reinscripcion, id_reinscripcion=id)
+    else:
+        messages.error(request, "Tipo inválido")
+        return redirect('detalle_estudiante')
+
+    registro.estado = nuevo_estado
+    registro.save()
+    messages.success(request, f"El estado se actualizó a {nuevo_estado}")
+    
+    return redirect(f'/usuario/Revision_E/?estudiante={registro.estudiante.id}')
+
