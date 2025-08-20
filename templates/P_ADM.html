@@ -95,26 +95,44 @@
       box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
     }
 
-    .logout-link {
-    position: fixed;      /* Fijo en pantalla */
-    top: 20px;            /* Separado 20px del borde superior */
-    right: 20px;          /* Separado 20px del borde derecho */
-    background-color: #f44336; /* Color rojo llamativo */
-    color: white;         /* Texto blanco */
-    padding: 8px 15px;    /* Espaciado interno */
-    border-radius: 5px;   /* Bordes redondeados */
-    text-decoration: none; /* Sin subrayado */
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    transition: background-color 0.3s ease;
-    z-index: 1000;        /* Que esté sobre todo */
-  }
+    .menu-rueda {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
 
-  .logout-link:hover {
-    background-color: #d32f2f; /* Más oscuro al pasar el mouse */
-  }
-  
+.icono-rueda {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.opciones-rueda {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: 30px; /* Ajusta según tamaño del icono */
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 10px;
+  min-width: 150px;
+}
+
+.opciones-rueda a {
+  display: block;
+  padding: 8px;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.opciones-rueda a:hover {
+  background-color: #f0f0f0;
+}
+
 
   </style>
 </head>
@@ -123,9 +141,13 @@
     EduPortal
   </header>
 
-  <a href="{% url 'logout' %}" class="logout-link">Cerrar sesión</a>
-
-  
+    <div class="menu-rueda">
+  <div class="icono-rueda">⚙️</div>
+  <div class="opciones-rueda">
+    <a href="{% url 'logout' %}" class="opcion-link">Cerrar sesión</a>
+   
+  </div>
+</div>
    <!-- <h2>Bienvenido, {{ nombre }}</h2> -->
 
   <div class="main-container">
@@ -136,7 +158,7 @@
      <img src="{% static 'imagenes/usuario2.webp' %}" alt="Usuarios">
       </div>
       <div class="card-label">
-        <a href="insertar_usuario">Usuarios</a>
+        <a href="insertar_usuario">Creacion de Usuarios</a>
       </div>
     </div>
 
@@ -146,7 +168,7 @@
         <img src="{% static 'imagenes/logoE.ico.webp' %}" alt="Estudiantes">
       </div>
       <div class="card-label">
-        <a href="Revision_E">Revisión Estudiante</a>
+        <a href="Revision_E">Aprovacion de Estudiante</a>
       </div>
     </div>
 
@@ -156,7 +178,7 @@
         <img src="{% static 'imagenes/avisos.jpg' %}" alt="Avisos">
       </div>
       <div class="card-label">
-        <a href="avisos">Avisos</a>
+        <a href="avisos">Publicacion de Avisos</a>
       </div>
     </div>
 
@@ -166,7 +188,7 @@
         <img src="{% static 'imagenes/bot.ico.webp' %}" alt="Chat">
       </div>
       <div class="card-label">
-        <a href="chat">Chat</a>
+        <a href="chat">Configuracion del Chat</a>
       </div>
     </div>
 
@@ -176,7 +198,7 @@
        <img src="{% static 'imagenes/cantidad.webp' %}" alt="CantidadE">
       </div>
       <div class="card-label">
-        <a href="cantidad_estudiantes">Cantidad de estudiantes</a>
+        <a href="cantidad_estudiantes">Capacidad Estudiantil</a>
       </div>
     </div>
   </div>
@@ -184,5 +206,24 @@
   <footer>
     <p>(2025 &copy;) - Todos los derechos son reservados - EduPortal & Lisbeth Mendoza 2021-1072 & Oscarina Rincon 2021-0320</p>
   </footer>
+
+<script>
+  const icono = document.querySelector('.icono-rueda');
+  const opciones = document.querySelector('.opciones-rueda');
+
+  icono.addEventListener('click', () => {
+    opciones.style.display = opciones.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Cerrar al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    if (!icono.contains(e.target) && !opciones.contains(e.target)) {
+      opciones.style.display = 'none';
+    }
+  });
+</script>
+
+
 </body>
+
 </html>
