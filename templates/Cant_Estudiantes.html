@@ -3,122 +3,208 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Configurar Cupos</title>
+  <title>Configuraciones Básicas</title>
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
- <style>
-  body {
-    background-color: #f1f8f5;
-    background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 60px;
-    min-height: 100vh;
-    gap: 40px;
-  }
+  <style>
+    body {
+      background-color: #f1f8f5;
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-  .admin-container {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 9, 128, 0.2);
-    padding: 30px 40px;
-    width: 500px;
-  }
+    .panel {
+      /* Quitamos el fondo blanco */
+      background-color: transparent;
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 30px;
+    }
 
-  .flex-row {
-    display: flex;
-    flex-direction: row;
-    gap: 40px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+    .panel h1 {
+      text-align: center;
+      background-color: rgba(255,255,255,0.9);
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+      color: #0f496e;
+      margin-bottom: 35px;
+      font-size: 2rem;
+    }
 
-  h2 {
-    text-align: center;
-    color: #158599;
-    margin-bottom: 25px;
-  }
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
 
-  label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-    color: #158599;
-  }
+    .admin-container {
+      background-color: rgba(255,255,255,0.9); /* solo los cuadros mantienen un fondo ligeramente blanco */
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      padding: 20px;
+      min-width: 250px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
 
-  input[type="number"],
-  input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 2px solid #a5c4d6;
-    border-radius: 8px;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
+    .admin-container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+    }
 
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 25px;
-  }
+    h2 {
+      text-align: center;
+      color: #158599;
+      margin-bottom: 15px;
+      font-size: 1.25rem;
+    }
 
-  /* === ESTILO UNIFICADO PARA TODOS LOS BOTONES === */
-  .btn-agregar,
-  .btn-eliminar {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: Arial, sans-serif;
-  }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #158599;
+      font-size: 0.95rem;
+    }
 
-  /* Botón Agregar / Guardar */
-  .btn-agregar {
-    background-color: #158599;
-    color: white;
-  }
+    input[type="number"],
+    input[type="text"],
+    input[type="date"] {
+      width: 90%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 2px solid #a5c4d6;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-  .btn-agregar:hover {
-    background-color: #18486e;
-  }
+    input:focus {
+      border-color: #158599;
+      box-shadow: 0 0 4px rgba(21,133,153,0.4);
+      outline: none;
+    }
 
-  /* Botón Eliminar */
-  .btn-eliminar {
-    background-color: #cc3d3d;
-    color: white;
-  }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 15px;
+    }
 
-  .btn-eliminar:hover {
-    background-color: #a82626;
-  }
-</style>
+    .btn-agregar,
+    .btn-eliminar {
+      flex: 1;
+      padding: 10px;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
+    .btn-agregar {
+      background-color: #158599;
+      color: white;
+    }
+
+    .btn-agregar:hover {
+      background-color: #18486e;
+    }
+
+    .btn-eliminar {
+      background-color: #cc3d3d;
+      color: white;
+    }
+
+    .btn-eliminar:hover {
+      background-color: #a82626;
+    }
+
+    .full-width-btn {
+      width: 90%;
+      margin-top: 15px;
+      padding: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Estilo especial para el cuadro del medio */
+    .center-panel .cupos-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .center-panel .cupo-block {
+      flex: 1;
+      text-align: center;
+    }
+
+    .center-panel .cupo-block input {
+      width: 60%;
+      padding: 5px;
+      font-size: 0.85rem;
+    }
+
+    /* Nuevo bloque para incluir Cupos Técnico al lado de C */
+    .center-panel .cupos-row-tecnico {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .center-panel .cupo-block-tecnico {
+      flex: 1;
+      text-align: center;
+    }
+
+    .center-panel .cupo-block-tecnico input {
+      width: 50%;
+      padding: 5px;
+      font-size: 0.85rem;
+    }
+
+    /* Responsive: se apilan en pantallas pequeñas */
+    @media (max-width: 900px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .center-panel .cupos-row,
+      .center-panel .cupos-row-tecnico {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .center-panel .cupo-block input,
+      .center-panel .cupo-block-tecnico input {
+        width: 90%;
+      }
+    }
+
+  </style>
 </head>
 <body>
-<!-- Configurar Cupos -->
-<div class="admin-container">
-  <h2>Configurar Cupos por Grado</h2>
-  <form action="#" method="POST">
-    <label for="cupos_grado1">Cupos para Grado:</label>
-    <input type="number" id="cupos_grado1" name="cupos_grado1" min="0" required>
+<div class="panel">
 
-    <label for="cupos_grado2">Cupos para Técnico:</label>
-    <input type="number" id="cupos_grado2" name="cupos_grado2" min="0" required>
+  {% if mensaje %}
+  <div style="text-align:center; color: green; font-weight: bold; margin-bottom: 20px;">
+    {{ mensaje }}
+  </div>
+  {% endif %}
 
-    <button type="submit" class="btn-agregar full-width-btn">Guardar Cupos</button>
-  </form>
-</div>
-
-
-  <!-- Contenedor en fila -->
-  <div class="flex-row">
-    <!-- Añadir Técnico -->
+  <div class="grid-layout">
+    <!-- Técnico (izquierda) -->
     <div class="admin-container">
       <h2>Añadir Técnico</h2>
       <form action="{% url 'manejar_tecnico' %}" method="POST">
@@ -127,27 +213,72 @@
         <input type="text" id="nombre_tecnico" name="nombre_tecnico" required>
 
         <div class="button-group">
-          <button type="submit" name="accion" value="agregar" class="btn-agregar">Agregar Técnico</button>
-          <button type="submit" name="accion" value="eliminar" class="btn-eliminar">Eliminar Técnico</button>
+          <button type="submit" name="accion" value="agregar" class="btn-agregar">Agregar</button>
+          <button type="submit" name="accion" value="eliminar" class="btn-eliminar">Eliminar</button>
         </div>
       </form>
     </div>
 
-    <!-- Añadir Grado -->
+    <!-- Configuración (centro) -->
+    <div class="admin-container center-panel">
+      <h2>Configurar Cupos Generales</h2>
+      <form action="{% url 'configurar_cupos' %}" method="POST">
+        {% csrf_token %}
+
+        <label for="fecha_inicio">Fecha Inicio Inscripcion:</label>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" >
+        
+        <label for="fecha_limite">Fecha límite Inscripcion:</label>
+        <input type="date" id="fecha_limite" name="fecha_limite" >
+
+        <div class="cupos-row-tecnico">
+          <div class="cupo-block">
+            <label for="cupos_1ro">Cupos 1ro</label>
+            <input type="number" id="cupos_1ro" name="cupos_1ro" min="0" >
+          </div>
+          <div class="cupo-block">
+            <label for="cupos_2do">Cupos 2do</label>
+            <input type="number" id="cupos_2do" name="cupos_2do" min="0" >
+          </div>
+          <div class="cupo-block">
+            <label for="cupos_3ro">Cupos 3ro</label>
+            <input type="number" id="cupos_3ro" name="cupos_3ro" min="0" >
+          </div>
+          <div class="cupo-block-tecnico">
+          <label for="cupos_tecnico">Cupos Técnico</label>
+         <input type="number" id="cupos_tecnico" name="cupos_tecnico" min="0"  
+         data-activos="{{ activos_count }}">
+        </div>
+        </div>
+
+        <button type="submit" class="btn-agregar full-width-btn">Guardar</button>
+      </form>
+    </div>
+
+    <!-- Grado/Nivel (derecha) -->
     <div class="admin-container">
-      <h2>Añadir Grado</h2>
+      <h2>Añadir Nivel</h2>
       <form action="{% url 'manejar_grado' %}" method="POST">
         {% csrf_token %}
-        <label for="nombre_grado">Nombre del Grado:</label>
+        <label for="nombre_grado">Nombre del Nivel:</label>
         <input type="text" id="nombre_grado" name="nombre_grado" required>
 
         <div class="button-group">
-          <button type="submit" name="accion" value="agregar" class="btn-agregar">Agregar Grado</button>
-          <button type="submit" name="accion" value="eliminar" class="btn-eliminar">Eliminar Grado</button>
+          <button type="submit" name="accion" value="agregar" class="btn-agregar">Agregar</button>
+          <button type="submit" name="accion" value="eliminar" class="btn-eliminar">Eliminar</button>
         </div>
+
       </form>
     </div>
   </div>
+</div>
+
+
+
+
+
+
+
 
 </body>
 </html>

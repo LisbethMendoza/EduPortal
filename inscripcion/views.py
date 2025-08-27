@@ -12,7 +12,8 @@ from django.http import JsonResponse
 import os
 from django.http import FileResponse, Http404
 from django.conf import settings
-
+from datetime import datetime
+from django.core.exceptions import ValidationError
 
 def generar_codigo():
     while True:
@@ -213,11 +214,12 @@ def buscar_estudiante_por_codigo(request):
         return JsonResponse({'success': False, 'error': 'Estudiante no encontrado'})
 
 
-
+#-----------------------CREA LA INSCRIPCION Y LA ACTUALIZACION------------------------------------
 def crear_inscripcion(data, estudiante, tutor):
     periodo = data.get("periodo")
     fecha = data.get("fecha_inscrip")
     seccion = data.get("seccion") 
+
 
     try:
         inscripcion = Inscripcion.objects.get(estudiante=estudiante, periodo_escolar=periodo)
@@ -235,9 +237,8 @@ def crear_inscripcion(data, estudiante, tutor):
             periodo_escolar=periodo,
             fecha_inscripcion=fecha,
             estado=data.get("estado", "Pendiente"),
-            seccion=seccion 
-        )
-        
+            seccion=seccion
+)
 #--------------------------------PARTE ADMINISTRATIVA-----------------------------------------------------------------------------
 
 
@@ -326,3 +327,4 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
     
     return redirect(f'/usuario/Revision_E/?estudiante={registro.estudiante.id}')
 
+#--------------------------VISUALIZAR CANTIDAD-----------------------------------------

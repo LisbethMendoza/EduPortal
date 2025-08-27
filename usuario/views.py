@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from .models import Usuario
+from tecnico.models import Tecnico
 from django.db import DatabaseError
 from django.http import JsonResponse
 from django.contrib import messages
@@ -151,8 +152,12 @@ def cantidad_estudiantes(request):
         return redirect('login')
 
     nombre = request.session.get('usuario_nombre', 'Invitado')
-    return render(request, 'Cant_Estudiantes.html', {'nombre': nombre})
+    activos_count = Tecnico.objects.filter(estado='activo').count()  # ✅ Conteo de técnicos activos
 
+    return render(request, 'Cant_Estudiantes.html', {
+        'nombre': nombre,
+        'activos_count': activos_count,  # ✅ Pasamos al template
+    })
 
 #--------------Cierra sesion----------------------------
 def logout_usuario(request):

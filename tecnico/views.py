@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Tecnico
+from grado.models import Grado
 from django.contrib import messages
 
 def Insert_update_delete(request):
@@ -29,4 +30,12 @@ def Insert_update_delete(request):
 
     return render(request, 'Cant_Estudiantes.html')
 
+
+# Renderiza el formulario
+def configuraciones_formulario(request):
+    activos_count = Tecnico.objects.filter(estado='activo').count()
+    return render(request, 'usuario/Cant_Estudiantes.html', {
+        'activos_count': activos_count
+    })
+    
 
