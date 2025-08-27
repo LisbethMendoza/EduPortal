@@ -77,7 +77,7 @@ def guardar_tutor(request):
 
 def subir_documentos_view(request, inscripcion_id):
     inscripcion = Inscripcion.objects.get(id_inscripcion=inscripcion_id)
-
+    mensaje = None 
     if request.method == 'POST':
         cedula_tutor = request.FILES.get('cedula_tutor')
         foto_estudiante = request.FILES.get('foto_estudiante')
@@ -107,9 +107,10 @@ def subir_documentos_view(request, inscripcion_id):
 
         inscripcion.save()
 
+        mensaje = f"SU INSCRIPCIÓN FUE HECHA EXITOSAMENTE. Nota: anota '{inscripcion.estudiante.codigo}' para futuras consultas."
         return render(request, 'documentacion.html', {
             'inscripcion': inscripcion,
-            'mensaje': 'Documentos actualizados con éxito'
+            'mensaje': mensaje,
         })
 
     return render(request, 'documentacion.html', {'inscripcion': inscripcion})
@@ -151,11 +152,13 @@ def crear_estudiante(data, tutor):
 
 def crear_tutor(data):
     cedula = data.get("cedula")
+    telefono = data.get("num")
     try:
         tutor = Tutor.objects.get(cedula=cedula)
         tutor.nombre = data.get("nombre_p")
         tutor.apellido = data.get("apellido_p")
         tutor.parentesco = data.get("parentesco")
+        tutor.telefono = telefono   
         tutor.save()
         return tutor
 
@@ -165,7 +168,8 @@ def crear_tutor(data):
             nombre=data.get("nombre_p"),
             apellido=data.get("apellido_p"),
             parentesco=data.get("parentesco"),
-            cedula=cedula
+            cedula=cedula,
+            telefono=telefono
         )
 
         
@@ -193,6 +197,7 @@ def buscar_estudiante_por_codigo(request):
                 'apellido': tutor.apellido if tutor else '',
                 'parentesco': tutor.parentesco if tutor else '',
                 'cedula': tutor.cedula if tutor else '',
+                'telefono': tutor.telefono if tutor else '',
             },
             'inscripcion': {
                 'periodo_escolar': inscripcion.periodo_escolar if inscripcion else '',
@@ -326,5 +331,7 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
     messages.success(request, f"El estado se actualizó a {nuevo_estado}")
     
     return redirect(f'/usuario/Revision_E/?estudiante={registro.estudiante.id}')
+
+
 
 #--------------------------VISUALIZAR CANTIDAD-----------------------------------------

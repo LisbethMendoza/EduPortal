@@ -156,6 +156,8 @@ textarea {
 }
 
   </style>
+
+
  
   <form method="post" enctype="multipart/form-data" action="{% url 'inscripcion_p' %}" class ="grid-container">
     {% csrf_token %}
@@ -175,7 +177,7 @@ textarea {
       <label for="fecha_naci">Fecha de Nacimiento:</label>
       <input type="date" id="fecha_naci" name="fecha_naci" required>
 
-     
+
     <label for="id_grado">Nivel:</label>
     <select id="id_grado" name="id_grado" required>
         <option value="">Seleccione</option>
@@ -218,6 +220,9 @@ textarea {
       <label for="cedula">Numero de Cédula:</label>
       <input type="text" id="cedula" name="cedula" required>
 
+      <label for="num">Numero turor:</label>
+      <input type="text" id="num" name="num" required>
+
     </div>
 
     <!-- Cuadro 3: Información de Inscripción -->
@@ -240,7 +245,6 @@ textarea {
    <div class="conteo-estudiantes" id="conteo-estudiantes">
    Estudiantes en Niveles: A: 0, B: 0, C: 0 | Tecnico: 0
    </div>
-
 
   </form>
 
@@ -276,6 +280,7 @@ document.getElementById('codigo').addEventListener('keypress', function(e) {
                         document.getElementById('apellido_p').value = estudiante.tutor.apellido;
                         document.getElementById('parentesco').value = estudiante.tutor.parentesco;
                         document.getElementById('cedula').value = estudiante.tutor.cedula;
+                        document.getElementById('num').value = estudiante.tutor.telefono;
                     }
 
                     // Datos de la inscripción
@@ -365,87 +370,6 @@ document.addEventListener('DOMContentLoaded', function () {
     gradoSelect.addEventListener('change', toggleCampos);
   });
 </script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector("form");
-    const conteoDiv = document.getElementById("conteo-estudiantes");
-
-    form.addEventListener("submit", function(e){
-        e.preventDefault(); // evitar recarga de página
-        const formData = new FormData(this);
-
-        fetch("{% url 'inscripcion_p' %}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}"
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success){
-                // Actualiza div con los cupos restantes
-                const niveles = data.conteo.niveles;
-                const tecnicos = data.conteo.tecnicos;
-                conteoDiv.innerText = 
-                    `Estudiantes en Niveles: 1ro: ${niveles["1ro"]}, 2do: ${niveles["2do"]}, 3ro: ${niveles["3ro"]} | Técnico: ${tecnicos}`;
-                
-                // Opcional: limpiar formulario
-                form.reset();
-            } else if(data.error){
-                alert(data.error);
-            }
-        })
-        .catch(err => {
-            console.error("Error en la solicitud:", err);
-            alert("Ocurrió un error al enviar la inscripción.");
-        });
-    });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const conteoDiv = document.getElementById("conteo-estudiantes");
-    const gradoSelect = document.getElementById("id_grado");
-
-    function actualizarConteo(){
-        const gradoId = gradoSelect.value; // ej. "1", "2", "3"
-        const gradoTexto = gradoSelect.options[gradoSelect.selectedIndex].text; // ej. "1ro"
-
-        fetch("{% url 'obtener_cupos_ajax' %}")
-        .then(res => res.json())
-        .then(data => {
-            const niveles = data.niveles; // ej: {"1": {"A":10,"B":10,"C":10}, ...}
-            const tecnicos = data.tecnicos;
-
-            if (gradoId && niveles[gradoId]) {
-                const detalle = niveles[gradoId];
-                conteoDiv.innerText = 
-                    `Estudiantes en ${gradoTexto}: A: ${detalle.A}, B: ${detalle.B}, C: ${detalle.C} | Técnico: ${tecnicos}`;
-            } else {
-                conteoDiv.innerText = `Seleccione un grado válido | Técnico: ${tecnicos}`;
-            }
-        })
-        .catch(err => {
-            console.error("Error al obtener cupos:", err);
-        });
-    }
-
-    // Escuchar cambios en el select
-    gradoSelect.addEventListener('change', actualizarConteo);
-
-    // Mostrar automáticamente si ya hay un grado seleccionado
-    if (gradoSelect.value) {
-        actualizarConteo();
-    }
-});
-</script>
-
-
-
 
 
 </body>
