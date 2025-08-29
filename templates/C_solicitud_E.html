@@ -84,8 +84,8 @@
     <h2>Consultar Estado de Solicitud</h2>
 
     <form id="formConsulta">
-      <label for="busqueda">ID del Estudiante o Nombre:</label>
-      <input type="text" id="busqueda" name="busqueda" placeholder="Ej: 123 o Juan Pérez" required>
+      <label for="busqueda">Codigo del Estudiante:</label>
+      <input type="text" id="busqueda" name="busqueda" placeholder="Ej: EST12345" required>
 
       <button type="submit">Consultar</button>
     </form>
@@ -93,28 +93,31 @@
     <div class="resultado" id="resultadoEstado"></div>
   </div>
 
-  <script>
-    document.getElementById("formConsulta").addEventListener("submit", function(event) {
-      event.preventDefault();
+<script>
+  document.getElementById("formConsulta").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-      const valor = document.getElementById("busqueda").value.trim().toLowerCase();
-      const resultadoDiv = document.getElementById("resultadoEstado");
+    const codigo = document.getElementById("busqueda").value.trim();
+    const resultadoDiv = document.getElementById("resultadoEstado");
 
-      // Simulación: puedes reemplazar este bloque con consulta a una base de datos real
-      const datosFalsos = {
-        "123": "Aprobada",
-        "juan pérez": "Pendiente",
-        "456": "Rechazada",
-        "maria gomez": "Aprobada"
-      };
+    fetch(`/consultar_estado?codigo=${codigo}`)   // 👈 URL correcta
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          resultadoDiv.textContent = data.error;
+        } else {
+          resultadoDiv.textContent = 
+            `El estado de su ${data.tipo.toLowerCase()} es ${data.estado} para el año ${data.periodo}`;
 
-      if (valor in datosFalsos) {
-        resultadoDiv.textContent = `Estado de la solicitud: ${datosFalsos[valor]}`;
-      } else {
-        resultadoDiv.textContent = "No se encontró información para ese estudiante.";
-      }
-    });
-  </script>
+        }
+      })
+      .catch(error => {
+        resultadoDiv.textContent = "Error en la consulta.";
+      });
+  });
+</script>
+
+
 
 </body>
 </html>

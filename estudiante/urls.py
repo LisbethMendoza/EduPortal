@@ -8,5 +8,5 @@ urlpatterns = [
     path('inscripcion', views.Link_inscripcion, name='inscripcion'),
     path('reinscripcion', views.Link_reinscripcion, name='reinscripcion'),
     path('Consulta_avisos', views.Consulta_avisos, name='Consulta_avisos'),
-    
+    path("consultar_estado", views.consultar_estado, name="consultar_estado"),
 ]
