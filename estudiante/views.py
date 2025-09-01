@@ -41,7 +41,9 @@ def consultar_estado(request):
         return JsonResponse({
             "estado": reinscripcion.estado,
             "tipo": "Reinscripción",
-            "periodo": reinscripcion.periodo_escolar
+            "periodo": reinscripcion.periodo_escolar,
+            "comentario": reinscripcion.comentario or ""
+            
         })
 
     # Si no existe, buscar en Inscripción
@@ -50,7 +52,8 @@ def consultar_estado(request):
         return JsonResponse({
             "estado": inscripcion.estado,
             "tipo": "Inscripción",
-            "periodo": inscripcion.periodo_escolar
+            "periodo": inscripcion.periodo_escolar,
+            "comentario": inscripcion.comentario or "" 
         })
 
     return JsonResponse({"error": "El estudiante no tiene inscripción registrada."}, status=404)

@@ -106,9 +106,9 @@
         if (data.error) {
           resultadoDiv.textContent = data.error;
         } else {
-          resultadoDiv.textContent = 
-            `El estado de su ${data.tipo.toLowerCase()} es ${data.estado} para el año ${data.periodo}`;
-
+          resultadoDiv.innerHTML = 
+          `El estado de su ${data.tipo.toLowerCase()} es ${data.estado} para el año ${data.periodo}` +
+          (data.comentario ? `<br><br>Comentario: ${data.comentario}` : '');
         }
       })
       .catch(error => {

@@ -244,7 +244,7 @@ def crear_inscripcion(data, estudiante, tutor):
             estado=data.get("estado", "Pendiente"),
             seccion=seccion
 )
-#--------------------------------PARTE ADMINISTRATIVA-----------------------------------------------------------------------------
+#--------------------------------PARTE ADMINISTRATIVA REVISION DE LOS ESTUDIANTES-----------------------------------------------------------------------------
 
 
 def obtener_estudiantes_pendientes(request):
@@ -326,10 +326,15 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
         messages.error(request, "Tipo inválido")
         return redirect('detalle_estudiante')
 
+
+    comentario = request.POST.get("comentario", "")
+    if comentario:
+        registro.comentario = comentario  
+
     registro.estado = nuevo_estado
     registro.save()
+
     messages.success(request, f"El estado se actualizó a {nuevo_estado}")
-    
     return redirect(f'/usuario/Revision_E/?estudiante={registro.estudiante.id}')
 
 

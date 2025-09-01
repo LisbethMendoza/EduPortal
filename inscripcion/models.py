@@ -10,6 +10,7 @@ class Inscripcion(models.Model):
    fecha_inscripcion = models.DateField()
    estado = models.CharField(max_length=50, default='Pendiente')
    seccion = models.CharField(max_length=1, blank=True, null=True)
+   comentario = models.TextField(blank=True, null=True)
 
     # Documentos
    cedula_tutor = models.FileField(upload_to='documentos/inscripciones/', blank=True, null=True)

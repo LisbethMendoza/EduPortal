@@ -286,20 +286,28 @@
 {% endif %}
 
 
-    <div style="width: 100%; text-align: center; margin-top: 20px;">
+<div style="width: 100%; text-align: center; margin-top: 20px;">
   {% if inscripciones %}
     {% for insc in inscripciones %}
-      <a href="{% url 'cambiar_estado' 'inscripcion' insc.id_inscripcion 'Rechazado' %}" class="btn btn-rechazar">Rechazado</a>
-      <a href="{% url 'cambiar_estado' 'inscripcion' insc.id_inscripcion 'Aprobado' %}" class="btn btn-aceptar">Aceptado</a>
+      <button class="btn btn-rechazar" data-url="{% url 'cambiar_estado' 'inscripcion' insc.id_inscripcion 'Rechazado' %}">Rechazado</button>
+      <form action="{% url 'cambiar_estado' 'inscripcion' insc.id_inscripcion 'Aprobado' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-aceptar">Aceptado</button>
+      </form>
     {% endfor %}
+  
   {% elif reinscripciones %}
     {% for reins in reinscripciones %}
-      <a href="{% url 'cambiar_estado' 'reinscripcion' reins.id_reinscripcion 'Rechazado' %}" class="btn btn-rechazar">Rechazado</a>
-      <a href="{% url 'cambiar_estado' 'reinscripcion' reins.id_reinscripcion 'Aprobado' %}" class="btn btn-aceptar">Aceptado</a>
+<button class="btn btn-rechazar" data-url="{% url 'cambiar_estado' 'reinscripcion' reins.id_reinscripcion 'Rechazado' %}">Rechazado</button>
+      <form action="{% url 'cambiar_estado' 'reinscripcion' reins.id_reinscripcion 'Aprobado' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-aceptar">Aceptado</button>
+      </form>
     {% endfor %}
   {% endif %}
 </div>
-  </div>
+
+
 
 
   <script>
@@ -317,8 +325,46 @@
         contador.textContent = `Estudiantes Pendientes: ${data.estudiantes.length}`;
       });
 
-
   </script>
+
+  
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const botonesRechazar = document.querySelectorAll(".btn-rechazar");
+
+  botonesRechazar.forEach(boton => {
+    boton.addEventListener("click", function () {
+      const comentario = prompt("Ingrese un comentario para el rechazo:");
+      if (comentario === null || comentario.trim() === "") return;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const url = this.dataset.url;
+
+      // Llamada fetch
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken,
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+          comentario: comentario
+        }),
+        redirect: "manual"  
+      })
+      .then(resp => {
+        location.reload();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("❌ Ocurrió un error");
+      });
+    });
+  });
+});
+</script>
+
+
+
 
 </body>
 </html>
