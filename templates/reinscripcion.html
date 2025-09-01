@@ -197,8 +197,9 @@
       <label for="periodo">Período Escolar:</label>
       <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
 
-      <label for="estado">Estado:</label>
-      <input type="text" id="estado" name="estado" value="Pendiente" readonly >
+      <input type="hidden" id="estado" name="estado" value="Pendiente">
+
+      <p>Antes de darle a <Strong>SIGUIENTE</Strong> debe llenar este Formulario:</p>
 
       <a id="btn_contrato" href="#" target="_blank" style="display:none; padding:10px 15px; background:#66bb6a; color:white; border-radius:6px; text-decoration:none;">
       Firmar Contrato
@@ -275,7 +276,6 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
 
                     document.getElementById('id_tecnico').value = estudiante.tecnico_id || "";
                     document.getElementById('periodo').value = estudiante.periodo_escolar || '';
-                    document.getElementById('estado').value = estudiante.estado || 'Pendiente';
 
                     const seccionSelect = document.getElementById('seccion');
                     if (seccionSelect && seccionSelect.style.display !== 'none') {
@@ -296,7 +296,7 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
                     document.getElementById('id_grado').value = '';
                     document.getElementById('id_tecnico').value = '';
                     document.getElementById('periodo').value = '';
-                    document.getElementById('estado').value = 'Pendiente';
+                    document.getElementById('estado').value = estudiante.estado || 'Pendiente';
 
                     const seccionSelect = document.getElementById('seccion');
                     if (seccionSelect) {
@@ -320,7 +320,20 @@ document.getElementById('id_estudiante').addEventListener('keypress', function(e
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const gradoSelect = document.getElementById('id_grado');
 
+    // Bloquear cambios del select
+    gradoSelect.addEventListener('mousedown', function(e) {
+        e.preventDefault(); // evita abrir el dropdown
+    });
+
+    gradoSelect.addEventListener('keydown', function(e) {
+        e.preventDefault(); // evita cambiar con teclado
+    });
+});
+</script>
 
 
 

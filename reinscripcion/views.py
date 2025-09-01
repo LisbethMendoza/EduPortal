@@ -134,14 +134,27 @@ def buscar_estudiante(request):
 
 def reinscripcion_insert(request):
     if request.method == 'POST':
+        
+        estudiante = Estudiante.objects.get(codigo=request.POST['id_estudiante'])
+        
+        # Verificar que tenga inscripción aprobada
+        inscripcion_aprobada = Inscripcion.objects.filter(
+            estudiante=estudiante,
+            estado="Aprobado"
+        ).exists()
+
+        if not inscripcion_aprobada:
+            messages.error(request, "Usted no ha estado inscrito en este Politécnico.")
+            return redirect('inscripcion')
+        
         # Guardar datos en sesión
         request.session['reinscripcion_data'] = {
             'id_estudiante': request.POST['id_estudiante'],
             'id_grado': request.POST['id_grado'],
-            'seccion': request.POST.get('seccion', ''),  # para grados que requieren sección
-            'id_tecnico': request.POST.get('id_tecnico', None),  # para grados que requieren técnico
+            'seccion': request.POST.get('seccion', ''),  
+            'id_tecnico': request.POST.get('id_tecnico', None),  
             'periodo': request.POST['periodo'],
-            'estado': request.POST['estado'],
+            'estado': request.POST.get('estado', 'Pendiente'), 
         }
         # Redirigir al formulario de PDF
         return redirect('documentacion_re')  
@@ -151,7 +164,7 @@ def reinscripcion_insert(request):
         'tecnicos': Tecnico.objects.all(),
     })
 
-
+from django.contrib import messages
 def reinscripcion_re(request):
     datos = request.session.get('reinscripcion_data')
     if not datos:
@@ -160,11 +173,13 @@ def reinscripcion_re(request):
     if request.method == 'POST':
         # Obtener estudiante seguro
         estudiante = Estudiante.objects.get(codigo=datos['id_estudiante'])
+        
 
         # Asignar técnico solo si viene en los datos
+        estudiante.grado_id = datos['id_grado']
         if datos.get('id_tecnico'):
             estudiante.tecnico_id = datos['id_tecnico']
-            estudiante.save()
+        estudiante.save()
 
         # Crear la reinscripción
         Reinscripcion.objects.create(
@@ -173,8 +188,18 @@ def reinscripcion_re(request):
             estado=datos['estado'],
             documento_pdf=request.FILES['archivo_pdf'],  
         )
+        
+        # Actualizar inscripción existente
+        inscripcion = Inscripcion.objects.filter(estudiante=estudiante).first()
+        if inscripcion:
+            inscripcion.seccion = datos.get('seccion', '')
+            inscripcion.save()
 
-
+        # Limpiar sesión
         del request.session['reinscripcion_data']
 
+        # Mensaje de éxito
+        messages.success(request, "Reinscripción realizada")
+
+    # Renderizar siempre, fuera del POST
     return render(request, 'documentacion_re.html')
