@@ -147,6 +147,16 @@ def chat(request):
     return render(request, 'Chat.html', {'nombre': nombre})
 
 
+def Buscar_E(request):
+    if 'usuario_id' not in request.session:
+        return redirect('login')
+
+    nombre = request.session.get('usuario_nombre', 'Invitado')
+    return render(request, 'Buscar_E.html', {'nombre': nombre})
+
+
+
+
 def cantidad_estudiantes(request):
     if 'usuario_id' not in request.session:
         return redirect('login')
