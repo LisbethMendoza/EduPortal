@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('usuario/', include('usuario.urls')),
     path('avisos/', include('avisos.urls')),
-    path('chat/', include('chat.urls')),
+    path('chats/', include('chats.urls')),
     path('', include('estudiante.urls')),
     path('grado/', include('grado.urls')),
     path('tecnico/', include('tecnico.urls')),

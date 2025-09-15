@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'usuario',
     'avisos',
-    'chat',
+    'chats',
     'estudiante',
     'grado',
     'inscripcion',

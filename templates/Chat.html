@@ -6,117 +6,160 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Subir PDF PARA CHAT BOT</title>
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #333;
-      padding: 20px;
-      box-sizing: border-box;
-      min-height: 100vh;
-    }
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
 
-    .container {
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-      padding: 40px 50px;
-      width: 480px;
-      max-width: 95vw;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  /* Contenedor principal horizontal */
+  .main-container {
+    display: flex;
+    gap: 30px; /* espacio entre cajas */
+  }
 
-    h1 {
-      font-weight: 700;
-       font-size: 1.5rem;
-      margin-bottom: 40px;
-      color: #222;
-      user-select: none;
-    }
+  /* Cada caja (upload y tabla) */
+  .container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    padding: 30px;
+    width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .upload-box {
-      background: rgba(0, 123, 255, 0.07);
-      border: 3px dashed #007bff;
-      border-radius: 16px;
-      width: 400px;
-      height: 250px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-      box-shadow: 0 0 20px rgba(0, 123, 255, 0.2);
-      position: relative;
-      user-select: none;
-      margin-bottom: 40px;
-    }
+  h1, h2 {
+    text-align: center;
+    color: #222;
+    margin-bottom: 20px;
+  }
 
-    .upload-box:hover {
-      background-color: #d9e8ff;
-      border-color: #0056b3;
-      box-shadow: 0 0 30px rgba(0, 86, 179, 0.4);
-    }
+  /* Área de subir archivos */
+  .upload-box {
+    background: rgba(0, 123, 255, 0.07);
+    border: 3px dashed #007bff;
+    border-radius: 16px;
+    width: 100%;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    transition: 0.3s;
+  }
 
-    /* Ocultamos el input file */
-    #pdfInput {
-      display: none;
-    }
+  .upload-box:hover {
+    background-color: #d9e8ff;
+    border-color: #0056b3;
+  }
 
-    .upload-icon {
-      font-size: 60px;
-      color: #007bff;
-      margin-bottom: 20px;
-      user-select: none;
-    }
+  .upload-icon {
+    font-size: 60px;
+    color: #007bff;
+    margin-bottom: 15px;
+  }
 
-    .upload-text {
-      font-size: 18px;
-      font-weight: 600;
-      color: #007bff;
-      text-align: center;
-      user-select: none;
-    }
+  .upload-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+  }
 
-    /* Indicamos que se puede arrastrar sobre el cuadro */
-    .upload-box.dragover {
-      background-color: #bbd8ff;
-      border-color: #003d99;
-      box-shadow: 0 0 35px rgba(0, 61, 153, 0.7);
-    }
+  #pdfInput {
+    display: none;
+  }
 
-    button.upload-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 0;       /* menos alto */
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 16px;      /* más pequeño */
-  width: 400px;
-  max-width: 100%;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 14px rgba(0,123,255,0.5);
-  user-select: none;
-  font-weight: 700;
-}
+  button.upload-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    font-weight: bold;
+    transition: 0.3s;
+  }
 
-    button.upload-btn:hover {
-      background-color: #0056b3;
-      box-shadow: 0 6px 18px rgba(0,86,179,0.7);
-    }
-  </style>
+  button.upload-btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Tabla */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  th {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+  }
+
+  /* Botones en la tabla */
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-red {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .btn-red:hover {
+    background-color: #b52a37;
+  }
+
+  .btn-green {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .btn-green:hover {
+    background-color: #1e7e34;
+  }
+</style>
+
+
+
 </head>
 <body>
 
@@ -124,67 +167,180 @@
 
     <h1>Subir PDF para tu Chat institucional</h1>
 
-    <div class="upload-box" id="uploadBox" tabindex="0" aria-label="Área para subir archivos PDF">
-      <!-- Ícono de flecha hacia arriba usando SVG -->
+      <div class="upload-box" id="uploadBox" tabindex="0" aria-label="Área para subir archivos PDF">
       <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="60" height="60" aria-hidden="true" focusable="false">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v.01M12 4v16m8-8v.01M4 12l8-8 8 8M12 20v-8" />
       </svg>
-      <div class="upload-text">Haz clic o arrastra tu archivo PDF aquí</div>
-      <input type="file" accept="application/pdf" id="pdfInput" />
+      <div class="upload-text" id="uploadText">Haz clic o arrastra tu archivo PDF aquí</div>
+      <input type="file" accept="application/pdf" id="pdfInput" name="archivo" />
     </div>
 
     <button class="upload-btn" onclick="uploadPDF()">Guardar</button>
 
   </div>
 
-  <script>
-    const uploadBox = document.getElementById('uploadBox');
-    const pdfInput = document.getElementById('pdfInput');
+  <hr>
 
-    // Abrir selector al hacer clic en el cuadro
-    uploadBox.addEventListener('click', () => pdfInput.click());
+<div class="container">
+  <h2>Documentos cargados</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; text-align:left;">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Documento</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="documentosTable">
+      <!-- Aquí se llenan los documentos con JS -->
+    </tbody>
+  </table>
+</div>
 
-    // Agregar clase cuando se arrastra archivo encima
-    uploadBox.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadBox.classList.add('dragover');
-    });
 
-    // Quitar clase cuando se sale del área
-    uploadBox.addEventListener('dragleave', () => {
-      uploadBox.classList.remove('dragover');
-    });
 
-    // Al soltar archivo en el cuadro
-    uploadBox.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadBox.classList.remove('dragover');
 
-      const files = e.dataTransfer.files;
-      if (files.length) {
-        if (files[0].type === 'application/pdf') {
-          pdfInput.files = files; // asigna el archivo al input
-          alert(`Archivo "${files[0].name}" listo para guardar.`);
-        } else {
-          alert('Solo se permiten archivos PDF.');
-        }
-      }
-    });
+ <script>
+const uploadBox = document.getElementById('uploadBox');
+const pdfInput = document.getElementById('pdfInput');
+const uploadText = document.getElementById('uploadText');
 
-    function uploadPDF() {
-      if (!pdfInput.files.length) {
-        alert('Por favor, selecciona un archivo PDF.');
-        return;
-      }
-      const file = pdfInput.files[0];
-      if (file.type !== 'application/pdf') {
-        alert('Solo se permiten archivos PDF.');
-        return;
-      }
-      alert(`Archivo "${file.name}" listo para guardar.`);
-      // Aquí va la lógica para guardar el archivo en el servidor
+// Permitir clic en todo el div para abrir selector de archivos
+uploadBox.addEventListener('click', () => {
+  pdfInput.click();
+});
+
+// Opcional: resaltar cuando arrastras archivo encima
+uploadBox.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadBox.classList.add('dragover');
+  mostrarArchivo(pdfInput.files[0]);
+});
+
+uploadBox.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove('dragover');
+  mostrarArchivo(pdfInput.files[0]);
+});
+
+uploadBox.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove('dragover');
+  if(e.dataTransfer.files.length > 0){
+    pdfInput.files = e.dataTransfer.files;
+    mostrarArchivo(pdfInput.files[0]);
+  }
+});
+
+function uploadPDF() {
+  if (!pdfInput.files.length) {
+    alert('Por favor, selecciona un archivo PDF.');
+    return;
+  }
+
+  const file = pdfInput.files[0];
+  if (file.type !== 'application/pdf') {
+    alert('Solo se permiten archivos PDF.');
+    return;
+  }
+
+  // Usar el nombre del archivo como título automáticamente
+  const titulo = file.name.replace(/\.[^/.]+$/, ""); 
+
+  const formData = new FormData();
+  formData.append('archivo', file);
+  formData.append('titulo', titulo);
+
+fetch("{% url 'upload_documento' %}",{
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success){
+      alert("Documento guardado correctamente");
+      pdfInput.value = ''; // limpiar input
+    } else {
+      alert("Error al guardar: " + data.error);
     }
-  </script>
+  })
+  .catch(err => console.error(err));
+}
+
+// Función para obtener CSRF token de Django
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function mostrarArchivo(file){
+  uploadText.textContent = "Archivo seleccionado: " + file.name;
+}
+</script>
+
+
+
+
+
+<script>
+function cargarDocumentos() {
+  fetch("{% url 'listar_documentos' %}")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("documentosTable");
+      tbody.innerHTML = "";
+
+      data.documentos.forEach(doc => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${doc.titulo}</td>
+          <td><a href="/media/${doc.archivo}" target="_blank">Ver PDF</a></td>
+          <td>${doc.estado}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => console.error("Error cargando documentos:", err));
+}
+
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+document.addEventListener("DOMContentLoaded", cargarDocumentos);
+</script>
+
+
+
+
+
+
+
 
 </body>
 </html>
