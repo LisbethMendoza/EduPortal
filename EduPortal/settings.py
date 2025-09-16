@@ -159,3 +159,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lisbethango223019@gmail.com'
 EMAIL_HOST_PASSWORD = 'dwpx jbtk zxow yrpt'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+from decouple import config
+GEMINI_API_KEY = config("GEMINI_API_KEY")

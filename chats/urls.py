@@ -9,9 +9,9 @@ urlpatterns = [
     path('upload_documento/', views.upload_documento, name='upload_documento'),
     path('listar_documentos/', views.listar_documentos, name='listar_documentos'),
 
-
-
-
-
-
 ]
+
+
+
+
+

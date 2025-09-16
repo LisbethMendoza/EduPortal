@@ -192,21 +192,69 @@ fetch('/Consulta_avisos')
 
 <!--Para que aparezca la conversasion-->
   <script>
-    function enviarMensaje() {
-      const input = document.getElementById("userInput");
-      const chatBox = document.getElementById("chat-box");
-      const mensaje = input.value.trim();
-      if (mensaje !== "") {
-        const nuevoMensaje = document.createElement("p");
-        nuevoMensaje.innerHTML = `<img src=" {% static 'Imagenes/usuario.ico.png' %}" alt="Usuario" 
-             style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
-             ${mensaje}`;
-        chatBox.appendChild(nuevoMensaje);
-        chatBox.scrollTop = chatBox.scrollHeight;
-        input.value = "";
-      }
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i=0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
-  </script>
+    return cookieValue;
+}
+
+function enviarMensaje() {
+  const input = document.getElementById("userInput");
+  const chatBox = document.getElementById("chat-box");
+  const mensaje = input.value.trim();
+  if (!mensaje) return;
+
+  // Mostrar mensaje del usuario
+  const userMsg = document.createElement("p");
+  userMsg.innerHTML = `<img src="{% static 'Imagenes/usuario.ico.png' %}" alt="Usuario" 
+       style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+       ${mensaje}`;
+  chatBox.appendChild(userMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  input.value = "";
+
+  // Mostrar "escribiendo..."
+  const botMsg = document.createElement("p");
+  botMsg.innerHTML = `<img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" 
+       style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+       <em>Escribiendo...</em>`;
+  chatBox.appendChild(botMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Enviar al backend
+  fetch("/api/chat-documentos/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: JSON.stringify({ pregunta: mensaje })
+  })
+  .then(response => response.json())
+  .then(data => {
+      botMsg.innerHTML = `<img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" 
+           style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+           <em>${data.respuesta}</em>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+  });
+}
+</script>
+
+
+
+
+
+
+
   
   <footer>
         <p>( 2025&copy;) -Todos los derechos son reservados -  EduPortal & Lisbeth Mendoza 2021-1072 & Oscarina Rincon 2021-0320  </p>
