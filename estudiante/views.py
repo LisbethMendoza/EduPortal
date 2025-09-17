@@ -158,7 +158,7 @@ def chat_documentos(request):
     if not pregunta:
         return JsonResponse({"respuesta": "Escribe una pregunta, por favor."})
 
-    # Llamamos a Gemini
+  
     respuesta = responder_con_gemini(pregunta)
 
     return JsonResponse({"respuesta": respuesta})
