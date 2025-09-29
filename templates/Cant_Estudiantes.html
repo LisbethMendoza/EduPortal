@@ -220,74 +220,79 @@
     </div>
 
     
+  
     <!-- Formulario Inscripción -->
 <div class="admin-container center-panel">
-  <h2>Configurar Cupos Inscripción</h2>
+  <h2>Configurar Cupos</h2>
   <form action="{% url 'configurar_cupos' %}" method="POST">
     {% csrf_token %}
-    <input type="hidden" name="tipo" value="Inscripcion">
 
-    <label for="fecha_inicio_insc">Fecha Inicio Inscripción:</label>
+    <!-- Select para tipo -->
+    <label for="tipo">Tipo de proceso:</label>
+    <select id="tipo" name="tipo" required>
+      <option value="Inscripcion">Inscripción</option>
+      <option value="Reinscripcion">Reinscripción</option>
+    </select>
+
+    <label for="fecha_inicio_insc">Fecha Inicio:</label>
     <input type="date" id="fecha_inicio_insc" name="fecha_inicio">
 
-    <label for="fecha_limite_insc">Fecha límite Inscripción:</label>
+    <label for="fecha_limite_insc">Fecha Límite:</label>
     <input type="date" id="fecha_limite_insc" name="fecha_limite">
 
+    <!-- Cupos por grado y sección -->
+    <div class="cupos-row">
+      <h3>1ro</h3>
+      <div class="cupo-block">
+        <label for="cupos_1ro_A">1ro A</label>
+        <input type="number" id="cupos_1ro_A" name="cupos_1ro_A" min="0">
+      </div>
+      <div class="cupo-block">
+        <label for="cupos_1ro_B">1ro B</label>
+        <input type="number" id="cupos_1ro_B" name="cupos_1ro_B" min="0">
+      </div>
+      <div class="cupo-block">
+        <label for="cupos_1ro_C">1ro C</label>
+        <input type="number" id="cupos_1ro_C" name="cupos_1ro_C" min="0">
+      </div>
+    </div>
+    <div class="cupos-row">
+      <h3>2do</h3>
+      <div class="cupo-block">
+        <label for="cupos_2do_A">2do A</label>
+        <input type="number" id="cupos_2do_A" name="cupos_2do_A" min="0">
+      </div>
+      <div class="cupo-block">
+        <label for="cupos_2do_B">2do B</label>
+        <input type="number" id="cupos_2do_B" name="cupos_2do_B" min="0">
+      </div>
+      <div class="cupo-block">
+        <label for="cupos_2do_C">2do C</label>
+        <input type="number" id="cupos_2do_C" name="cupos_2do_C" min="0">
+      </div>
+    </div>
+    <div class="cupos-row">
+      <h3>3ro</h3>
+      <div class="cupo-block">
+        <label for="cupos_3ro_A">3ro A</label>
+        <input type="number" id="cupos_3ro_A" name="cupos_3ro_A" min="0">
+      </div>
+      <div class="cupo-block">
+        <label for="cupos_3ro_B">3ro B</label>
+        <input type="number" id="cupos_3ro_B" name="cupos_3ro_B" min="0">
+      </div>
+      <div class="cupo-block">
+        <label for="cupos_3ro_C">3ro C</label>
+        <input type="number" id="cupos_3ro_C" name="cupos_3ro_C" min="0">
+      </div>
+    </div>
     <div class="cupos-row-tecnico">
-      <div class="cupo-block">
-        <label for="cupos_1ro_insc">1ro</label>
-        <input type="number" id="cupos_1ro_insc" name="cupos_1ro" min="0">
-      </div>
-      <div class="cupo-block">
-        <label for="cupos_2do_insc">2do</label>
-        <input type="number" id="cupos_2do_insc" name="cupos_2do" min="0">
-      </div>
-      <div class="cupo-block">
-        <label for="cupos_3ro_insc">3ro</label>
-        <input type="number" id="cupos_3ro_insc" name="cupos_3ro" min="0">
-      </div>
+      <h3>Técnico</h3>
       <div class="cupo-block-tecnico">
         <label for="cupos_tecnico_insc">Técnico</label>
         <input type="number" id="cupos_tecnico_insc" name="cupos_tecnico" min="0" data-activos="{{ activos_count }}">
       </div>
     </div>
-
-    <button type="submit" class="btn-agregar full-width-btn">Guardar</button>
-  </form>
-</div>
-
-<!-- Formulario Reinscripción -->
-<div class="admin-container center-panel">
-  <h2>Configurar Cupos Reinscripción</h2>
-  <form action="{% url 'configurar_cupos' %}" method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="tipo" value="Reinscripcion">
-
-    <label for="fecha_inicio_reinsc">Fecha Inicio Reinscripción:</label>
-    <input type="date" id="fecha_inicio_reinsc" name="fecha_inicio">
-
-    <label for="fecha_limite_reinsc">Fecha límite Reinscripción:</label>
-    <input type="date" id="fecha_limite_reinsc" name="fecha_limite">
-
-    <div class="cupos-row-tecnico">
-      <div class="cupo-block">
-        <label for="cupos_1ro_reinsc">1ro</label>
-        <input type="number" id="cupos_1ro_reinsc" name="cupos_1ro" min="0">
-      </div>
-      <div class="cupo-block">
-        <label for="cupos_2do_reinsc">2do</label>
-        <input type="number" id="cupos_2do_reinsc" name="cupos_2do" min="0">
-      </div>
-      <div class="cupo-block">
-        <label for="cupos_3ro_reinsc">3ro</label>
-        <input type="number" id="cupos_3ro_reinsc" name="cupos_3ro" min="0">
-      </div>
-      <div class="cupo-block-tecnico">
-        <label for="cupos_tecnico_reinsc">Técnico</label>
-        <input type="number" id="cupos_tecnico_reinsc" name="cupos_tecnico" min="0" data-activos="{{ activos_count }}">
-      </div>
-    </div>
-
     <button type="submit" class="btn-agregar full-width-btn">Guardar</button>
   </form>
 </div>

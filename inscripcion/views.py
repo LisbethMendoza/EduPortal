@@ -6,6 +6,7 @@ from tecnico.models import Tecnico
 from estudiante.models import Grado, Tecnico
 from inscripcion.models import Inscripcion
 from reinscripcion.models import Reinscripcion
+from cupo.models import cupo
 import random
 import string
 from django.http import JsonResponse
@@ -14,6 +15,14 @@ from django.http import FileResponse, Http404
 from django.conf import settings
 from datetime import datetime
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+
+
+def fecha_hoy(request):
+    today = timezone.now().date()
+    return render(request, 'inscripcion.html', {"today": today})
+
 
 def generar_codigo():
     while True:
@@ -21,7 +30,6 @@ def generar_codigo():
         if not Estudiante.objects.filter(codigo=codigo).exists():
             return codigo
         
-
 
 
 def generar_codigo_api(request):
@@ -33,34 +41,93 @@ def inscripcion_view(request):
     return render(request, 'inscripcion.html', {'codigo': codigo})
 
 
-def guardar_tutor(request):
+#------------------------------------DESCONTAR LOS CUPOS----------------------------------------------#
+
+def descontar_cupo(cupo_actual, grado, seccion=None):
+    """
+    Resta un cupo del grado/sección indicado en el objeto cupo_actual.
+    Retorna True si se pudo descontar, False si no hay cupos.
+    """
+    campo_cupo = None
+
+    if grado == "1ro" and seccion:
+        campo_cupo = f"cupos_1ro_{seccion}"
+    elif grado == "2do" and seccion:
+        campo_cupo = f"cupos_2do_{seccion}"
+    elif grado == "3ro" and seccion:
+        campo_cupo = f"cupos_3ro_{seccion}"
+    elif grado in ["4to", "5to", "6to"]:  # Técnicos
+        campo_cupo = "cupos_tecnico"
+
+    if not campo_cupo:
+        return False  # No corresponde a ningún campo válido
+
+    valor_actual = getattr(cupo_actual, campo_cupo)
+
+    if valor_actual <= 0:
+        return False  # No hay cupos disponibles
+
+    setattr(cupo_actual, campo_cupo, valor_actual - 1)
+    cupo_actual.save()
+    return True
+
+
+
+#-----------------------------NO INSCRIBE SI NO ESTA EN FECHA------------------------------------------#
+# tus funciones existentes
+
+def Siguiente_inscripcion(request):
     grados = Grado.objects.all()
     tecnicos = Tecnico.objects.all()
 
     if request.method == 'POST':
         data = request.POST
 
-        if not data.get("id_grado"):
-            print("No se seleccionó grado")
-            return render(request, 'inscripcion.html', {
-                'grados': grados,
-                'tecnicos': tecnicos,
-                'error': "Por favor seleccione un grado."
-            })
+        # ------------------- Validar grado -------------------
+        id_grado = data.get("id_grado")
+        if not id_grado:
+            messages.error(request, "Por favor seleccione un grado.")
+            return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
 
-        tutor = crear_tutor(data)  
+        grado_obj = Grado.objects.get(id_grado=id_grado)
+        grado_str = grado_obj.grado  # "1ro", "2do", etc.
+
+        # ------------------- Validar fecha -------------------
+        fecha_str = data.get("fecha_inscrip")
+        fecha = parse_date(fecha_str)
+
+        cupo_actual = cupo.objects.filter(tipo="Inscripcion").last()
+        if not cupo_actual:
+            messages.error(request, "No hay cupos activos para inscripciones.")
+            return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        if fecha < cupo_actual.fecha_inicio or fecha > cupo_actual.fecha_limite:
+            messages.error(request, "Lo siento, usted está fuera de la fecha pautada para inscribirse.")
+            return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Validar sección -------------------
+        seccion = data.get("seccion") if grado_str in ["1ro", "2do", "3ro"] else None
+        if grado_str in ["1ro", "2do", "3ro"] and not seccion:
+            messages.error(request, "Debe seleccionar una sección para este grado.")
+            return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Descontar cupo ------------------- # tu función existente
+        if not descontar_cupo(cupo_actual, grado_str, seccion):
+            messages.error(request, f"No hay cupos disponibles para {grado_str} {seccion or ''}.")
+            return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Crear inscripción -------------------
+        tutor = crear_tutor(data)
         estudiante = crear_estudiante(data, tutor)
-        inscripcion = crear_inscripcion(data, estudiante, tutor)  
+        inscripcion = crear_inscripcion(data, estudiante, tutor)
 
-        print("Inscripción creada/actualizada:", inscripcion)
-
+        messages.success(request, "Inscripción guardada correctamente.")
         return redirect('subir_documentos_view', inscripcion_id=inscripcion.id_inscripcion)
 
-    # MÉTODO GET: cargar datos del estudiante si se recibe
+    # ------------------- GET -------------------
     id_est = request.GET.get("id_estudiante")
     estudiante = None
     codigo = None
-
     if id_est:
         try:
             estudiante = Estudiante.objects.get(id=id_est)
@@ -74,6 +141,8 @@ def guardar_tutor(request):
         'codigo': codigo   
     })
 
+
+#----------------------SUBIDA DE LOS DOCUMENTOS----------------------------------------#
 
 def subir_documentos_view(request, inscripcion_id):
     inscripcion = Inscripcion.objects.get(id_inscripcion=inscripcion_id)
@@ -113,7 +182,7 @@ def subir_documentos_view(request, inscripcion_id):
             'mensaje': mensaje,
         })
 
-    return render(request, 'documentacion.html', {'inscripcion': inscripcion})
+    return render(request, 'documentacion.html', {'inscripcion': inscripcion}) #Queme retorne a Estudiante
 
 
 
@@ -340,3 +409,38 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
 
 
 #--------------------------VISUALIZAR CANTIDAD-----------------------------------------
+def cupo_seccion(request):
+    cupo_actual = cupo.objects.filter(tipo="Inscripcion").last()
+    tecnicos = list(Tecnico.objects.all())  # Trae todos los técnicos
+
+    cupos_por_seccion = {}
+
+    if cupo_actual:
+        # Cupos normales por sección (1ro, 2do, 3ro)
+        cupos_por_seccion = {
+            "1ro": {
+                "A": cupo_actual.cupos_1ro_A,
+                "B": cupo_actual.cupos_1ro_B,
+                "C": cupo_actual.cupos_1ro_C,
+            },
+            "2do": {
+                "A": cupo_actual.cupos_2do_A,
+                "B": cupo_actual.cupos_2do_B,
+                "C": cupo_actual.cupos_2do_C,
+            },
+            "3ro": {
+                "A": cupo_actual.cupos_3ro_A,
+                "B": cupo_actual.cupos_3ro_B,
+                "C": cupo_actual.cupos_3ro_C,
+            },
+        }
+
+        # Cupos técnicos (4to, 5to, 6to → por cada técnico)
+        for nivel in ["4to", "5to", "6to"]:
+            cupos_por_seccion[nivel] = {}
+            for tecnico in tecnicos:
+                cupos_por_seccion[nivel][tecnico.nombre] = cupo_actual.cupos_tecnico
+
+    return JsonResponse(cupos_por_seccion)
+
+#---------------------------------------------------------------------#

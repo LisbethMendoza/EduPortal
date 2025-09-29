@@ -232,7 +232,7 @@ textarea {
       <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
 
       <label for="fecha_inscrip">Fecha de Solicitud:</label>
-      <input type="date" id="fecha_inscrip" name="fecha_inscrip" required>
+      <input type="date" id="fecha_inscrip" name="fecha_inscrip" value="{{ today }}" readonly>
 
       <label for="estado">Estado:</label>
       <input type="text" id="estado" name="estado" value="Pendiente" readonly>
@@ -375,6 +375,49 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 </script>
 
+
+<!-- Script para actualizar los cupos en tiempo real -->
+<script>
+function actualizarCupos() {
+   fetch("{% url 'mostrar_cupos' %}")
+  .then(response => response.json())
+  .then(data => {
+    const div = document.getElementById("conteo-estudiantes");
+
+    let html = `
+      Estudiantes en Niveles:<br>
+      1ro A: ${data["1ro"].A}, B: ${data["1ro"].B}, C: ${data["1ro"].C} <br>
+      2do A: ${data["2do"].A}, B: ${data["2do"].B}, C: ${data["2do"].C} <br>
+      3ro A: ${data["3ro"].A}, B: ${data["3ro"].B}, C: ${data["3ro"].C} <br>
+    `;
+
+    // Niveles técnicos 4to,5to,6to
+    ["4to","5to","6to"].forEach(nivel => {
+      html += `${nivel}: `;
+      for (const [nombre, cupos] of Object.entries(data[nivel])) {
+        html += `${nombre}: ${cupos}  `;
+      }
+      html += "<br>";
+    });
+
+    div.innerHTML = html;
+  })
+  .catch(error => console.error("Error al actualizar cupos:", error));
+
+}
+
+// Llamar la función cuando cargue la página
+document.addEventListener("DOMContentLoaded", actualizarCupos);
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const fechaInput = document.getElementById("fecha_inscrip");
+    const hoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    fechaInput.value = hoy;
+  });
+</script>
 
 </body>
 </html>
