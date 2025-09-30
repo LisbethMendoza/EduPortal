@@ -195,7 +195,7 @@
       <h3>Información Adicional</h3>
 
       <label for="periodo">Período Escolar:</label>
-      <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
+      <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" readonly>
 
       <input type="hidden" id="estado" name="estado" value="Pendiente">
 
@@ -217,6 +217,14 @@
    </div>
   </form>
 
+
+   
+  <script>
+  const year = new Date().getFullYear();
+  const nextYear = year + 1;
+
+  document.getElementById("periodo").value = `${year}-${nextYear}`;
+  </script>
 
 
   <script>

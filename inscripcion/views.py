@@ -338,7 +338,7 @@ def obtener_estudiantes_pendientes(request):
 
     return JsonResponse({"estudiantes": estudiantes})
 
-##---------------------DETALLE DEL ESTUDIANTE USADO EN ADM---------------------------------------------
+#---------------------DETALLE DEL ESTUDIANTE USADO EN ADM------------------------------------# 
 def detalle_estudiante(request):
     estudiante_id = request.GET.get("estudiante")
     estudiante = None
@@ -368,6 +368,7 @@ def detalle_estudiante(request):
         # Traer la sección de la última inscripción (si existe)
         ultima_insc = Inscripcion.objects.filter(estudiante=estudiante).order_by('-fecha_inscripcion').first()
         seccion_ultima = ultima_insc.seccion if ultima_insc else None
+        
 
         # Decidir qué mostrar
         if estudiante.grado.grado in ["1ro", "2do", "3ro"]:
@@ -385,6 +386,8 @@ def detalle_estudiante(request):
     })
     
     
+    
+#---------------------CAMBIAR EL ESTADO DE LA INSCRIPCION O REINSCRIPCION------------------------#
 from django.contrib import messages
 def cambiar_estado(request, tipo, id, nuevo_estado):
     if tipo == "inscripcion":
@@ -409,7 +412,7 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
 
 
 #--------------------------VISUALIZAR CANTIDAD-----------------------------------------
-def cupo_seccion(request):
+def cupo_seccion_inscripcion(request):
     cupo_actual = cupo.objects.filter(tipo="Inscripcion").last()
     tecnicos = list(Tecnico.objects.all())  # Trae todos los técnicos
 

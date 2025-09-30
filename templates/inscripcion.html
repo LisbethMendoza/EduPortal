@@ -229,7 +229,7 @@ textarea {
     <div class="form-box">
       <h3>Inscripción</h3>
       <label for="periodo">Período Escolar:</label>
-      <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" required>
+      <input type="text" id="periodo" name="periodo" placeholder="Ej: 2025-2026" readonly>
 
       <label for="fecha_inscrip">Fecha de Solicitud:</label>
       <input type="date" id="fecha_inscrip" name="fecha_inscrip" value="{{ today }}" readonly>
@@ -251,7 +251,13 @@ textarea {
    </div>
 
   </form>
+ 
+  <script>
+  const year = new Date().getFullYear();
+  const nextYear = year + 1;
 
+  document.getElementById("periodo").value = `${year}-${nextYear}`;
+  </script>
 
 
 <script>
@@ -379,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Script para actualizar los cupos en tiempo real -->
 <script>
 function actualizarCupos() {
-   fetch("{% url 'mostrar_cupos' %}")
+   fetch("{% url 'mostrar_cupos_inscripcion' %}")
   .then(response => response.json())
   .then(data => {
     const div = document.getElementById("conteo-estudiantes");
