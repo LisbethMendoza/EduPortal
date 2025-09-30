@@ -206,10 +206,17 @@
       </a>
 
     </div>
-
-  
     <button type="submit" >Siguiente</button>
+
+     <div class="conteo-estudiantes" id="conteo-estudiantes">
+      Estudiantes en Niveles:<br>
+      1ro A: {{ cupos.1ro.A }}, B: {{ cupos.1ro.B }}, C: {{ cupos.1ro.C }} <br>
+      2do A: {{ cupos.2do.A }}, B: {{ cupos.2do.B }}, C: {{ cupos.2do.C }} <br>
+      3ro A: {{ cupos.3ro.A }}, B: {{ cupos.3ro.B }}, C: {{ cupos.3ro.C }} <br>
+      Técnico: 0
+   </div>
   </form>
+
 
 
   <script>
@@ -334,6 +341,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+
+<script>
+function actualizarCupos() {
+   fetch("{% url 'mostrar_cupos' %}")
+  .then(response => response.json())
+  .then(data => {
+    const div = document.getElementById("conteo-estudiantes");
+
+    let html = `
+      Estudiantes en Niveles:<br>
+      1ro A: ${data["1ro"].A}, B: ${data["1ro"].B}, C: ${data["1ro"].C} <br>
+      2do A: ${data["2do"].A}, B: ${data["2do"].B}, C: ${data["2do"].C} <br>
+      3ro A: ${data["3ro"].A}, B: ${data["3ro"].B}, C: ${data["3ro"].C} <br>
+    `;
+
+    // Niveles técnicos 4to,5to,6to
+    ["4to","5to","6to"].forEach(nivel => {
+      html += `${nivel}: `;
+      for (const [nombre, cupos] of Object.entries(data[nivel])) {
+        html += `${nombre}: ${cupos}  `;
+      }
+      html += "<br>";
+    });
+
+    div.innerHTML = html;
+  })
+  .catch(error => console.error("Error al actualizar cupos:", error));
+
+}
+
+// Llamar la función cuando cargue la página
+document.addEventListener("DOMContentLoaded", actualizarCupos);
+</script>
+
+
+
 
 
 

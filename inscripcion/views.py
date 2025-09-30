@@ -338,7 +338,7 @@ def obtener_estudiantes_pendientes(request):
 
     return JsonResponse({"estudiantes": estudiantes})
 
-
+##---------------------DETALLE DEL ESTUDIANTE USADO EN ADM---------------------------------------------
 def detalle_estudiante(request):
     estudiante_id = request.GET.get("estudiante")
     estudiante = None

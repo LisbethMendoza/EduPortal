@@ -174,7 +174,8 @@
   <div class="select-container">
     <h2>Selecciona un Estudiante Pendiente</h2>
     <label for="estudiante">Estudiante:</label>
-    <form method="get" action="{% url 'detalle_estudiante' %}">
+    <form method="get" action="{% url 'detalle_estudiante' %}"> <!-- View Inscripcion -->
+     {% csrf_token %}
   <select name="estudiante" id="estudiante" onchange="this.form.submit()">
       <option value="">-- Selecciona --</option>
       {% for e in estudiantes %}
@@ -251,6 +252,9 @@
       <label>Técnico:</label>
       <p>{% if estudiante.tecnico %}{{ estudiante.tecnico.nombre }}{% else %}-{% endif %}</p>
     {% endif %}
+
+     <label>Fecha Inscripción:</label>
+    <p>{{ insc.fecha_inscripcion }}</p>
 
     <hr style="margin: 10px 0;">
   {% empty %}

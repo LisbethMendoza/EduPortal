@@ -87,7 +87,7 @@ def C_Tecnico(request):
 
 
     
-#-------------------------Para traer los datos del estudiante con condigo------------------------------------#
+#-------------------------Para traer los datos del estudiante con codigo------------------------------------#
 def buscar_estudiante(request):
     codigo = request.GET.get('codigo', '').strip()
 
@@ -131,39 +131,99 @@ def buscar_estudiante(request):
         return JsonResponse({'success': False, 'error': 'Estudiante no encontrado'})
 
 
+#-------------------------Descontar cupos------------------------------#
+def descontar_cupo(cupo_actual, grado, seccion=None):
+    """
+    Resta un cupo del grado/sección indicado en el objeto cupo_actual.
+    Retorna True si se pudo descontar, False si no hay cupos.
+    """
+    campo_cupo = None
 
-#----------------------------Dato de la reinscripcion--------------------------------------------#
+    if grado == "1ro" and seccion:
+        campo_cupo = f"cupos_1ro_{seccion}"
+    elif grado == "2do" and seccion:
+        campo_cupo = f"cupos_2do_{seccion}"
+    elif grado == "3ro" and seccion:
+        campo_cupo = f"cupos_3ro_{seccion}"
+    elif grado in ["4to", "5to", "6to"]:  # Técnicos
+        campo_cupo = "cupos_tecnico"
+
+    if not campo_cupo:
+        return False  # No corresponde a ningún campo válido
+
+    valor_actual = getattr(cupo_actual, campo_cupo)
+
+    if valor_actual <= 0:
+        return False  # No hay cupos disponibles
+
+    setattr(cupo_actual, campo_cupo, valor_actual - 1)
+    cupo_actual.save()
+    return True
+
+#----------------------------Dato de la reinscripcion insertar--------------------------------------------#
 def reinscripcion_insert(request):
-    if request.method == 'POST':
-        
-        estudiante = Estudiante.objects.get(codigo=request.POST['id_estudiante'])
-        
-        # Verificar que tenga inscripción aprobada
-        inscripcion_aprobada = Inscripcion.objects.filter(
-            estudiante=estudiante,
-            estado="Aprobado"
-        ).exists()
+    grados = Grado.objects.all()
+    tecnicos = Tecnico.objects.all()
 
-        if not inscripcion_aprobada:
+    if request.method == 'POST':
+        data = request.POST
+
+        # ------------------- Buscar estudiante -------------------
+        try:
+            estudiante = Estudiante.objects.get(codigo=data.get("id_estudiante"))
+        except Estudiante.DoesNotExist:
+            messages.error(request, "Estudiante no encontrado.")
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Verificar inscripción aprobada -------------------
+        if not Inscripcion.objects.filter(estudiante=estudiante, estado="Aprobado").exists():
             messages.error(request, "Usted no ha estado inscrito en este Politécnico.")
             return redirect('inscripcion')
-        
-        # Guardar datos en sesión
-        request.session['reinscripcion_data'] = {
-            'id_estudiante': request.POST['id_estudiante'],
-            'id_grado': request.POST['id_grado'],
-            'seccion': request.POST.get('seccion', ''),  
-            'id_tecnico': request.POST.get('id_tecnico', None),  
-            'periodo': request.POST['periodo'],
-            'estado': request.POST.get('estado', 'Pendiente'), 
-        }
-        # Redirigir al formulario de PDF
-        return redirect('documentacion_re')  
 
-    return render(request, 'reinscripcion.html', {
-        'grados': Grado.objects.all(),
-        'tecnicos': Tecnico.objects.all(),
-    })
+        # ------------------- Verificar periodo activo -------------------
+        hoy = timezone.now().date()
+        cupo_actual = cupo.objects.filter(tipo="Reinscripcion").last()
+        if not cupo_actual:
+            messages.error(request, "No hay periodos de reinscripción activos.")
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        if hoy < cupo_actual.fecha_inicio or hoy > cupo_actual.fecha_limite:
+            messages.error(request, "Actualmente no está dentro del periodo de reinscripción.")
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Validar grado y sección -------------------
+        id_grado = data.get("id_grado")
+        if not id_grado:
+            messages.error(request, "Debe seleccionar un grado.")
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        grado_obj = Grado.objects.get(id_grado=id_grado)
+        grado_str = grado_obj.grado  # "1ro", "2do", etc.
+        seccion = data.get("seccion") if grado_str in ["1ro", "2do", "3ro"] else None
+
+        if grado_str in ["1ro", "2do", "3ro"] and not seccion:
+            messages.error(request, "Debe seleccionar una sección para este grado.")
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Descontar cupo -------------------
+        if not descontar_cupo(cupo_actual, grado_str, seccion):
+            messages.error(request, f"No hay cupos disponibles para {grado_str} {seccion or ''}.")
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        # ------------------- Guardar datos en sesión -------------------
+        request.session['reinscripcion_data'] = {
+            'id_estudiante': estudiante.codigo,
+            'id_grado': id_grado,
+            'seccion': seccion,
+            'id_tecnico': data.get("id_tecnico"),
+            'periodo': data.get("periodo"),
+            'estado': data.get("estado", "Pendiente")
+        }
+        request.session.modified = True  
+        return redirect('documentacion_re')  # Redirige a la siguiente vista
+
+    # ------------------- GET -------------------
+    return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
 
 
 
@@ -211,7 +271,7 @@ def reinscripcion_re(request):
 
 #---------------------------------Visualoizar Cantidad----------------------------------------------#
 def cupo_seccion(request):
-    cupo_actual = cupo.objects.filter(tipo="Reinscipcion").last()
+    cupo_actual = cupo.objects.filter(tipo="Reinscripcion").last()
     tecnicos = list(Tecnico.objects.all())  # Trae todos los técnicos
 
     cupos_por_seccion = {}
