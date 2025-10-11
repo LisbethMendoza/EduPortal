@@ -207,49 +207,66 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function enviarMensaje() {
-  const input = document.getElementById("userInput");
-  const chatBox = document.getElementById("chat-box");
-  const mensaje = input.value.trim();
-  if (!mensaje) return;
-
-  // Mostrar mensaje del usuario
-  const userMsg = document.createElement("p");
-  userMsg.innerHTML = `<img src="{% static 'Imagenes/usuario.ico.png' %}" alt="Usuario" 
-       style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
-       ${mensaje}`;
-  chatBox.appendChild(userMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-  input.value = "";
-
-  // Mostrar "escribiendo..."
-  const botMsg = document.createElement("p");
-  botMsg.innerHTML = `<img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" 
-       style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
-       <em>Escribiendo...</em>`;
-  chatBox.appendChild(botMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Enviar al backend
-  fetch("/api/chat-documentos/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken")
-      },
-      body: JSON.stringify({ pregunta: mensaje })
-  })
-  .then(response => response.json())
-  .then(data => {
-      botMsg.innerHTML = `<img src="{% static 'Imagenes/bot.ico.webp' %}" alt="bot" 
-           style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
-           <em>${data.respuesta}</em>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
-}
 </script>
 
 
+<script>
+function enviarMensaje() {
+    const input = document.getElementById('userInput');
+    const mensaje = input.value.trim();
+    if (!mensaje) return;
+
+    const chatBox = document.getElementById('chat-box');
+
+    // Mostrar mensaje del usuario con ícono
+    chatBox.innerHTML += `
+        <p>
+            <img src="{% static 'Imagenes/usuario.ico.png' %}" 
+                 alt="usuario" 
+                 style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+            ${mensaje}
+        </p>
+    `;
+
+    input.value = '';
+
+    fetch('/api/chat-documentos/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: `pregunta=${encodeURIComponent(mensaje)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        const respuesta = data.respuesta || data.error;
+
+        // Mostrar respuesta del bot con ícono
+        chatBox.innerHTML += `
+            <p>
+                <img src="{% static 'Imagenes/bot.ico.webp' %}" 
+                     alt="bot" 
+                     style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+                ${respuesta}
+            </p>
+        `;
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        chatBox.innerHTML += `
+            <p>
+                <img src="{% static 'Imagenes/bot.ico.webp' %}" 
+                     alt="bot" 
+                     style="width: 30px; height: 30px; vertical-align: middle; border-radius: 50%; margin-right: 10px;">
+                Ocurrió un error.
+            </p>
+        `;
+    });
+}
+</script>
 
 
 

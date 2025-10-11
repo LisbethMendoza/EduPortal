@@ -140,25 +140,12 @@ def actualizar_estado_reinscripcion(request, codigo):
 
 #----------------------------------CHAT INTELUGENTE NE FUNCION-------------------------------------------
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
 from .utils import responder_con_gemini
 
-@csrf_exempt
 def chat_documentos(request):
-    if request.method != "POST":
-        return JsonResponse({"mensaje": "API del chat. Envía preguntas con POST."})
-
-    try:
-        data = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse({"respuesta": "Formato JSON inválido."})
-
-    pregunta = data.get("pregunta", "").strip()
-    if not pregunta:
-        return JsonResponse({"respuesta": "Escribe una pregunta, por favor."})
-
-  
-    respuesta = responder_con_gemini(pregunta)
-
-    return JsonResponse({"respuesta": respuesta})
+    pregunta = request.POST.get('pregunta')
+    if pregunta:
+        respuesta = responder_con_gemini(pregunta)
+        return JsonResponse({"respuesta": respuesta})
+    else:
+        return JsonResponse({"error": "No se proporcionó una pregunta."}, status=400)

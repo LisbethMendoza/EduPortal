@@ -161,7 +161,7 @@
 
   <form class="grid-container" action="{% url 'documentacion_re' %}" method="POST" enctype="multipart/form-data">
      {% csrf_token %}
-    <h2>Formulario de Reinscripción</h2>
+    <h2>Solicitud de Reinscripción</h2>
 
     <label id="tipodoc" name="tipodoc" readonly>
      <li>Subir Contrato firmado por el tutor.</li>
@@ -173,7 +173,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v.01M12 4v16m8-8v.01M4 12l8-8 8 8M12 20v-8" />
       </svg>
       <div class="upload-text">Haz clic o arrastra tu archivo PDF aquí</div>
-      <input type="file" accept="application/pdf" id="archivo_pdf" name="archivo_pdf" required />
+      <input type="file" id="archivo_pdf" name="archivo_pdf" required />
     </div>
 
     <button type="submit">Enviar Reinscripción</button>

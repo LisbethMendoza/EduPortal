@@ -176,7 +176,7 @@ def subir_documentos_view(request, inscripcion_id):
 
         inscripcion.save()
 
-        mensaje = f"SU INSCRIPCIÓN FUE HECHA EXITOSAMENTE. Nota: anota '{inscripcion.estudiante.codigo}' para futuras consultas."
+        mensaje = f"SU Solicitud fue realizada exitosamente. . Nota: anota '{inscripcion.estudiante.codigo}' para futuras consultas."
         return render(request, 'documentacion.html', {
             'inscripcion': inscripcion,
             'mensaje': mensaje,

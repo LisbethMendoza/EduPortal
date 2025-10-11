@@ -155,17 +155,19 @@ textarea {
   transform: scale(0.97);
 }
 
+
+
   </style>
 
 
  
   <form method="post" enctype="multipart/form-data" action="{% url 'inscripcion_p' %}" class ="grid-container">
     {% csrf_token %}
-     <h2>Formulario de Inscripción</h2>
+     <h2>Solicitud de Inscripción</h2>
     <!-- Cuadro 1: Datos del Estudiante -->
     <div class="form-box">
       <h3>Estudiante</h3>
-        <label for="codigo">Código del Estudiante:</label>
+        <label for="codigo">Numero de Solicitud:</label>
         <input type="text" id="codigo" name="codigo" value="{{ codigo }}" required>
 
       <label for="nombre_e">Nombres:</label>
@@ -220,7 +222,7 @@ textarea {
       <label for="cedula">Numero de Cédula:</label>
       <input type="text" id="cedula" name="cedula" required>
 
-      <label for="num">Numero turor:</label>
+      <label for="num">Numero tutor:</label>
       <input type="text" id="num" name="num" required>
 
     </div>
@@ -251,6 +253,42 @@ textarea {
    </div>
 
   </form>
+
+  <div id="mensaje-popup" style="
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 2px solid #444;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    max-width: 80%;
+    text-align: center;
+    font-size: 16px;
+"></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if mensaje %}
+        const popup = document.getElementById('mensaje-popup');
+        // Reemplaza saltos de línea por <br> para que se vean en pantalla
+        const mensajeConSaltos = "{{ mensaje|escapejs }}".replace(/\n/g, '<br>');
+        popup.innerHTML = mensajeConSaltos;
+        popup.style.display = 'block';
+
+        // Ocultar automáticamente después de 5 segundos
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 5000);
+    {% endif %}
+});
+</script>
+
+
+  
  
   <script>
   const year = new Date().getFullYear();

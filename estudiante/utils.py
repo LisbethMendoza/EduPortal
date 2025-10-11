@@ -1,11 +1,14 @@
-import google.generativeai as genai
+import google.genai as genai
+from google.genai import types
 from django.conf import settings
 from chats.models import Documento
 from unidecode import unidecode
 import difflib
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+# Configura tu API key
+client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
+# Preguntas frecuentes generales
 PREGUNTAS_GENERALES = {
     "hola": "¡Hola! 😊 ¿En qué puedo ayudarte hoy?",
     "como estas": "¡Estoy genial! Gracias por preguntar 😄",
@@ -36,12 +39,12 @@ def normalizar_texto(texto):
 def responder_con_gemini(pregunta):
     pregunta_normalizada = normalizar_texto(pregunta)
 
-    # Intentar coincidencia exacta o parcial
+    # Primero coincidencias exactas o parciales
     for clave, respuesta_general in PREGUNTAS_GENERALES.items():
         if clave in pregunta_normalizada:
             return respuesta_general
 
-    # Buscar coincidencia aproximada (ej: "holaaa" ≈ "hola")
+    # Coincidencia aproximada
     clave_cercana = difflib.get_close_matches(
         pregunta_normalizada,
         PREGUNTAS_GENERALES.keys(),
@@ -51,13 +54,21 @@ def responder_con_gemini(pregunta):
     if clave_cercana:
         return PREGUNTAS_GENERALES[clave_cercana[0]]
 
+    # Documentos como contexto
     documentos = obtener_documentos_activos()
     contexto = "\n\n".join(documentos)
 
-    prompt = f"""
+    # Crear sesión de chat
+    chat = client.chats.create(
+        model="gemini-2.5-flash",
+        config=types.GenerateContentConfig(temperature=0.2),
+    )
+
+    # Construir el mensaje
+    mensaje = f"""
     Responde la siguiente pregunta SOLO con base en este contexto.
     Si no hay información suficiente, responde:
-    "Lo siento, no tengo esa información. Comuníquese al 000-000-0000."
+    "En estos momentos no podemos proporcionarle información sobre lo que solicita. Por favor, comuníquese con el centro educativo al 000-000-0000"
 
     Contexto:
     {contexto}
@@ -66,6 +77,9 @@ def responder_con_gemini(pregunta):
     {pregunta}
     """
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content(prompt)
+    # Enviar el mensaje al modelo
+    response = chat.send_message(mensaje)
+
+    # Devolver el texto generado
     return response.text
+
