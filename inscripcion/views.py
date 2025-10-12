@@ -26,7 +26,7 @@ def fecha_hoy(request):
 
 def generar_codigo():
     while True:
-        codigo = 'EST' + ''.join(random.choices(string.digits, k=5))  
+        codigo = 'S' + ''.join(random.choices(string.digits, k=5))  
         if not Estudiante.objects.filter(codigo=codigo).exists():
             return codigo
         

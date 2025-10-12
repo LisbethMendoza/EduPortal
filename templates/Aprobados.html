@@ -133,7 +133,7 @@
         <tr>
           <th>Número Solicitud</th>
           <th>Nombre Estudiante</th>
-          <th>Comentario</th>
+          <th>Periodo</th>
           <th>Tipo</th>
           <th>Documentación</th>
         </tr>
@@ -148,5 +148,101 @@
 
     <div class="contador" id="contador-general">Total Inscritos: 0 | Total Reinscritos: 0</div>
   </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const tbody = document.querySelector("#tabla-solicitudes tbody");
+  const formBuscar = document.getElementById('form-buscar');
+  const inputCodigo = document.getElementById('codigo');
+  const selectPeriodo = document.getElementById('periodo');
+  const contador = document.getElementById('contador-general');
+
+  // 🔹 Función principal: cargar estudiantes aprobados
+  async function cargarEstudiantes(codigo = '', periodo = '') {
+    try {
+      const url = new URL("{% url 'estudiantes_aprobados_todos_json' %}", window.location.origin);
+      if (codigo) url.searchParams.append('codigo', codigo);
+      if (periodo) url.searchParams.append('periodo', periodo);
+
+      const response = await fetch(url);
+      const data = await response.json();
+      tbody.innerHTML = "";
+
+      let totalIns = data.inscripciones.length;
+      let totalReins = data.reinscripciones.length;
+
+      // 🔸 Mostrar Inscripciones aprobadas
+      data.inscripciones.forEach(insc => {
+        const docs = [];
+        for (const [key, value] of Object.entries(insc.documentos)) {
+          if (value) docs.push(`<a href="${value}" target="_blank">${key.replace('_', ' ')}</a>`);
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${insc.estudiante__codigo || '—'}</td>
+          <td>${insc.estudiante__nombre} ${insc.estudiante__apellido}</td>
+          <td>${insc.periodo_escolar}</td>
+          <td>Inscripción</td>
+          <td>${docs.join(' | ') || 'Sin documentos'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // 🔸 Mostrar Reinscripciones aprobadas
+      data.reinscripciones.forEach(reins => {
+        const docLink = reins.documento_pdf
+          ? `<a href="${reins.documento_pdf}" target="_blank">Documento PDF</a>`
+          : 'Sin documento';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${reins.estudiante__codigo || '—'}</td>
+          <td>${reins.estudiante__nombre} ${reins.estudiante__apellido}</td>
+          <td>${reins.periodo_escolar}</td>
+          <td>Reinscripción</td>
+          <td>${docLink}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // 🔸 Si no hay resultados
+      if (totalIns === 0 && totalReins === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="5" style="text-align:center;">No hay estudiantes aprobados</td>`;
+        tbody.appendChild(tr);
+      }
+
+      // 🔸 Actualizar contador
+      contador.textContent = `Total Inscritos: ${totalIns} | Total Reinscritos: ${totalReins}`;
+
+    } catch (error) {
+      console.error('Error al cargar los datos:', error);
+    }
+  }
+
+  // 🔹 Cargar todos los datos al inicio
+  cargarEstudiantes();
+
+  // 🔹 Filtrar al enviar el formulario
+  formBuscar.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const codigo = inputCodigo.value.trim();
+    const periodo = selectPeriodo.value;
+    cargarEstudiantes(codigo, periodo);
+  });
+
+  // 🔹 Filtrar automáticamente al cambiar el periodo
+  selectPeriodo.addEventListener('change', () => {
+    const codigo = inputCodigo.value.trim();
+    const periodo = selectPeriodo.value;
+    cargarEstudiantes(codigo, periodo);
+  });
+});
+</script>
+
+
+
+
 </body>
 </html>

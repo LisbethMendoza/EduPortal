@@ -61,7 +61,7 @@ def consultar_estado(request):
 
     return JsonResponse({"error": "El estudiante no tiene inscripción registrada."}, status=404)
 
-
+#-------------------RECHAZADOS ----------------------------------------#
 def estudiantes_rechazados_todos_json(request):
     codigo = request.GET.get('codigo', '').strip()  # Obtenemos el código si viene
 
@@ -149,3 +149,57 @@ def chat_documentos(request):
         return JsonResponse({"respuesta": respuesta})
     else:
         return JsonResponse({"error": "No se proporcionó una pregunta."}, status=400)
+
+#------------------------------APROBADOS----------------------------------------------------------------------------#
+def estudiantes_aprobados_todos_json(request):
+    codigo = request.GET.get('codigo', '').strip()  
+    periodo = request.GET.get('periodo', '').strip()  
+
+    # Inscripciones aprobadas
+    inscripciones_queryset = Inscripcion.objects.filter(estado='Aprobado').select_related('estudiante')
+    if codigo:
+        inscripciones_queryset = inscripciones_queryset.filter(estudiante__codigo=codigo)
+    if periodo:
+        inscripciones_queryset = inscripciones_queryset.filter(periodo_escolar=periodo)
+
+    inscripciones = []
+    for insc in inscripciones_queryset:
+        inscripciones.append({
+            'numero_solicitud': insc.id_inscripcion,
+            'estudiante__codigo': insc.estudiante.codigo,
+            'estudiante__nombre': insc.estudiante.nombre,
+            'estudiante__apellido': insc.estudiante.apellido,
+            'periodo_escolar': insc.periodo_escolar,
+            'tipo': 'Inscripción',
+            'documentos': {
+                'cedula_tutor': insc.cedula_tutor.url if insc.cedula_tutor else None,
+                'foto_estudiante': insc.foto_estudiante.url if insc.foto_estudiante else None,
+                'record_notas': insc.record_notas.url if insc.record_notas else None,
+                'acta_nacimiento': insc.acta_nacimiento.url if insc.acta_nacimiento else None,
+                'certificado_medico': insc.certificado_medico.url if insc.certificado_medico else None,
+            }
+        })
+
+    # Reinscripciones aprobadas
+    reinscripciones_queryset = Reinscripcion.objects.filter(estado='Aprobado').select_related('estudiante')
+    if codigo:
+        reinscripciones_queryset = reinscripciones_queryset.filter(estudiante__codigo=codigo)
+    if periodo:
+        reinscripciones_queryset = reinscripciones_queryset.filter(periodo_escolar=periodo)
+
+    reinscripciones = []
+    for reins in reinscripciones_queryset:
+        reinscripciones.append({
+            'numero_solicitud': reins.id_reinscripcion,
+            'estudiante__codigo': reins.estudiante.codigo,
+            'estudiante__nombre': reins.estudiante.nombre,
+            'estudiante__apellido': reins.estudiante.apellido,
+            'periodo_escolar': reins.periodo_escolar,
+            'tipo': 'Reinscripción',
+            'documento_pdf': reins.documento_pdf.url if reins.documento_pdf else None,
+        })
+
+    return JsonResponse({
+        'inscripciones': inscripciones,
+        'reinscripciones': reinscripciones
+    })
