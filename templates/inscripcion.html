@@ -217,7 +217,18 @@ textarea {
       <input type="text" id="apellido_p" name="apellido_p" required>
 
       <label for="parentesco">Parentesco:</label>
-      <input type="text" id="parentesco" name="parentesco" required>
+        <select id="parentesco" name="parentesco" required>
+          <option value="">-- Selecciona un parentesco --</option>
+          <option value="Madre">Madre</option>
+          <option value="Padre">Padre</option>
+          <option value="Hermano">Hermano</option>
+          <option value="Hermana">Hermana</option>
+          <option value="Tío">Tío</option>
+          <option value="Tía">Tía</option>
+          <option value="Abuelo">Abuelo</option>
+          <option value="Abuela">Abuela</option>
+          <option value="Otro">Otro</option>
+        </select>
 
       <label for="cedula">Numero de Cédula:</label>
       <input type="text" id="cedula" name="cedula" required>
@@ -462,6 +473,51 @@ document.addEventListener("DOMContentLoaded", actualizarCupos);
     fechaInput.value = hoy;
   });
 </script>
+
+<script>
+  const gradoSelect = document.getElementById("id_grado");
+  const fechaInput = document.getElementById("fecha_naci");
+
+  // Asignamos edades aproximadas por grado
+  const edadesPorGrado = {
+    "1ro": 12,
+    "2do": 13,
+    "3ro": 14,
+    "4to": 15,
+    "5to": 16,
+    "6to": 17
+  };
+
+  // Escucha cuando el usuario selecciona un grado
+  gradoSelect.addEventListener("change", function () {
+    const textoGrado = gradoSelect.options[gradoSelect.selectedIndex].text.trim();
+
+    // Si el grado está en el mapa de edades
+    if (edadesPorGrado[textoGrado]) {
+      const edadEsperada = edadesPorGrado[textoGrado];
+      const añoActual = new Date().getFullYear();
+
+      // Calculamos el rango permitido de años
+      const añoMin = añoActual - (edadEsperada + 2); // 2 años más joven (margen)
+      const añoMax = añoActual - (edadEsperada - 2); // 2 años mayor (margen)
+
+      // Establecemos límites mínimos y máximos para la fecha de nacimiento
+      const minDate = `${añoMin}-01-01`;
+      const maxDate = `${añoMax}-12-31`;
+
+      fechaInput.min = minDate;
+      fechaInput.max = maxDate;
+      fechaInput.value = ""; // limpiar si cambia el grado
+
+      console.log(`Rango permitido: ${minDate} a ${maxDate}`);
+    } else {
+      // Si no se reconoce el grado, eliminamos restricciones
+      fechaInput.removeAttribute("min");
+      fechaInput.removeAttribute("max");
+    }
+  });
+</script>
+
 
 </body>
 </html>

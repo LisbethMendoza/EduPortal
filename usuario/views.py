@@ -154,7 +154,12 @@ def Buscar_E(request):
     nombre = request.session.get('usuario_nombre', 'Invitado')
     return render(request, 'Buscar_E.html', {'nombre': nombre})
 
+def Aprobacion(request):
+    if 'usuario_id' not in request.session:
+        return redirect('login')
 
+    nombre = request.session.get('usuario_nombre', 'Invitado')
+    return render(request, 'Aprobados.html', {'nombre': nombre})
 
 
 def cantidad_estudiantes(request):

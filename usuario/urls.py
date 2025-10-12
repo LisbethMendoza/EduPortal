@@ -17,6 +17,8 @@ urlpatterns = [
     path('enviar-enlace/', views.enviar_enlace, name='enviar_enlace'),
     path('restablecer/', views.restablecer, name='restablecer'),
     path('Buscar_E/', views.Buscar_E, name='Buscar_E'),
+    path('Aprobados/', views.Aprobacion, name='Aprobacion'),
+
 ]
 
 

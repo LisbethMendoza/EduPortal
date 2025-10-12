@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Resumen de Solicitudes</title>
+  <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
+  <style>
+    body {
+      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .grid-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
+      max-width: 1200px;
+      width: 95%;
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e407dff;
+      margin-bottom: 25px;
+      font-size: 2rem;
+      font-weight: bold;
+      border-bottom: 3px solid #a5b0d6ff;
+      padding-bottom: 10px;
+    }
+
+    .filtro-container {
+      display: flex;
+      justify-content: flex-start; /* alineación izquierda para filtro de código */
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .filtro-container input,
+    .filtro-container select {
+      padding: 8px;
+      border: 2px solid #a5b0d6ff;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .btn-buscar {
+      padding: 10px 20px;
+      background-color: #38458eff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-buscar:hover {
+      background-color: #6688bbff;
+    }
+
+    /* Filtro de Periodo en esquina superior derecha */
+    .filtro-periodo {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #a5bcd6ff;
+    }
+
+    th {
+      background-color: #6695bbff;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(102, 117, 187, 0.1);
+    }
+
+    .contador {
+      font-weight: bold;
+      color: #2e407dff;
+      text-align: right;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-container">
+    <h2>Resumen de Solicitudes</h2>
+
+    <!-- Filtro por número de solicitud -->
+    <div class="filtro-container">
+      <form method="GET" id="form-buscar">
+        <input type="text" id="codigo" name="codigo" placeholder="Número de Solicitud">
+        <button type="submit" class="btn-buscar">Buscar</button>
+      </form>
+    </div>
+
+    <!-- Filtro de Periodo en la esquina superior derecha -->
+    <div class="filtro-periodo">
+      <label for="periodo">Periodo:</label>
+      <select id="periodo" name="periodo">
+        <option value="">Seleccione</option>
+        <option value="2024-2025">2024-2025</option>
+        <option value="2025-2026">2025-2026</option>
+        <option value="2026-2027">2026-2027</option>
+      </select>
+    </div>
+
+    <!-- Tabla de solicitudes -->
+    <table id="tabla-solicitudes">
+      <thead>
+        <tr>
+          <th>Número Solicitud</th>
+          <th>Nombre Estudiante</th>
+          <th>Comentario</th>
+          <th>Tipo</th>
+          <th>Documentación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí se llenarán los datos más adelante -->
+        <tr>
+          <td colspan="7" style="text-align:center;">Sin datos para mostrar</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="contador" id="contador-general">Total Inscritos: 0 | Total Reinscritos: 0</div>
+  </div>
+</body>
+</html>

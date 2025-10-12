@@ -318,6 +318,21 @@
 </div>
 
 
+<script>
+  const fechaInicio = document.getElementById("fecha_inicio_insc");
+  const fechaLimite = document.getElementById("fecha_limite_insc");
+
+  // Cada vez que cambia la fecha de inicio
+  fechaInicio.addEventListener("change", function () {
+    // Establecer la fecha mínima permitida en la fecha límite
+    fechaLimite.min = this.value;
+
+    // Si ya había una fecha límite y es menor que la de inicio, se limpia
+    if (fechaLimite.value < this.value) {
+      fechaLimite.value = "";
+    }
+  });
+</script>
 
 
 

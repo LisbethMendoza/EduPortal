@@ -186,6 +186,21 @@
 </script>
 
 
+<script>
+  const fechaPubli = document.getElementById("fecha_publi");
+  const fechaFin = document.getElementById("fecha_fin");
+
+  fechaPubli.addEventListener("change", function () {
+    fechaFin.min = this.value;
+
+    // Si la fecha de finalización es menor que la publicación, la limpia
+    if (fechaFin.value < this.value) {
+      fechaFin.value = "";
+    }
+  });
+</script>
+
+
 </body>
 </html>
 
