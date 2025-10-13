@@ -4,194 +4,186 @@
 <head>
   <meta charset="UTF-8">
   <title>Configuraciones Básicas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
-    body {
-      background-color: #f1f8f5;
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-attachment: fixed;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+    * {
+    box-sizing: border-box;
+  }
 
-    .panel {
-      /* Quitamos el fondo blanco */
-      background-color: transparent;
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 30px;
-    }
+  body {
+    background-color: #f1f8f5;
+    background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
 
-    .panel h1 {
-      text-align: center;
-      background-color: rgba(255,255,255,0.9);
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-      color: #0f496e;
-      margin-bottom: 35px;
-      font-size: 2rem;
-    }
+  .panel {
+    background-color: transparent;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 30px;
+  }
 
+  .panel h1 {
+    text-align: center;
+    background-color: rgba(255,255,255,0.9);
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    color: #0f496e;
+    margin-bottom: 35px;
+    font-size: 2rem;
+  }
+
+  .grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+
+  .admin-container {
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 20px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .admin-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+  }
+
+  h2 {
+    text-align: center;
+    color: #158599;
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #158599;
+    font-size: 0.95rem;
+  }
+
+  input[type="number"],
+  input[type="text"],
+  input[type="date"] {
+    width: 90%;
+    padding: 8px;
+    margin: 5px auto 0 auto;
+    border: 2px solid #a5c4d6;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: block;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  input:focus {
+    border-color: #158599;
+    box-shadow: 0 0 4px rgba(21,133,153,0.4);
+    outline: none;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+
+  .btn-agregar,
+  .btn-eliminar {
+    flex: 1;
+    padding: 10px;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-agregar {
+    background-color: #158599;
+    color: white;
+  }
+
+  .btn-agregar:hover {
+    background-color: #18486e;
+  }
+
+  .btn-eliminar {
+    background-color: #cc3d3d;
+    color: white;
+  }
+
+  .btn-eliminar:hover {
+    background-color: #a82626;
+  }
+
+  .full-width-btn {
+    width: 90%;
+    margin-top: 15px;
+    padding: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Center panel: filas de cupos */
+  .center-panel .cupos-row,
+  .center-panel .cupos-row-tecnico {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .center-panel .cupo-block,
+  .center-panel .cupo-block-tecnico {
+    flex: 1;
+    text-align: center;
+  }
+
+  .center-panel .cupo-block input {
+    width: 60%;
+    padding: 5px;
+    font-size: 0.85rem;
+  }
+
+  .center-panel .cupo-block-tecnico input {
+    width: 50%;
+    padding: 5px;
+    font-size: 0.85rem;
+  }
+
+  /* Responsive: se apilan en pantallas pequeñas */
+  @media (max-width: 900px) {
     .grid-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 20px;
-      align-items: start;
+      grid-template-columns: 1fr;
     }
 
-    .admin-container {
-      background-color: rgba(255,255,255,0.9); /* solo los cuadros mantienen un fondo ligeramente blanco */
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      padding: 20px;
-      min-width: 250px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .admin-container:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 25px rgba(0,0,0,0.12);
-    }
-
-    h2 {
-      text-align: center;
-      color: #158599;
-      margin-bottom: 15px;
-      font-size: 1.25rem;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #158599;
-      font-size: 0.95rem;
-    }
-
-    input[type="number"],
-    input[type="text"],
-    input[type="date"] {
-      width: 90%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 2px solid #a5c4d6;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      box-sizing: border-box;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    input:focus {
-      border-color: #158599;
-      box-shadow: 0 0 4px rgba(21,133,153,0.4);
-      outline: none;
-    }
-
-    .button-group {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 15px;
-    }
-
-    .btn-agregar,
-    .btn-eliminar {
-      flex: 1;
-      padding: 10px;
-      font-size: 0.95rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-agregar {
-      background-color: #158599;
-      color: white;
-    }
-
-    .btn-agregar:hover {
-      background-color: #18486e;
-    }
-
-    .btn-eliminar {
-      background-color: #cc3d3d;
-      color: white;
-    }
-
-    .btn-eliminar:hover {
-      background-color: #a82626;
-    }
-
-    .full-width-btn {
-      width: 90%;
-      margin-top: 15px;
-      padding: 10px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Estilo especial para el cuadro del medio */
-    .center-panel .cupos-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .center-panel .cupo-block {
-      flex: 1;
-      text-align: center;
-    }
-
-    .center-panel .cupo-block input {
-      width: 60%;
-      padding: 5px;
-      font-size: 0.85rem;
-    }
-
-    /* Nuevo bloque para incluir Cupos Técnico al lado de C */
+    .center-panel .cupos-row,
     .center-panel .cupos-row-tecnico {
-      display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 10px;
-      margin-top: 10px;
     }
 
-    .center-panel .cupo-block-tecnico {
-      flex: 1;
-      text-align: center;
-    }
-
+    .center-panel .cupo-block input,
     .center-panel .cupo-block-tecnico input {
-      width: 50%;
-      padding: 5px;
-      font-size: 0.85rem;
+      width: 90%;
     }
-
-    /* Responsive: se apilan en pantallas pequeñas */
-    @media (max-width: 900px) {
-      .grid-layout {
-        grid-template-columns: 1fr;
-      }
-      .center-panel .cupos-row,
-      .center-panel .cupos-row-tecnico {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .center-panel .cupo-block input,
-      .center-panel .cupo-block-tecnico input {
-        width: 90%;
-      }
-    }
-
+  }
   </style>
 </head>
 <body>

@@ -4,37 +4,48 @@
 <head>
   <meta charset="UTF-8">
   <title>Crear Usuario</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
- html, body {
+
+html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   font-family: Arial, sans-serif;
   background: #e8f5e9;
   background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+  background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* altura de la ventana visible */
+  min-height: 100vh;
+  padding: 15px;
 }
+
 
 .form-container {
   background-color: #ffffff;
-  padding: 30px 40px;
+  padding: 20px 25px;  /* Menos padding para cuadro más compacto */
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  width: 350px;
+  width: 100%;
+  max-width: 320px;   /* Más pequeño que antes */
 }
+
 
 .form-container h2 {
   text-align: center;
   color: #30a8bd;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
 }
+
 
 label {
   display: block;
@@ -47,11 +58,20 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
+  padding: 8px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #30a8bd;
+  box-shadow: 0 0 5px rgba(48, 168, 189, 0.4);
+  outline: none;
 }
 
 .form-buttons {
@@ -65,18 +85,39 @@ input[type="submit"] {
   background-color: #30a8bd;
   color: white;
   border: none;
-  padding: 12px;
-  font-size: 16px;
+  padding: 10px;
+  font-size: 15px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 input[type="submit"]:hover {
   background-color: #0d8094;
+  transform: translateY(-2px);
 }
 
+
+@media (max-width: 500px) {
+  .form-container {
+    padding: 15px 20px;
+    width: 100%;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  input[type="submit"] {
+    font-size: 14px;
+    padding: 9px;
+  }
+}
+
+
   </style>
+
+  
 </head>
 <body>
 

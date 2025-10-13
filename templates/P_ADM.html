@@ -3,6 +3,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Esto hace el diseño responsive -->
   <title>Panel de Control</title>
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
@@ -28,7 +29,7 @@
       color: white;
       text-align: center;
       padding: 15px 10px;
-      font-size: 24px;
+      font-size: 1.5rem;
       font-weight: bold;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
@@ -37,15 +38,15 @@
       flex: 1;
       display: flex;
       flex-wrap: wrap;
-      gap: 40px;
+      gap: 30px;
       justify-content: center;
       align-items: center;
       padding: 40px 10px;
     }
 
     .card {
-      background-color: rgba(255, 255, 255, 0.85);
-      padding: 30px 25px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 25px 20px;
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(5, 31, 179, 0.2);
       width: 220px;
@@ -55,6 +56,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(5, 31, 179, 0.4);
     }
 
     .logo-circular {
@@ -73,7 +80,7 @@
     }
 
     .card-label a {
-      font-size: 20px;
+      font-size: 1.1rem;
       color: #30a8bd;
       font-weight: bold;
       text-decoration: none;
@@ -91,48 +98,114 @@
       text-align: center;
       padding: 15px 10px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 0.9rem;
       box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
     }
 
+    /* ⚙️ Menú de configuración */
     .menu-rueda {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
-}
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
 
-.icono-rueda {
-  cursor: pointer;
-  font-size: 20px;
-}
+    .icono-rueda {
+      cursor: pointer;
+      font-size: 24px;
+    }
 
-.opciones-rueda {
-  display: none; /* Oculto por defecto */
-  position: absolute;
-  top: 30px; /* Ajusta según tamaño del icono */
-  right: 0;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  padding: 10px;
-  min-width: 150px;
-}
+    .opciones-rueda {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      padding: 10px;
+      min-width: 150px;
+    }
 
-.opciones-rueda a {
-  display: block;
-  padding: 8px;
-  color: #333;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 5px;
-}
+    .opciones-rueda a {
+      display: block;
+      padding: 8px;
+      color: #333;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
 
-.opciones-rueda a:hover {
-  background-color: #f0f0f0;
-}
+    .opciones-rueda a:hover {
+      background-color: #f0f0f0;
+    }
 
+    /* 📱 Media Queries (adaptación para pantallas pequeñas) */
+    @media (max-width: 1024px) {
+      .main-container {
+        gap: 20px;
+      }
+
+      .card {
+        width: 200px;
+        height: 230px;
+      }
+
+      header {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.2rem;
+        padding: 12px;
+      }
+
+      .main-container {
+        flex-direction: column;
+        gap: 25px;
+        padding: 20px;
+      }
+
+      .card {
+        width: 90%;
+        max-width: 300px;
+        height: auto;
+      }
+
+      .card-label a {
+        font-size: 1rem;
+      }
+
+      .menu-rueda {
+        top: 10px;
+        right: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        background-size: auto 100%;
+      }
+
+      header {
+        font-size: 1rem;
+        padding: 10px;
+      }
+
+      footer {
+        font-size: 0.8rem;
+        padding: 10px;
+      }
+
+      .logo-circular {
+        width: 80px;
+        height: 80px;
+      }
+    }
 
   </style>
 </head>
@@ -141,41 +214,34 @@
     EduPortal
   </header>
 
-    <div class="menu-rueda">
-  <div class="icono-rueda">⚙️</div>
-  <div class="opciones-rueda">
-    <a href="{% url 'logout' %}" class="opcion-link">Cerrar sesión</a> <!-- En urls de ususrioa -->
-    <a href="{% url 'Buscar_E' %}" class="opcion-link">Solicitudes Rechazadas</a> <!-- En urls de ususrioa -->
-    <a href="{% url 'Aprobacion' %}" class="opcion-link">Solicitudes Aprobadas</a> <!-- En urls de ususrioa -->
-
-   
+  <div class="menu-rueda">
+    <div class="icono-rueda">⚙️</div>
+    <div class="opciones-rueda">
+      <a href="{% url 'logout' %}" class="opcion-link">Cerrar sesión</a>
+      <a href="{% url 'Buscar_E' %}" class="opcion-link">Solicitudes Rechazadas</a>
+      <a href="{% url 'Aprobacion' %}" class="opcion-link">Solicitudes Aprobadas</a>
+    </div>
   </div>
-</div>
-   <!-- <h2>Bienvenido, {{ nombre }}</h2> -->
 
   <div class="main-container">
-    <!-- Usuarios -->
     <div class="card">
       <div class="logo-circular">
-    
-     <img src="{% static 'imagenes/usuario2.webp' %}" alt="Usuarios">
+        <img src="{% static 'imagenes/usuario2.webp' %}" alt="Usuarios">
       </div>
       <div class="card-label">
         <a href="insertar_usuario">Creación de usuarios</a>
       </div>
     </div>
 
-    <!-- Revisión Estudiante -->
     <div class="card">
       <div class="logo-circular">
         <img src="{% static 'imagenes/logoE.ico.webp' %}" alt="Estudiantes">
       </div>
       <div class="card-label">
-        <a href="Revision_E">Aprobación de estudiantes</a>
+        <a href="Revision_E">Aprobación de Solicitudes</a>
       </div>
     </div>
 
-    <!-- Avisos -->
     <div class="card">
       <div class="logo-circular">
         <img src="{% static 'imagenes/avisos.jpg' %}" alt="Avisos">
@@ -185,7 +251,6 @@
       </div>
     </div>
 
-    <!-- Chat -->
     <div class="card">
       <div class="logo-circular">
         <img src="{% static 'imagenes/bot.ico.webp' %}" alt="Chat">
@@ -195,10 +260,9 @@
       </div>
     </div>
 
-    <!-- Cantidad de estudiantes -->
     <div class="card">
       <div class="logo-circular">
-       <img src="{% static 'imagenes/cantidad.webp' %}" alt="CantidadE">
+        <img src="{% static 'imagenes/cantidad.webp' %}" alt="CantidadE">
       </div>
       <div class="card-label">
         <a href="cantidad_estudiantes">Capacidad Estudiantil</a>
@@ -210,23 +274,19 @@
     <p>(2025 &copy;) - Todos los derechos son reservados - EduPortal & Lisbeth Mendoza 2021-1072 & Oscarina Rincon 2021-0320</p>
   </footer>
 
-<script>
-  const icono = document.querySelector('.icono-rueda');
-  const opciones = document.querySelector('.opciones-rueda');
+  <script>
+    const icono = document.querySelector('.icono-rueda');
+    const opciones = document.querySelector('.opciones-rueda');
 
-  icono.addEventListener('click', () => {
-    opciones.style.display = opciones.style.display === 'block' ? 'none' : 'block';
-  });
+    icono.addEventListener('click', () => {
+      opciones.style.display = opciones.style.display === 'block' ? 'none' : 'block';
+    });
 
-  // Cerrar al hacer clic fuera
-  document.addEventListener('click', (e) => {
-    if (!icono.contains(e.target) && !opciones.contains(e.target)) {
-      opciones.style.display = 'none';
-    }
-  });
-</script>
-
-
+    document.addEventListener('click', (e) => {
+      if (!icono.contains(e.target) && !opciones.contains(e.target)) {
+        opciones.style.display = 'none';
+      }
+    });
+  </script>
 </body>
-
 </html>

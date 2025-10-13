@@ -4,133 +4,103 @@
 <head>
   <meta charset="UTF-8">
   <title>Estudiantes Pendientes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
   <style>
-    body {
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 40px 0;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-    }
+    * {
+    box-sizing: border-box;
+  }
 
-    .grid-container {
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
-      max-width: 1100px;
-      width: 95%;
-    }
+  body {
+    background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
 
-    h2 {
-      text-align: center;
-      color: #2e407dff;
-      margin-bottom: 25px;
-      font-size: 2rem;
-      font-weight: bold;
-      border-bottom: 3px solid #a5b0d6ff;
-      padding-bottom: 10px;
-    }
+  .grid-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
+    max-width: 1100px;
+    width: 95%;
+    overflow-x: auto; /* Scroll horizontal si la tabla es muy ancha */
+  }
 
-    .filtro-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
+  h2 {
+    text-align: center;
+    color: #2e407dff;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: bold;
+    border-bottom: 3px solid #a5b0d6ff;
+    padding-bottom: 10px;
+  }
 
-    .filtro-container input {
-      padding: 8px;
-      border: 2px solid #a5b0d6ff;
-      border-radius: 8px;
-      margin-right: 10px;
-      font-size: 1rem;
-    }
+  .filtro-container {
+    display: flex;
+    flex-wrap: wrap; /* para que los inputs se acomoden en varias filas si no caben */
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
 
-    .btn-buscar {
-      padding: 10px 20px;
-      background-color: #38458eff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+  .filtro-container input,
+  .filtro-container select {
+    padding: 8px;
+    border: 2px solid #a5b0d6ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    flex: 1 1 200px; /* mínimo 200px, crece según el contenedor */
+  }
 
-    .btn-buscar:hover {
-      background-color: #6688bbff;
-    }
+  .btn-buscar {
+    padding: 10px 20px;
+    background-color: #38458eff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      margin-top: 20px;
-    }
+  .btn-buscar:hover {
+    background-color: #6688bbff;
+  }
 
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #a5bcd6ff;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    margin-top: 20px;
+    overflow-x: auto;
+    display: block; /* para scroll horizontal en móviles */
+  }
 
-    th {
-      background-color: #6695bbff;
-      color: white;
-    }
+  th, td {
+    padding: 12px;
+    border-bottom: 1px solid #a5bcd6ff;
+    white-space: nowrap; /* evita que se rompan los textos largos */
+  }
 
-    tr:nth-child(even) {
-      background-color: rgba(102, 117, 187, 0.1);
-    }
+  th {
+    background-color: #6695bbff;
+    color: white;
+  }
 
-    .btn-verde {
-      background-color: #38458eff;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-right: 5px;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-    }
+  tr:nth-child(even) {
+    background-color: rgba(102, 117, 187, 0.1);
+  }
 
-    .btn-verde:hover {
-      background-color: #667dbbff;
-      transform: scale(1.05);
-    }
-
-    .opcion-link {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 12px 25px;
-      background-color: #6688bbff;
-      color: white;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: background-color 0.3s ease;
-    }
-
-    .opcion-link:hover {
-      background-color: #38488eff;
-    }
-
-    .icono-rueda {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      background: url("{% static 'imagenes/icono-rueda.png' %}") no-repeat center center;
-      background-size: contain;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
- .btn-verde {
-    background-color: #28a745; /* Verde */
+  .btn-verde {
+    background-color: #28a745;
     color: white;
     border: none;
     padding: 4px 8px;
@@ -138,9 +108,15 @@
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    transition: transform 0.2s ease;
   }
+
+  .btn-verde:hover {
+    transform: scale(1.05);
+  }
+
   .btn-amarillo {
-    background-color: #ffc107; /* Amarillo */
+    background-color: #ffc107;
     color: black;
     border: none;
     padding: 4px 8px;
@@ -148,6 +124,54 @@
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+  }
+
+  .opcion-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 12px 25px;
+    background-color: #6688bbff;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .opcion-link:hover {
+    background-color: #38488eff;
+  }
+
+  .icono-rueda {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url("{% static 'imagenes/icono-rueda.png' %}") no-repeat center center;
+    background-size: contain;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* Ajustes para pantallas pequeñas */
+  @media (max-width: 600px) {
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    .filtro-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .filtro-container input,
+    .filtro-container select,
+    .btn-buscar {
+      flex: 1 1 100%;
+    }
+
+    table {
+      font-size: 12px;
+    }
   }
   </style>
 </head>
@@ -178,13 +202,14 @@
   </tbody>
 </table>
 
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const tbody = document.querySelector("#tabla-estudiantes tbody");
   const formBuscar = document.getElementById('form-buscar');
   const inputCodigo = document.getElementById('codigo');
 
-  // Función para cargar estudiantes
+  // 🔹 Función para cargar estudiantes rechazados
   async function cargarEstudiantes(codigo = '') {
     try {
       const url = new URL("{% url 'estudiantes_rechazados_todos_json' %}", window.location.origin);
@@ -194,11 +219,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       tbody.innerHTML = "";
 
-      // Inscripciones
+      // 🔸 Inscripciones rechazadas
       data.inscripciones.forEach(insc => {
         const docs = [];
         for (const [key, value] of Object.entries(insc.documentos)) {
-          if (value) docs.push(`<a href="${value}" target="_blank">${key.replace('_', ' ')}</a>`);
+          if (value) {
+            docs.push(`<li><a href="${value}" target="_blank">${key.replace('_', ' ')}</a></li>`);
+          }
         }
 
         const tr = document.createElement('tr');
@@ -207,7 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${insc.estudiante__nombre} ${insc.estudiante__apellido}</td>
           <td>${insc.comentario || ''}</td>
           <td>Inscripción</td>
-          <td>${docs.join(' | ') || 'Sin documentos'}</td>
+          <td>
+            ${docs.length > 0 
+              ? `<ul style="list-style-type:none; padding-left:0; margin:0;">${docs.join('')}</ul>` 
+              : 'Sin documentos'}
+          </td>
           <td>
             <button class="btn-aprobado" style="background:green;color:white;">✔</button>
             <button class="btn-pendiente" style="background:yellow;">R</button>
@@ -216,16 +247,24 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.appendChild(tr);
       });
 
-      // Reinscripciones
+      // 🔸 Reinscripciones rechazadas
       data.reinscripciones.forEach(reins => {
-        const docLink = reins.documento_pdf ? `<a href="${reins.documento_pdf}" target="_blank">Documento PDF</a>` : 'Sin documento';
+        const docs = [];
+        if (reins.documento_pdf) {
+          docs.push(`<li><a href="${reins.documento_pdf}" target="_blank">Documento PDF</a></li>`);
+        }
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${reins.estudiante__codigo}</td>
           <td>${reins.estudiante__nombre} ${reins.estudiante__apellido}</td>
           <td>${reins.comentario || ''}</td>
           <td>Reinscripción</td>
-          <td>${docLink}</td>
+          <td>
+            ${docs.length > 0 
+              ? `<ul style="list-style-type:none; padding-left:0; margin:0;">${docs.join('')}</ul>` 
+              : 'Sin documentos'}
+          </td>
           <td>
             <button class="btn-aprobado" style="background:green;color:white;">✔</button>
             <button class="btn-pendiente" style="background:yellow;">R</button>
@@ -234,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.appendChild(tr);
       });
 
-      // Si no hay resultados
+      // 🔸 Si no hay resultados
       if (data.inscripciones.length === 0 && data.reinscripciones.length === 0) {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td colspan="6" style="text-align:center;">No hay estudiantes rechazados</td>`;
@@ -246,17 +285,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Cargar todos inicialmente
+  // 🔹 Cargar todos inicialmente
   cargarEstudiantes();
 
-  // Filtrar al enviar el formulario
+  // 🔹 Filtrar al enviar el formulario
   formBuscar.addEventListener('submit', (e) => {
     e.preventDefault();
     const codigo = inputCodigo.value.trim();
     cargarEstudiantes(codigo);
   });
 
-  // Manejo de botones ✔ y R
+  // 🔹 Manejo de botones ✔ (Aprobado) y R (Pendiente)
   document.addEventListener('click', async (e) => {
     if (e.target.classList.contains('btn-aprobado') || e.target.classList.contains('btn-pendiente')) {
       const tr = e.target.closest('tr');
@@ -289,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // 🔹 Obtener token CSRF
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -306,7 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
-
 
 
 

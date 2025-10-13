@@ -81,7 +81,7 @@
   }
 
   h3 {
-    color: #30a8bd;
+    color: #000000ff;
     font-size: 1.2rem;
     margin-bottom: 10px;
     border-bottom: 2px solid #a5b6d6ff;
@@ -215,24 +215,41 @@
     </div>
 
     <!-- Documentos -->
-    <div class="card">
-      <h3>Documentos</h3>
-      {% if inscripciones %}
-        {% for insc in inscripciones %}
-          {% if insc.cedula_tutor %}<a class="documento" href="{{ insc.cedula_tutor.url }}" target="_blank">Cédula Tutor</a>{% endif %}
-          {% if insc.foto_estudiante %}<a class="documento" href="{{ insc.foto_estudiante.url }}" target="_blank">Foto</a>{% endif %}
-          {% if insc.record_notas %}<a class="documento" href="{{ insc.record_notas.url }}" target="_blank">Record Notas</a>{% endif %}
-          {% if insc.acta_nacimiento %}<a class="documento" href="{{ insc.acta_nacimiento.url }}" target="_blank">Acta Nacimiento</a>{% endif %}
-          {% if insc.certificado_medico %}<a class="documento" href="{{ insc.certificado_medico.url }}" target="_blank">Certificado Médico</a>{% endif %}
-        {% endfor %}
-      {% elif reinscripciones %}
-        {% for reins in reinscripciones %}
-          {% if reins.documento_pdf %}<a class="documento" href="{{ reins.documento_pdf.url }}" target="_blank">Documento Reinscripción</a>{% endif %}
-        {% endfor %}
-      {% else %}
-        <p>No hay documentos disponibles.</p>
-      {% endif %}
-    </div>
+<div class="card">
+  <h3>Documentos</h3>
+  {% if inscripciones %}
+    <ul style="list-style-type: none; padding-left: 0;">
+      {% for insc in inscripciones %}
+        {% if insc.cedula_tutor %}
+          <li><a class="documento" href="{{ insc.cedula_tutor.url }}" target="_blank">📄 Cédula Tutor</a></li>
+        {% endif %}
+        {% if insc.foto_estudiante %}
+          <li><a class="documento" href="{{ insc.foto_estudiante.url }}" target="_blank">🧒 Foto</a></li>
+        {% endif %}
+        {% if insc.record_notas %}
+          <li><a class="documento" href="{{ insc.record_notas.url }}" target="_blank">📘 Record de Notas</a></li>
+        {% endif %}
+        {% if insc.acta_nacimiento %}
+          <li><a class="documento" href="{{ insc.acta_nacimiento.url }}" target="_blank">🧾 Acta de Nacimiento</a></li>
+        {% endif %}
+        {% if insc.certificado_medico %}
+          <li><a class="documento" href="{{ insc.certificado_medico.url }}" target="_blank">🏥 Certificado Médico</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% elif reinscripciones %}
+    <ul style="list-style-type: none; padding-left: 0;">
+      {% for reins in reinscripciones %}
+        {% if reins.documento_pdf %}
+          <li><a class="documento" href="{{ reins.documento_pdf.url }}" target="_blank">📄 Documento de Reinscripción</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No hay documentos disponibles.</p>
+  {% endif %}
+</div>
+
 
     <!-- Condicional Inscripción / Reinscripción -->
 {% if inscripciones %}

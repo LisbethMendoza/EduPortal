@@ -4,127 +4,147 @@
 <head>
   <meta charset="UTF-8">
   <title>EduPortal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      background-color: #f4f9f4;
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    header {
-      background-color: #388e3c;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    nav a {
-      margin-left: 15px;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      display: flex;
-      padding: 20px;
-      gap: 20px;
-      min-height: calc(100vh - 70px);
-    }
-
-    .aviso {
-      flex: 1;
-      background-color: rgba(255, 255, 255, 0.788);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      min-height: 500px;
-    }
-
-    .aviso h2 {
-      margin-top: 0;
-      color: #2e7d32;
-    }
-
-    .chat {
-      flex: 1;
-      background-color: rgba(255, 255, 255, 0.788);
-      display: flex;
-      flex-direction: column;
-      border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      min-height: 300px;
-      padding: 20px;
-    }
-
-    .chat h2 {
-      margin-top: 0;
-      color: #2e7d32;
-    }
-
-    .chat-box {
-      flex: 1;
-      border: 1px solid #a5d6a7;
-      border-radius: 8px;
-      padding: 10px;
-      overflow-y: auto;
-      background-color: #f0fdf4;
-      margin-bottom: 10px;
-    }
-
-    .chat-input {
-      display: flex;
-      gap: 10px;
-    }
-
-    .chat-input input[type="text"] {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #a5d6a7;
-    }
-
-    .chat-input button {
-      padding: 10px 15px;
-      background-color: #66bb6a;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .chat-input button:hover {
-      background-color: #388e3c;
-    }
-
-    footer {
-    background-color: #2e7d32;
-    color: white; 
-    text-align: center;
-    padding: 15px 10px;
-    font-weight: bold;
-    font-size: 14px;
-    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
-    font-family: Arial;
+   body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f4f9f4;
+  background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
+
+header {
+  background-color: #388e3c;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+nav a {
+  margin-left: 15px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  text-decoration: underline;
+  color: #d4f5d4;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.aviso,
+.chat {
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1 1 400px;
+  min-width: 300px;
+}
+
+.aviso h2,
+.chat h2 {
+  margin-top: 0;
+  color: #2e7d32;
+  font-size: 1.3rem;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.chat-box {
+  flex: 1;
+  border: 1px solid #a5d6a7;
+  border-radius: 8px;
+  padding: 10px;
+  overflow-y: auto;
+  background-color: #f0fdf4;
+  margin-bottom: 10px;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #a5d6a7;
+  font-size: 0.95rem;
+}
+
+.chat-input button {
+  padding: 10px 15px;
+  background-color: #66bb6a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chat-input button:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+footer {
+  background-color: #2e7d32;
+  color: white; 
+  text-align: center;
+  padding: 15px 10px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .aviso,
+  .chat {
+    width: 90%;
+    min-width: auto;
+  }
+}
+
 
   </style>
 </head>

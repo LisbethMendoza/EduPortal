@@ -4,16 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <title>Formulario de Inscripción</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
- body {
+body {
   background-image: url("{% static 'imagenes/Fondo.jpg' %}");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   font-family: Arial, sans-serif;
   margin: 0;
-  padding-top: 60px;
+  padding-top: 40px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -21,64 +22,61 @@
   overflow-y: auto;
 }
 
-/* Contenedor principal */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   background-color: rgba(255, 255, 255, 0.95);
-  padding: 40px;
+  padding: 30px 20px;
   border-radius: 15px;
   box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
-  max-width: 1100px;
+  max-width: 1000px;
   width: 95%;
 }
 
-/* Título principal */
 h2 {
   grid-column: 1 / -1;
   text-align: center;
   color: #2e7d32;
-  margin-bottom: 30px;
-  font-size: 2rem;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
   font-weight: bold;
   border-bottom: 3px solid #a5d6a7;
   padding-bottom: 10px;
 }
 
-/* Cada sección de formulario */
 .form-box {
   background-color: white;
-  padding: 20px;
+  padding: 18px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
 }
 
 .form-box h3 {
   color: #388e3c;
   border-left: 5px solid #66bb6a;
   padding-left: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
 }
 
-/* Etiquetas */
 label {
   display: block;
-  margin-top: 10px;
+  margin-top: 8px;
   font-weight: bold;
   color: #2e7d32;
+  font-size: 0.95rem;
 }
 
-/* Inputs y selects */
 input, select, textarea {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
+  padding: 7px 10px;
+  margin-top: 4px;
   margin-bottom: 10px;
   border: 2px solid #a5d6a7;
-  border-radius: 8px;
+  border-radius: 6px;
   box-sizing: border-box;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 input[readonly], textarea[readonly] {
@@ -86,28 +84,25 @@ input[readonly], textarea[readonly] {
   color: #555;
 }
 
-/* Textarea */
 textarea {
   font-family: Arial, sans-serif;
   resize: none;
 }
 
-/* Contenedor para centrar el botón */
 .boton-container {
-  grid-column: 1 / -1; /* Ocupa todo el ancho del grid */
+  grid-column: 1 / -1;
   display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: 15px;
 }
 
-/* Botón / enlace */
 .btn-link {
   display: inline-block;
-  padding: 12px 30px;
+  padding: 10px 25px;
   background-color: #66bb6a;
   color: white;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -118,43 +113,65 @@ textarea {
   background-color: #388e3c;
 }
 
-/* Cuadro de conteo */
 .conteo-estudiantes {
   position: fixed;
   top: 10px;
   right: 20px;
   background-color: rgba(46, 125, 50, 0.9);
   color: white;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 10px;
-  font-size: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  font-size: 0.95rem;
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
   z-index: 1000;
 }
 
-/* Botón principal de envío */
 .btn-submit {
-  padding: 12px 30px;
+  padding: 10px 25px;
   background-color: #388e3c;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+  box-shadow: 0 3px 8px rgba(0, 128, 0, 0.2);
 }
 
 .btn-submit:hover {
   background-color: #66bb6a;
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .btn-submit:active {
   transform: scale(0.97);
 }
 
+/* Responsive en pantallas pequeñas */
+@media (max-width: 500px) {
+  .grid-container {
+    padding: 20px 10px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-box {
+    padding: 15px;
+  }
+
+  input, select, textarea {
+    font-size: 0.9rem;
+    padding: 6px 8px;
+  }
+
+  .btn-link, .btn-submit {
+    font-size: 0.95rem;
+    padding: 8px 18px;
+  }
+}
 
 
   </style>

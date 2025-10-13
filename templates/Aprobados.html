@@ -4,104 +4,191 @@
 <head>
   <meta charset="UTF-8">
   <title>Resumen de Solicitudes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon" />
   <style>
-    body {
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 40px 0;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-    }
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    .grid-container {
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
-      max-width: 1200px;
-      width: 95%;
-      position: relative;
-    }
+  body {
+    background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
 
-    h2 {
-      text-align: center;
-      color: #2e407dff;
-      margin-bottom: 25px;
-      font-size: 2rem;
-      font-weight: bold;
-      border-bottom: 3px solid #a5b0d6ff;
-      padding-bottom: 10px;
+  .grid-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 128, 0, 0.15);
+    max-width: 1200px;
+    width: 95%;
+    position: relative;
+  }
+
+  h2 {
+    text-align: center;
+    color: #2e407dff;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    border-bottom: 3px solid #a5b0d6ff;
+    padding-bottom: 0.5rem;
+  }
+
+  .filtro-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .filtro-container input,
+  .filtro-container select {
+    flex: 1 1 150px;
+    padding: 0.5rem;
+    border: 2px solid #a5b0d6ff;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .btn-buscar {
+    padding: 0.5rem 1rem;
+    background-color: #38458eff;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-buscar:hover {
+    background-color: #6688bbff;
+  }
+
+  .filtro-periodo {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+
+  table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  margin: 1rem 0; /* mantiene espacio arriba y abajo */
+  overflow-x: auto;
+}
+
+/* Contenedor scrollable para pantallas pequeñas */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center; /* centra la tabla */
+}
+
+  th, td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #a5bcd6ff;
+    word-break: break-word;
+  }
+
+  th {
+    background-color: #6695bbff;
+    color: white;
+  }
+
+  tr:nth-child(even) {
+    background-color: rgba(102, 117, 187, 0.1);
+  }
+
+  .contador {
+    font-weight: bold;
+    color: #2e407dff;
+    text-align: right;
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+
+  /* 🔹 Listado de documentos */
+  ul.documentos-lista {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  ul.documentos-lista li {
+    margin-bottom: 0.25rem;
+  }
+
+  ul.documentos-lista li a {
+    color: #2e407dff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+
+  ul.documentos-lista li a:hover {
+    color: #158599;
+    text-decoration: underline;
+  }
+
+  /* 🔹 Media queries para pantallas pequeñas */
+  @media (max-width: 1024px) {
+    .filtro-periodo {
+      position: static;
+      margin-top: 1rem;
     }
 
     .filtro-container {
-      display: flex;
-      justify-content: flex-start; /* alineación izquierda para filtro de código */
-      margin-bottom: 20px;
-      gap: 10px;
+      flex-direction: column;
+      align-items: stretch;
     }
+  }
 
-    .filtro-container input,
-    .filtro-container select {
-      padding: 8px;
-      border: 2px solid #a5b0d6ff;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .btn-buscar {
-      padding: 10px 20px;
-      background-color: #38458eff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-buscar:hover {
-      background-color: #6688bbff;
-    }
-
-    /* Filtro de Periodo en esquina superior derecha */
-    .filtro-periodo {
-      position: absolute;
-      top: 30px;
-      right: 30px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      margin-top: 20px;
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 1.5rem;
     }
 
     th, td {
-      padding: 12px;
-      border-bottom: 1px solid #a5bcd6ff;
-    }
-
-    th {
-      background-color: #6695bbff;
-      color: white;
-    }
-
-    tr:nth-child(even) {
-      background-color: rgba(102, 117, 187, 0.1);
+      padding: 0.5rem;
+      font-size: 0.9rem;
     }
 
     .contador {
-      font-weight: bold;
-      color: #2e407dff;
-      text-align: right;
-      margin-top: 15px;
+      font-size: 0.9rem;
     }
+  }
+
+  @media (max-width: 480px) {
+    .grid-container {
+      padding: 1rem;
+    }
+
+    .filtro-container input,
+    .filtro-container select,
+    .btn-buscar {
+      font-size: 0.9rem;
+      padding: 0.4rem;
+    }
+
+    table {
+      font-size: 0.85rem;
+    }
+  }
   </style>
 </head>
 <body>
@@ -128,28 +215,31 @@
     </div>
 
     <!-- Tabla de solicitudes -->
-    <table id="tabla-solicitudes">
-      <thead>
-        <tr>
-          <th>Número Solicitud</th>
-          <th>Nombre Estudiante</th>
-          <th>Periodo</th>
-          <th>Tipo</th>
-          <th>Documentación</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Aquí se llenarán los datos más adelante -->
-        <tr>
-          <td colspan="7" style="text-align:center;">Sin datos para mostrar</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper">
+  <table id="tabla-solicitudes">
+    <thead>
+      <tr>
+        <th>Número Solicitud</th>
+        <th>Nombre Estudiante</th>
+        <th>Periodo</th>
+        <th>Tipo</th>
+        <th>Documentación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="5" style="text-align:center;">Sin datos para mostrar</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
     <div class="contador" id="contador-general">Total Inscritos: 0 | Total Reinscritos: 0</div>
   </div>
 
-<script>
+
+  <script>
 document.addEventListener('DOMContentLoaded', () => {
   const tbody = document.querySelector("#tabla-solicitudes tbody");
   const formBuscar = document.getElementById('form-buscar');
@@ -175,7 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
       data.inscripciones.forEach(insc => {
         const docs = [];
         for (const [key, value] of Object.entries(insc.documentos)) {
-          if (value) docs.push(`<a href="${value}" target="_blank">${key.replace('_', ' ')}</a>`);
+          if (value) {
+            docs.push(`<li><a href="${value}" target="_blank">${key.replace('_', ' ')}</a></li>`);
+          }
         }
 
         const tr = document.createElement('tr');
@@ -184,16 +276,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${insc.estudiante__nombre} ${insc.estudiante__apellido}</td>
           <td>${insc.periodo_escolar}</td>
           <td>Inscripción</td>
-          <td>${docs.join(' | ') || 'Sin documentos'}</td>
+          <td>
+            ${docs.length > 0 
+              ? `<ul style="list-style-type:none; padding-left:0; margin:0;">${docs.join('')}</ul>` 
+              : 'Sin documentos'}
+          </td>
         `;
         tbody.appendChild(tr);
       });
 
       // 🔸 Mostrar Reinscripciones aprobadas
       data.reinscripciones.forEach(reins => {
-        const docLink = reins.documento_pdf
-          ? `<a href="${reins.documento_pdf}" target="_blank">Documento PDF</a>`
-          : 'Sin documento';
+        const docs = [];
+
+        if (reins.documento_pdf) {
+          docs.push(`<li><a href="${reins.documento_pdf}" target="_blank">Documento PDF</a></li>`);
+        }
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -201,7 +299,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${reins.estudiante__nombre} ${reins.estudiante__apellido}</td>
           <td>${reins.periodo_escolar}</td>
           <td>Reinscripción</td>
-          <td>${docLink}</td>
+          <td>
+            ${docs.length > 0 
+              ? `<ul style="list-style-type:none; padding-left:0; margin:0;">${docs.join('')}</ul>` 
+              : 'Sin documentos'}
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -240,6 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
 
 
 

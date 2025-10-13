@@ -4,69 +4,99 @@
 <head>
   <meta charset="UTF-8">
   <title>Inscripción y Reinscripción</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
-    body {
-      background-image: url("{% static 'imagenes/Fondo.jpg' %}");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+ body {
+  background-image: url("{% static 'imagenes/Fondo.jpg' %}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
 
-    .main-container {
-      display: flex;
-      gap: 60px;
-      justify-content: center;
-      align-items: center;
-    }
+.main-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Permite que las tarjetas se acomoden en pantallas pequeñas */
+  padding: 20px;
+}
 
-    .card {
-      background-color: rgba(255, 255, 255, 0.788);
-      padding: 30px 25px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
-      width: 250px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+.card {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 25px 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 128, 0, 0.2);
+  width: 220px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .logo-circular {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 4px solid #66bb6a;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-    }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 128, 0, 0.3);
+}
 
-    .logo-circular img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+.logo-circular {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #66bb6a;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  margin-bottom: 15px;
+}
 
-    .card-label a {
-      font-size: 22px;
-      color: #2e7d32;
-      font-weight: bold;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
+.logo-circular img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-    .card-label a:hover {
-      color: #1b5e20;
-      text-decoration: underline;
-    }
+.card-label a {
+  font-size: 1.1rem;
+  color: #2e7d32;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.card-label a:hover {
+  color: #1b5e20;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .main-container {
+    gap: 20px;
+  }
+  .card {
+    width: 90%;
+    padding: 20px;
+  }
+  .logo-circular {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+  .card-label a {
+    font-size: 1rem;
+  }
+}
+
   </style>
 </head>
 <body>
