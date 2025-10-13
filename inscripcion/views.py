@@ -222,12 +222,14 @@ def crear_estudiante(data, tutor):
 def crear_tutor(data):
     cedula = data.get("cedula")
     telefono = data.get("num")
+    telefono2 = data.get("num2")
     try:
         tutor = Tutor.objects.get(cedula=cedula)
         tutor.nombre = data.get("nombre_p")
         tutor.apellido = data.get("apellido_p")
         tutor.parentesco = data.get("parentesco")
         tutor.telefono = telefono   
+        tutor.telefono2 = telefono2   
         tutor.save()
         return tutor
 
@@ -238,7 +240,8 @@ def crear_tutor(data):
             apellido=data.get("apellido_p"),
             parentesco=data.get("parentesco"),
             cedula=cedula,
-            telefono=telefono
+            telefono=telefono,
+            telefono2=telefono2
         )
 
         
@@ -267,6 +270,7 @@ def buscar_estudiante_por_codigo(request):
                 'parentesco': tutor.parentesco if tutor else '',
                 'cedula': tutor.cedula if tutor else '',
                 'telefono': tutor.telefono if tutor else '',
+                'telefono2': tutor.telefono2 if tutor else '',
             },
             'inscripcion': {
                 'periodo_escolar': inscripcion.periodo_escolar if inscripcion else '',
@@ -339,6 +343,8 @@ def obtener_estudiantes_pendientes(request):
     return JsonResponse({"estudiantes": estudiantes})
 
 #---------------------DETALLE DEL ESTUDIANTE USADO EN ADM------------------------------------# 
+from django.shortcuts import render, get_object_or_404
+
 def detalle_estudiante(request):
     estudiante_id = request.GET.get("estudiante")
     estudiante = None
@@ -347,16 +353,9 @@ def detalle_estudiante(request):
     reinscripciones = None
     seccion_ultima = None
 
-    # Filtrar solo pendientes
-    inscripciones_pendientes = Inscripcion.objects.filter(estado="Pendiente")
-    reinscripciones_pendientes = Reinscripcion.objects.filter(estado="Pendiente")
-
-    # Obtener lista de estudiantes pendientes
-    estudiantes = set()
-    for insc in inscripciones_pendientes:
-        estudiantes.add(insc.estudiante)
-    for reinsc in reinscripciones_pendientes:
-        estudiantes.add(reinsc.estudiante)
+    # Filtrar solo pendientes y ordenarlas por ID
+    inscripciones_pendientes = Inscripcion.objects.filter(estado="Pendiente").order_by('id_inscripcion')
+    reinscripciones_pendientes = Reinscripcion.objects.filter(estado="Pendiente").order_by('id_reinscripcion')
 
     if estudiante_id:
         estudiante = Estudiante.objects.get(id=estudiante_id)
@@ -368,7 +367,6 @@ def detalle_estudiante(request):
         # Traer la sección de la última inscripción (si existe)
         ultima_insc = Inscripcion.objects.filter(estudiante=estudiante).order_by('-fecha_inscripcion').first()
         seccion_ultima = ultima_insc.seccion if ultima_insc else None
-        
 
         # Decidir qué mostrar
         if estudiante.grado.grado in ["1ro", "2do", "3ro"]:
@@ -376,16 +374,20 @@ def detalle_estudiante(request):
         else:
             mostrar = "tecnico"
 
+    # Obtener todos los estudiantes pendientes separados por tipo
+    estudiantes_inscripcion = [i.estudiante for i in inscripciones_pendientes]
+    estudiantes_reinscripcion = [r.estudiante for r in reinscripciones_pendientes]
+
     return render(request, "Revision_E.html", {
         "estudiante": estudiante,
-        "estudiantes": estudiantes,
         "inscripciones": inscripciones,
         "reinscripciones": reinscripciones,
         "mostrar": mostrar,
         "seccion_ultima": seccion_ultima,
+        "estudiantes_inscripcion": estudiantes_inscripcion,
+        "estudiantes_reinscripcion": estudiantes_reinscripcion,
     })
-    
-    
+
     
 #---------------------CAMBIAR EL ESTADO DE LA INSCRIPCION O REINSCRIPCION------------------------#
 from django.contrib import messages

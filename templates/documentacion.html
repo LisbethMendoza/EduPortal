@@ -199,8 +199,11 @@ button.upload-btn:hover {
         <span class="checkmark" id="check_medico">✔</span>
       </div>
 
-      <button type="submit" class="upload-btn">Subir Documentos</button>
-    </form>
+  <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px;">
+  <button type="button" class="upload-btn" style="background-color: #388e3c;" onclick="history.back()"> ← Atrás</button>
+  <button type="submit" class="upload-btn" style="background-color: #388e3c;">Subir Documentos</button>
+</div>
+  </form>
   </div>
 
   <script>
@@ -227,6 +230,48 @@ addCheck("acta_nacimiento", "check_acta", "req_acta");
 addCheck("certificado_medico", "check_medico", "req_medico");
 
   </script>
+  
+
+{% if mensaje %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const btnSubir = document.querySelector(".upload-btn");
+
+    // Crear contenedor del mensaje si no existe
+    let mensajeDiv = document.getElementById("mensaje-documentacion");
+    if (!mensajeDiv) {
+        mensajeDiv = document.createElement("div");
+        mensajeDiv.id = "mensaje-documentacion";
+        mensajeDiv.style.display = "none";
+        mensajeDiv.style.position = "fixed";
+        mensajeDiv.style.top = "50%";
+        mensajeDiv.style.left = "50%";
+        mensajeDiv.style.transform = "translate(-50%, -50%)";
+        mensajeDiv.style.padding = "20px 30px";
+        mensajeDiv.style.borderRadius = "10px";
+        mensajeDiv.style.color = "white";
+        mensajeDiv.style.fontSize = "1.1rem";
+        mensajeDiv.style.fontWeight = "bold";
+        mensajeDiv.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+        mensajeDiv.style.zIndex = "10000";
+        document.body.appendChild(mensajeDiv);
+    }
+
+    btnSubir.addEventListener("click", function(event) {
+        event.preventDefault(); // Evita el envío inmediato
+        mensajeDiv.style.display = "block";
+        mensajeDiv.style.backgroundColor = "#43a047"; // verde para éxito
+        mensajeDiv.innerText = "{{ mensaje|escapejs }}";
+
+        // Opcional: enviar el formulario después de mostrar el mensaje
+        setTimeout(() => {
+            btnSubir.closest("form").submit();
+        }, 1000); // espera 1 segundo
+    });
+});
+</script>
+{% endif %}
+
 
 
   

@@ -210,8 +210,10 @@ button:hover {
       <div class="upload-text">Haz clic o arrastra tu archivo PDF aquí</div>
       <input type="file" id="archivo_pdf" name="archivo_pdf" required />
     </div>
-
-    <button type="submit">Enviar Reinscripción</button>
+  <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+  <button type="button" class="upload-btn" style="background-color: #388e3c;" onclick="history.back()">← Atrás</button>
+  <button type="submit" class="upload-btn" style="background-color: #388e3c;">Enviar Reinscripción</button>
+</div>
   </form>
 
 
@@ -244,6 +246,43 @@ button:hover {
       }
     });
   </script>
+
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let mensajeDiv = document.createElement("div");
+    mensajeDiv.id = "mensaje-reinscripcion";
+    mensajeDiv.style.display = "block";
+    mensajeDiv.style.position = "fixed";
+    mensajeDiv.style.top = "50%";
+    mensajeDiv.style.left = "50%";
+    mensajeDiv.style.transform = "translate(-50%, -50%)";
+    mensajeDiv.style.padding = "20px 30px";
+    mensajeDiv.style.borderRadius = "10px";
+    mensajeDiv.style.color = "white";
+    mensajeDiv.style.fontSize = "1.1rem";
+    mensajeDiv.style.fontWeight = "bold";
+    mensajeDiv.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+    mensajeDiv.style.zIndex = "10000";
+
+    // Determinar color según tipo de mensaje
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            mensajeDiv.style.backgroundColor = "#43a047"; // verde
+        {% else %}
+            mensajeDiv.style.backgroundColor = "#e53935"; // rojo
+        {% endif %}
+        mensajeDiv.innerText = "{{ message|escapejs }}";
+    {% endfor %}
+
+    document.body.appendChild(mensajeDiv);
+
+    // Desaparece automáticamente después de 4 segundos
+    setTimeout(() => { mensajeDiv.remove(); }, 4000);
+});
+</script>
+{% endif %}
+
 
 </body>
 </html>

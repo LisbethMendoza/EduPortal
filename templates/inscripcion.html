@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="icon" href="{% static 'imagenes/logo.ico.jpg' %}" type="image/x-icon">
   <style>
-body {
+   body {
   background-image: url("{% static 'imagenes/Fondo.jpg' %}");
   background-size: cover;
   background-position: center;
@@ -16,8 +16,8 @@ body {
   margin: 0;
   padding-top: 40px;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: center;  /* 🔹 centra horizontalmente */
+  align-items: center; 
   min-height: 100vh;
   overflow-y: auto;
 }
@@ -89,30 +89,6 @@ textarea {
   resize: none;
 }
 
-.boton-container {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-}
-
-.btn-link {
-  display: inline-block;
-  padding: 10px 25px;
-  background-color: #66bb6a;
-  color: white;
-  border-radius: 8px;
-  font-size: 1rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  text-align: center;
-}
-
-.btn-link:hover {
-  background-color: #388e3c;
-}
-
 .conteo-estudiantes {
   position: fixed;
   top: 10px;
@@ -126,6 +102,17 @@ textarea {
   z-index: 1000;
 }
 
+.boton-container {
+    display: flex;
+    justify-content: center; /* centra los botones horizontalmente */
+    align-items: center;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+
+
+/* 🔹 Botón verde ("Siguiente") */
 .btn-submit {
   padding: 10px 25px;
   background-color: #388e3c;
@@ -148,7 +135,48 @@ textarea {
   transform: scale(0.97);
 }
 
-/* Responsive en pantallas pequeñas */
+/* 🔹 Botón rojo ("Eliminar") */
+.btn-delete {
+  padding: 10px 25px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 3px 8px rgba(128, 0, 0, 0.2);
+}
+
+.btn-delete:hover {
+  background-color: #b71c1c;
+  transform: scale(1.03);
+}
+
+.btn-delete:active {
+  transform: scale(0.97);
+}
+
+/* 🔹 Botón tipo enlace (si lo usas en otros lados) */
+.btn-link {
+  display: inline-block;
+  padding: 10px 25px;
+  background-color: #66bb6a;
+  color: white;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.btn-link:hover {
+  background-color: #388e3c;
+}
+
+/* 🔹 Responsive */
 @media (max-width: 500px) {
   .grid-container {
     padding: 20px 10px;
@@ -167,9 +195,14 @@ textarea {
     padding: 6px 8px;
   }
 
-  .btn-link, .btn-submit {
+  .btn-link, .btn-submit, .btn-delete {
     font-size: 0.95rem;
     padding: 8px 18px;
+  }
+
+  .boton-container {
+    flex-direction: column;
+    gap: 15px;
   }
 }
 
@@ -192,9 +225,6 @@ textarea {
 
       <label for="apellido_e">Apellidos:</label>
       <input type="text" id="apellido_e" name="apellido_e" required>
-
-      <label for="fecha_naci">Fecha de Nacimiento:</label>
-      <input type="date" id="fecha_naci" name="fecha_naci" required>
 
 
     <label for="id_grado">Nivel:</label>
@@ -221,6 +251,10 @@ textarea {
         <option value="{{ tecnico.id_tecnico }}">{{ tecnico.nombre }}</option>
       {% endfor %}
     </select>
+
+    <label for="fecha_naci">Fecha de Nacimiento:</label>
+    <input type="date" id="fecha_naci" name="fecha_naci" required>
+
     </div>
 
     <!-- Cuadro 2: Datos del Tutor -->
@@ -253,7 +287,11 @@ textarea {
       <label for="num">Numero tutor:</label>
       <input type="text" id="num" name="num" required>
 
+       <label for="num2">2 Numero tutor:</label>
+      <input type="text" id="num2" name="num2" required>
+
     </div>
+
 
     <!-- Cuadro 3: Información de Inscripción -->
     <div class="form-box">
@@ -267,10 +305,14 @@ textarea {
       <label for="estado">Estado:</label>
       <input type="text" id="estado" name="estado" value="Pendiente" readonly>
     </div>
-    
-    <div class="boton-container">
-      <button type="submit" class="btn-submit">Siguiente</button>
-    </div>
+     
+        <!-- Botones ocupando toda la fila -->
+      <div class="boton-container" style="grid-column: 1 / -1;">
+          <button type="button" class="btn-delete" onclick="location.reload()">Eliminar</button>
+          <button type="submit" class="btn-submit">Siguiente →</button>
+      </div>
+
+  
 
    <div class="conteo-estudiantes" id="conteo-estudiantes">
    Estudiantes en Niveles:<br>
@@ -357,6 +399,7 @@ document.getElementById('codigo').addEventListener('keypress', function(e) {
                         document.getElementById('parentesco').value = estudiante.tutor.parentesco;
                         document.getElementById('cedula').value = estudiante.tutor.cedula;
                         document.getElementById('num').value = estudiante.tutor.telefono;
+                        document.getElementById('num2').value = estudiante.tutor.telefono2;
                     }
 
                     // Datos de la inscripción
@@ -534,6 +577,42 @@ document.addEventListener("DOMContentLoaded", actualizarCupos);
     }
   });
 </script>
+
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let mensajeDiv = document.createElement("div");
+    mensajeDiv.id = "mensaje-inscripcion";
+    mensajeDiv.style.display = "block";
+    mensajeDiv.style.position = "fixed";
+    mensajeDiv.style.top = "50%";
+    mensajeDiv.style.left = "50%";
+    mensajeDiv.style.transform = "translate(-50%, -50%)";
+    mensajeDiv.style.padding = "20px 30px";
+    mensajeDiv.style.borderRadius = "10px";
+    mensajeDiv.style.color = "white";
+    mensajeDiv.style.fontSize = "1.1rem";
+    mensajeDiv.style.fontWeight = "bold";
+    mensajeDiv.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+    mensajeDiv.style.zIndex = "10000";
+
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            mensajeDiv.style.backgroundColor = "#43a047"; // verde
+        {% else %}
+            mensajeDiv.style.backgroundColor = "#e53935"; // rojo
+        {% endif %}
+        mensajeDiv.innerText = "{{ message|escapejs }}";
+    {% endfor %}
+
+    document.body.appendChild(mensajeDiv);
+
+    // Desaparece automáticamente después de 4 segundos
+    setTimeout(() => { mensajeDiv.remove(); }, 4000);
+});
+</script>
+{% endif %}
+
 
 
 </body>

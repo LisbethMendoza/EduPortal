@@ -164,6 +164,7 @@ def descontar_cupo(cupo_actual, grado, seccion=None):
 def reinscripcion_insert(request):
     grados = Grado.objects.all()
     tecnicos = Tecnico.objects.all()
+    mensaje = None  # Variable para enviar al template
 
     if request.method == 'POST':
         data = request.POST
@@ -172,43 +173,53 @@ def reinscripcion_insert(request):
         try:
             estudiante = Estudiante.objects.get(codigo=data.get("id_estudiante"))
         except Estudiante.DoesNotExist:
-            messages.error(request, "Estudiante no encontrado.")
-            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+            mensaje = "Estudiante no encontrado."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
 
-        # ------------------- Verificar inscripción aprobada -------------------
+        # ------------------- Reinscripción pendiente -------------------
+        if Reinscripcion.objects.filter(estudiante=estudiante, estado="Pendiente").exists():
+            mensaje = "Usted tiene una reinscripción pendiente. Comuníquese con el Politecnico al 000-000-000."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
+
+        # ------------------- Inscripción pendiente -------------------
+        if Inscripcion.objects.filter(estudiante=estudiante, estado="Pendiente").exists():
+            mensaje = "Usted tiene una inscripción pendiente. Comuníquese con el Politecnico al 000-000-000."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
+
+        # ------------------- Inscripción aprobada -------------------
         if not Inscripcion.objects.filter(estudiante=estudiante, estado="Aprobado").exists():
-            messages.error(request, "Usted no ha estado inscrito en este Politécnico.")
+            mensaje = "Usted no ha estado inscrito en este Politécnico."
             return redirect('inscripcion')
 
         # ------------------- Verificar periodo activo -------------------
         hoy = timezone.now().date()
         cupo_actual = cupo.objects.filter(tipo="Reinscripcion").last()
         if not cupo_actual:
-            messages.error(request, "No hay periodos de reinscripción activos.")
-            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+            mensaje = "No hay periodos de reinscripción activos."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
 
         if hoy < cupo_actual.fecha_inicio or hoy > cupo_actual.fecha_limite:
-            messages.error(request, "Actualmente no está dentro del periodo de reinscripción.")
-            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+            mensaje = "Actualmente no está dentro del periodo de reinscripción."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
 
         # ------------------- Validar grado y sección -------------------
         id_grado = data.get("id_grado")
         if not id_grado:
-            messages.error(request, "Debe seleccionar un grado.")
-            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+            mensaje = "Debe seleccionar un grado."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
 
         grado_obj = Grado.objects.get(id_grado=id_grado)
-        grado_str = grado_obj.grado  # "1ro", "2do", etc.
+        grado_str = grado_obj.grado
         seccion = data.get("seccion") if grado_str in ["1ro", "2do", "3ro"] else None
 
         if grado_str in ["1ro", "2do", "3ro"] and not seccion:
-            messages.error(request, "Debe seleccionar una sección para este grado.")
-            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+            mensaje = "Debe seleccionar una sección para este grado."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
 
         # ------------------- Descontar cupo -------------------
         if not descontar_cupo(cupo_actual, grado_str, seccion):
-            messages.error(request, f"No hay cupos disponibles para {grado_str} {seccion or ''}.")
-            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+            mensaje = f"No hay cupos disponibles para {grado_str} {seccion or ''}."
+            return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
 
         # ------------------- Guardar datos en sesión -------------------
         request.session['reinscripcion_data'] = {
@@ -220,10 +231,11 @@ def reinscripcion_insert(request):
             'estado': data.get("estado", "Pendiente")
         }
         request.session.modified = True  
-        return redirect('documentacion_re')  # Redirige a la siguiente vista
+
+        return redirect('documentacion_re')
 
     # ------------------- GET -------------------
-    return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+    return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': None})
 
 
 

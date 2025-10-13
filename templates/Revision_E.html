@@ -177,13 +177,21 @@
     <form method="get" action="{% url 'detalle_estudiante' %}"> <!-- View Inscripcion -->
      {% csrf_token %}
   <select name="estudiante" id="estudiante" onchange="this.form.submit()">
-      <option value="">-- Selecciona --</option>
-      {% for e in estudiantes %}
+    <option value="">-- Selecciona --</option>
+
+    {% for e in estudiantes_inscripcion %}
         <option value="{{ e.id }}" {% if estudiante and estudiante.id == e.id %}selected{% endif %}>
-            {{ e.nombre }} {{ e.apellido }} ({{ e.codigo }})
+            {{ e.nombre }} {{ e.apellido }} (Inscripción)
         </option>
-      {% endfor %}
-  </select>
+    {% endfor %}
+
+    {% for e in estudiantes_reinscripcion %}
+        <option value="{{ e.id }}" {% if estudiante and estudiante.id == e.id %}selected{% endif %}>
+            {{ e.nombre }} {{ e.apellido }} (Reinscripción)
+        </option>
+    {% endfor %}
+</select>
+
     </form>
   </div>
 
@@ -212,6 +220,8 @@
       <p>{{ estudiante.tutor.cedula }}</p>
       <label>Numero Tutor:</label>
       <p>{{ estudiante.tutor.telefono }}</p>
+       <label>2 Numero Tutor:</label>
+      <p>{{ estudiante.tutor.telefono2 }}</p>
     </div>
 
     <!-- Documentos -->
