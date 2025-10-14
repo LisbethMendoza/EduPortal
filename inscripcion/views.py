@@ -414,9 +414,10 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
 
 
 #--------------------------VISUALIZAR CANTIDAD-----------------------------------------
+
 def cupo_seccion_inscripcion(request):
     cupo_actual = cupo.objects.filter(tipo="Inscripcion").last()
-    tecnicos = list(Tecnico.objects.all())  # Trae todos los técnicos
+    tecnicos = list(Tecnico.objects.all())  
 
     cupos_por_seccion = {}
 
@@ -442,10 +443,10 @@ def cupo_seccion_inscripcion(request):
 
         # Cupos técnicos (4to, 5to, 6to → por cada técnico)
         for nivel in ["4to", "5to", "6to"]:
-            cupos_por_seccion[nivel] = {}
-            for tecnico in tecnicos:
-                cupos_por_seccion[nivel][tecnico.nombre] = cupo_actual.cupos_tecnico
+            cupos_por_seccion[nivel] = {tecnico.nombre: cupo_actual.cupos_tecnico for tecnico in tecnicos}
 
     return JsonResponse(cupos_por_seccion)
 
 #---------------------------------------------------------------------#
+
+

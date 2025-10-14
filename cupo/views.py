@@ -41,7 +41,7 @@ def configurar_cupos(request):
             registro.cupos_tecnico = cupos_tecnico
             registro.save()
         else:
-            # Si no existe, lo creamos
+    
             cupo.objects.create(
                 tipo=tipo,
                 fecha_inicio=fecha_inicio,
