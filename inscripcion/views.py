@@ -71,6 +71,29 @@ def descontar_cupo(cupo_actual, grado, seccion=None):
     cupo_actual.save()
     return True
 
+#----------------------PARA SABER LOS CUPOS-------------------------------------------#
+def descontar_cupo(cupo_actual, grado_str, seccion=None):  #Poner en Reinscripcion
+    campo = None
+    if grado_str == "1ro" and seccion:
+        campo = f"cupos_1ro_{seccion}"
+    elif grado_str == "2do" and seccion:
+        campo = f"cupos_2do_{seccion}"
+    elif grado_str == "3ro" and seccion:
+        campo = f"cupos_3ro_{seccion}"
+    else:
+        campo = "cupos_tecnico"
+
+
+    cupos_disponibles = getattr(cupo_actual, campo, 0)
+
+
+    if cupos_disponibles <= 0:
+        return False
+
+    setattr(cupo_actual, campo, cupos_disponibles - 1)
+    cupo_actual.save(update_fields=[campo])
+
+    return True
 
 
 #-----------------------------NO INSCRIBE SI NO ESTA EN FECHA------------------------------------------#
@@ -111,10 +134,11 @@ def Siguiente_inscripcion(request):
             messages.error(request, "Debe seleccionar una sección para este grado.")
             return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
 
-        # ------------------- Descontar cupo ------------------- # tu función existente
+        # ------------------- Descontar cupo ------------------- # Poner en Reinscripcion
         if not descontar_cupo(cupo_actual, grado_str, seccion):
             messages.error(request, f"No hay cupos disponibles para {grado_str} {seccion or ''}.")
             return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
 
         # ------------------- Crear inscripción -------------------
         tutor = crear_tutor(data)
@@ -417,36 +441,35 @@ def cambiar_estado(request, tipo, id, nuevo_estado):
 
 def cupo_seccion_inscripcion(request):
     cupo_actual = cupo.objects.filter(tipo="Inscripcion").last()
-    tecnicos = list(Tecnico.objects.all())  
-
-    cupos_por_seccion = {}
-
-    if cupo_actual:
-        # Cupos normales por sección (1ro, 2do, 3ro)
-        cupos_por_seccion = {
-            "1ro": {
-                "A": cupo_actual.cupos_1ro_A,
-                "B": cupo_actual.cupos_1ro_B,
-                "C": cupo_actual.cupos_1ro_C,
-            },
-            "2do": {
-                "A": cupo_actual.cupos_2do_A,
-                "B": cupo_actual.cupos_2do_B,
-                "C": cupo_actual.cupos_2do_C,
-            },
-            "3ro": {
-                "A": cupo_actual.cupos_3ro_A,
-                "B": cupo_actual.cupos_3ro_B,
-                "C": cupo_actual.cupos_3ro_C,
-            },
+    if not cupo_actual:
+        return JsonResponse({"error": "No hay cupos disponibles."}, status=404)
+    cupos_por_grado = {
+        "1ro": {
+            "A": cupo_actual.cupos_1ro_A,
+            "B": cupo_actual.cupos_1ro_B,
+            "C": cupo_actual.cupos_1ro_C,
+        },
+        "2do": {
+            "A": cupo_actual.cupos_2do_A,
+            "B": cupo_actual.cupos_2do_B,
+            "C": cupo_actual.cupos_2do_C,
+        },
+        "3ro": {
+            "A": cupo_actual.cupos_3ro_A,
+            "B": cupo_actual.cupos_3ro_B,
+            "C": cupo_actual.cupos_3ro_C,
         }
-
-        # Cupos técnicos (4to, 5to, 6to → por cada técnico)
-        for nivel in ["4to", "5to", "6to"]:
-            cupos_por_seccion[nivel] = {tecnico.nombre: cupo_actual.cupos_tecnico for tecnico in tecnicos}
-
-    return JsonResponse(cupos_por_seccion)
-
-#---------------------------------------------------------------------#
+    }
+    return JsonResponse(cupos_por_grado)
 
 
+
+#-----------------------------Listado d elos tecncios----------------------------------------#
+def listar_tecnicos(request):   #Poner en Reinscripcion
+    tecnicos = list(Tecnico.objects.values('nombre', 'estado'))
+    return JsonResponse(tecnicos, safe=False)
+ 
+def listar_cupos_tecnico(request):   #Poner en Reinscripcion
+    registro = cupo.objects.filter(tipo="Inscripcion").values('cupos_tecnico').first()
+    valor = registro['cupos_tecnico'] if registro else 0
+    return JsonResponse({'cupos_tecnico': valor})

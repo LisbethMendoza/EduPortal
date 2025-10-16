@@ -16,6 +16,9 @@ urlpatterns = [
     
     path ('cupos/', views.cupo_seccion_inscripcion, name='mostrar_cupos_inscripcion'),
     path ('descontar_cupo/', views.descontar_cupo, name='descontar_cupo'),
+    path('tecnicos/', views.listar_tecnicos, name='listar_tecnicos'),
+    path('cupos-tecnico/', views.listar_cupos_tecnico, name='listar_cupos_tecnico'),
+
       
     
     

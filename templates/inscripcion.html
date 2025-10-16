@@ -91,7 +91,7 @@ textarea {
 
 .conteo-estudiantes {
   position: fixed;
-  top: 10px;
+  top: 10px;   /* Este va arriba */
   right: 20px;
   background-color: rgba(46, 125, 50, 0.9);
   color: white;
@@ -101,6 +101,20 @@ textarea {
   box-shadow: 0 0 8px rgba(0,0,0,0.3);
   z-index: 1000;
 }
+
+.conteo-estudiantest {
+  position: fixed;
+  top: 90px;   /* Ajusta este valor según el espacio que quieras debajo */
+  right: 20px;
+  background-color: rgba(46, 125, 50, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
 
 .boton-container {
     display: flex;
@@ -314,15 +328,163 @@ textarea {
 
   
 
-   <div class="conteo-estudiantes" id="conteo-estudiantes">
+   <div class="conteo-estudiantes" id="conteo-estudiantes">          /*Poner en Reinscripcion*/
    Estudiantes en Niveles:<br>
   1ro A: {{ cupos.1ro.A }}, B: {{ cupos.1ro.B }}, C: {{ cupos.1ro.C }} <br>
   2do A: {{ cupos.2do.A }}, B: {{ cupos.2do.B }}, C: {{ cupos.2do.C }} <br>
   3ro A: {{ cupos.3ro.A }}, B: {{ cupos.3ro.B }}, C: {{ cupos.3ro.C }} <br>
-  Técnico: 0
+   </div>
+   <div class="conteo-estudiantest" id="conteo-estudiantest">      /*Poner en Reinscripcion*/
+   Estudiantes en Niveles:<br>
+   Tecnico: 0
    </div>
 
+   
+
   </form>
+
+  <script>    /*Poner en Reinscripcion*/
+document.addEventListener("DOMContentLoaded", function() {
+
+  // Datos iniciales: cupos por técnico (puede venir de tu API)
+  let cuposPorTecnico = {};
+  {% for tecnico in tecnicos %}
+    cuposPorTecnico[{{ tecnico.id_tecnico }}] = {{ cupos_tecnico }};  // valor inicial
+  {% endfor %}
+
+  // Niveles que queremos mostrar
+  const niveles = [4,5,6];
+
+  function actualizarPantalla() {
+    let html = "Estudiantes en Niveles:<br>";
+    niveles.forEach(nivel => {
+      let fila = `${nivel}to `;
+      for (let tecnicoId in cuposPorTecnico) {
+        let nombre = document.querySelector(`#id_tecnico option[value="${tecnicoId}"]`).textContent;
+        fila += `${nombre}: ${cuposPorTecnico[tecnicoId]}  `;
+      }
+      html += fila + "<br>";
+    });
+    document.getElementById("conteo-estudiantest").innerHTML = html;
+  }
+
+  // Inicializar pantalla
+  actualizarPantalla();
+
+  // Botón para reducir cupo
+  document.getElementById("reducirCupo").addEventListener("click", function() {
+    const nivelSeleccionado = document.getElementById("id_grado").value;
+    const tecnicoSeleccionado = document.getElementById("id_tecnico").value;
+
+    if (!nivelSeleccionado || !tecnicoSeleccionado) {
+      alert("Selecciona nivel y técnico primero");
+      return;
+    }
+
+    // Reducir 1 cupo del técnico
+    if (cuposPorTecnico[tecnicoSeleccionado] > 0) {
+      cuposPorTecnico[tecnicoSeleccionado] -= 1;
+    } else {
+      alert("El cupo de este técnico ya es 0");
+    }
+
+    // Actualizar pantalla
+    actualizarPantalla();
+  });
+
+});
+</script>
+
+
+
+  <script>   /*Poner en Reinscripcion*/
+document.addEventListener("DOMContentLoaded", function() {
+
+  function actualizarCupos() {
+    fetch("{% url 'mostrar_cupos_inscripcion' %}")  // Asegúrate de que esta URL esté registrada en urls.py
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Error al obtener los cupos");
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Si el backend devuelve un error
+        if (data.error) {
+          document.getElementById("conteo-estudiantes").innerHTML = data.error;
+          return;
+        }
+
+        // Construir el HTML con los datos recibidos
+        const html = `
+          Estudiantes en Niveles:<br>
+          1ro A: ${data["1ro"].A}, B: ${data["1ro"].B}, C: ${data["1ro"].C} <br>
+          2do A: ${data["2do"].A}, B: ${data["2do"].B}, C: ${data["2do"].C} <br>
+          3ro A: ${data["3ro"].A}, B: ${data["3ro"].B}, C: ${data["3ro"].C} <br>
+        `;
+
+        // Mostrar el resultado dentro del div
+        document.getElementById("conteo-estudiantes").innerHTML = html;
+      })
+      .catch(error => {
+        console.error("Error al actualizar cupos:", error);
+        document.getElementById("conteo-estudiantes").innerHTML = "No se pudieron cargar los cupos.";
+      });
+  }
+
+  actualizarCupos();
+});
+</script>
+
+<script>   /*Poner en Reinscripcion*/
+document.addEventListener("DOMContentLoaded", function() {
+
+  async function actualizarTecnicosYCupos() {
+    try {
+      // Traer técnicos
+      const responseTecnicos = await fetch("{% url 'listar_tecnicos' %}");
+      if (!responseTecnicos.ok) throw new Error("Error al obtener técnicos");
+      const tecnicos = await responseTecnicos.json();
+
+      // Filtrar solo técnicos activos
+      const activos = tecnicos.filter(t => t.estado && t.estado.toLowerCase() === "activo");
+
+      if (activos.length === 0) {
+        document.getElementById("conteo-estudiantest").innerHTML = "No hay técnicos activos.";
+        return;
+      }
+
+      // Traer cupo global de tipo "Inscripcion"
+      const responseCupos = await fetch("{% url 'listar_cupos_tecnico' %}");
+      if (!responseCupos.ok) throw new Error("Error al obtener cupos");
+      const dataCupos = await responseCupos.json();
+      const cupoValor = dataCupos.cupos_tecnico;
+
+      // Niveles que quieres mostrar
+      const niveles = [4, 5, 6];
+      let html = "Estudiantes en Niveles:<br>";
+
+      // Construir filas por nivel
+      niveles.forEach(nivel => {
+        let fila = `${nivel}to `;
+        activos.forEach(tecnico => {
+          fila += `${tecnico.nombre}: ${cupoValor}  `;
+        });
+        html += fila + "<br>";
+      });
+
+      document.getElementById("conteo-estudiantest").innerHTML = html;
+
+    } catch (error) {
+      console.error("Error al actualizar técnicos y cupos:", error);
+      document.getElementById("conteo-estudiantest").innerHTML = "No se pudieron cargar los técnicos y cupos.";
+    }
+  }
+
+  actualizarTecnicosYCupos();
+});
+</script>
+
 
   <div id="mensaje-popup" style="
     display: none;
@@ -344,7 +506,6 @@ textarea {
 document.addEventListener('DOMContentLoaded', function() {
     {% if mensaje %}
         const popup = document.getElementById('mensaje-popup');
-        // Reemplaza saltos de línea por <br> para que se vean en pantalla
         const mensajeConSaltos = "{{ mensaje|escapejs }}".replace(/\n/g, '<br>');
         popup.innerHTML = mensajeConSaltos;
         popup.style.display = 'block';
@@ -482,134 +643,12 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    // Ejecutar al cargar la página por si hay valor ya seleccionado
     toggleCampos();
 
-    // Escuchar cambios en el select de grado
     gradoSelect.addEventListener('change', toggleCampos);
   });
 </script>
 
-
-
-<script>
-let cuposTecnicos = {}; 
-let tecnicoAnterior = null;
-let gradoAnterior = null;
-
-function inicializarCuposTecnicos(tecnicos) {
-  const guardado = localStorage.getItem("cupos_tecnicos");
-  if (guardado) {
-    cuposTecnicos = JSON.parse(guardado);
-  } else {
-    ["4to", "5to", "6to"].forEach(nivel => {
-      cuposTecnicos[nivel] = {};
-      tecnicos.forEach(t => {
-        cuposTecnicos[nivel][t.nombre] = 10; // valor inicial
-      });
-    });
-    localStorage.setItem("cupos_tecnicos", JSON.stringify(cuposTecnicos));
-  }
-}
-
-function mostrarCuposTecnicos() {
-  const div = document.getElementById("conteo-estudiantes");
-  let html = "<br>Técnicos:<br>";
-
-  ["4to", "5to", "6to"].forEach(nivel => {
-    html += `${nivel}: `;
-    const tecnicos = cuposTecnicos[nivel] || {};
-    const nombres = Object.keys(tecnicos);
-    if (nombres.length > 0) {
-      nombres.forEach(nombre => {
-        html += `${nombre}: ${tecnicos[nombre]} `;
-      });
-    } else {
-      html += "(sin técnicos configurados)";
-    }
-    html += "<br>";
-  });
-
-  // Mantener los cupos de 1ro, 2do, 3ro si ya existen
-  const divActual = div.innerHTML.split("Técnicos:")[0]; 
-  div.innerHTML = divActual + html;
-}
-
-function reducirCupoTecnico(gradoTexto, tecnicoNombre) {
-  if (!["4to", "5to", "6to"].includes(gradoTexto)) return;
-
-  if (cuposTecnicos[gradoTexto][tecnicoNombre] > 0) {
-    cuposTecnicos[gradoTexto][tecnicoNombre] -= 1;
-    localStorage.setItem("cupos_tecnicos", JSON.stringify(cuposTecnicos));
-    mostrarCuposTecnicos();
-  } else {
-    alert(`No hay cupos disponibles en ${gradoTexto} - ${tecnicoNombre}`);
-  }
-}
-
-function devolverCupoTecnico(gradoTexto, tecnicoNombre) {
-  if (!["4to", "5to", "6to"].includes(gradoTexto)) return;
-
-  if (cuposTecnicos[gradoTexto][tecnicoNombre] !== undefined) {
-    cuposTecnicos[gradoTexto][tecnicoNombre] += 1;
-    localStorage.setItem("cupos_tecnicos", JSON.stringify(cuposTecnicos));
-  }
-}
-
-function actualizarCupos() {
-  fetch("{% url 'mostrar_cupos_inscripcion' %}")
-  .then(response => response.json())
-  .then(data => {
-    const div = document.getElementById("conteo-estudiantes");
-
-    // Mostrar cupos de 1ro, 2do y 3ro
-    let html = `
-      Estudiantes en Niveles:<br>
-      1ro A: ${data["1ro"].A}, B: ${data["1ro"].B}, C: ${data["1ro"].C} <br>
-      2do A: ${data["2do"].A}, B: ${data["2do"].B}, C: ${data["2do"].C} <br>
-      3ro A: ${data["3ro"].A}, B: ${data["3ro"].B}, C: ${data["3ro"].C} <br>
-    `;
-    div.innerHTML = html;
-
-    // Mostrar también los cupos técnicos
-    mostrarCuposTecnicos();
-  })
-  .catch(error => console.error("Error al actualizar cupos:", error));
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  const tecnicoSelect = document.getElementById("id_tecnico");
-  const gradoSelect = document.getElementById("id_grado");
-
-  const tecnicos = Array.from(tecnicoSelect.options)
-                        .filter(opt => opt.value)
-                        .map(opt => ({nombre: opt.text}));
-
-  inicializarCuposTecnicos(tecnicos);
-
-  // Actualizar cupos de 1ro, 2do, 3ro y técnicos al cargar
-  actualizarCupos();
-
-  // Reducir cupo técnico al seleccionar y devolver el anterior
-  tecnicoSelect.addEventListener("change", function() {
-    const gradoTexto = gradoSelect.options[gradoSelect.selectedIndex]?.text;
-    const tecnicoNombre = tecnicoSelect.options[tecnicoSelect.selectedIndex]?.text;
-
-    // Devolver cupo del técnico anterior
-    if (gradoAnterior && tecnicoAnterior) {
-      devolverCupoTecnico(gradoAnterior, tecnicoAnterior);
-    }
-
-    // Reducir cupo del nuevo técnico
-    if (gradoTexto && tecnicoNombre) {
-      reducirCupoTecnico(gradoTexto, tecnicoNombre);
-      // Guardar selección actual
-      gradoAnterior = gradoTexto;
-      tecnicoAnterior = tecnicoNombre;
-    }
-  });
-});
-</script>
 
 
 
@@ -699,6 +738,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 {% endif %}
+
 
 
 
