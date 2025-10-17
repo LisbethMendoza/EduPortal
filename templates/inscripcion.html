@@ -335,6 +335,8 @@ textarea {
   2do A: {{ cupos.2do.A }}, B: {{ cupos.2do.B }}, C: {{ cupos.2do.C }} <br>
   3ro A: {{ cupos.3ro.A }}, B: {{ cupos.3ro.B }}, C: {{ cupos.3ro.C }} <br>
    </div>
+
+
    <div class="conteo-estudiantest" id="conteo-estudiantest">    <!-- Poner en Reinscripcion-->     
    Estudiantes en Niveles:<br>
    Tecnico: 0
@@ -343,6 +345,39 @@ textarea {
    
 
   </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  function actualizarCupos() {
+    fetch("{% url 'mostrar_cupos_tecnicos' %}")  
+      .then(response => {
+        if (!response.ok) throw new Error("Error al obtener los cupos");
+        return response.json();
+      })
+      .then(data => {
+        if (data.error) {
+          document.getElementById("conteo-estudiantest").innerHTML = data.error;
+          return;
+        }
+
+        let html = "Cupos por Técnico:<br>";
+        for (const tecnico in data) {
+          html += `${tecnico}: 4to: ${data[tecnico]["4to"]}, 5to: ${data[tecnico]["5to"]}, 6to: ${data[tecnico]["6to"]} <br>`;
+        }
+
+        document.getElementById("conteo-estudiantest").innerHTML = html;
+      })
+      .catch(error => {
+        console.error("Error al actualizar cupos:", error);
+        document.getElementById("conteo-estudiantes").innerHTML = "No se pudieron cargar los cupos.";
+      });
+  }
+
+  actualizarCupos();
+});
+</script>
+
 
   
   <script>   /*Poner en Reinscripcion*/

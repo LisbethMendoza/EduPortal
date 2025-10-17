@@ -80,9 +80,7 @@ def descontar_cupo(cupo_actual, grado_str, seccion=None):  #Poner en Reinscripci
         campo = f"cupos_2do_{seccion}"
     elif grado_str == "3ro" and seccion:
         campo = f"cupos_3ro_{seccion}"
-    else:
-        campo = "cupos_tecnico"
-
+  
 
     cupos_disponibles = getattr(cupo_actual, campo, 0)
 
@@ -94,6 +92,39 @@ def descontar_cupo(cupo_actual, grado_str, seccion=None):  #Poner en Reinscripci
     cupo_actual.save(update_fields=[campo])
 
     return True
+
+#-------------------------CUPO POR TECNICO--------------------------------------#
+def descontar_cupo_tecnico(cupo_actual, tecnico_id, grado_str):
+
+    try:
+        tecnico = Tecnico.objects.get(id_tecnico=tecnico_id, estado__iexact="activo")
+    except Tecnico.DoesNotExist:
+        return False  # Técnico no encontrado o inactivo
+
+    # Buscamos el cupo de este técnico para el grado específico
+    try:
+        ct = CupoTecnico.objects.get(
+            cupo=cupo_actual,
+            tecnico=tecnico,
+            grado__grado=grado_str   # Filtramos por el grado
+        )
+    except CupoTecnico.DoesNotExist:
+        return False  # No hay registro para este técnico y grado
+    except CupoTecnico.MultipleObjectsReturned:
+        # Esto no debería pasar si tu modelo tiene unique_together = (cupo, tecnico, grado)
+        ct = CupoTecnico.objects.filter(
+            cupo=cupo_actual,
+            tecnico=tecnico,
+            grado__grado=grado_str
+        ).first()
+
+    if ct.cantidad > 0:
+        ct.cantidad -= 1
+        ct.save()
+        return True
+    else:
+        return False
+
 
 
 #-----------------------------NO INSCRIBE SI NO ESTA EN FECHA------------------------------------------#
@@ -135,9 +166,22 @@ def Siguiente_inscripcion(request):
             return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
 
         # ------------------- Descontar cupo ------------------- # Poner en Reinscripcion
-        if not descontar_cupo(cupo_actual, grado_str, seccion):
-            messages.error(request, f"No hay cupos disponibles para {grado_str} {seccion or ''}.")
-            return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+        if grado_str in ["4to", "5to", "6to"]:
+            tecnico_id = data.get("id_tecnico")  # El técnico seleccionado en el formulario
+            if not tecnico_id:
+                messages.error(request, "Debe seleccionar un técnico para este grado.")
+                return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+            if not descontar_cupo_tecnico(cupo_actual, tecnico_id, grado_str):
+                messages.error(request, f"No hay cupos disponibles para el técnico seleccionado en {grado_str}.")
+                return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
+        else:
+            # Para 1ro,2do,3ro usamos tu función de secciones existente
+            if not descontar_cupo(cupo_actual, grado_str, seccion):
+                messages.error(request, f"No hay cupos disponibles para {grado_str} {seccion}.")
+                return render(request, 'inscripcion.html', {'grados': grados, 'tecnicos': tecnicos})
+
 
 
         # ------------------- Crear inscripción -------------------
@@ -465,3 +509,30 @@ def cupo_seccion_inscripcion(request):
 
 
 #-----------------------------Listado d elos tecncios----------------------------------------#
+from django.http import JsonResponse
+from cupotecnico.models import CupoTecnico
+
+def cupo_tecnicos_inscripcion(request):
+    # Tomamos el último cupo de inscripción
+    cupo_actual = cupo.objects.filter(tipo="Inscripcion").last()
+    if not cupo_actual:
+        return JsonResponse({"error": "No hay cupos disponibles."}, status=404)
+
+    # Buscamos todos los cupos de técnicos asociados a este cupo
+    cupos_tecnicos = CupoTecnico.objects.filter(cupo=cupo_actual)
+
+    # Preparamos el diccionario de respuesta
+    cupos_por_tecnico = {}
+
+    for ct in cupos_tecnicos:
+        nombre_tecnico = ct.tecnico.nombre
+        grado_str = ct.grado.grado  # usamos el campo grado que agregaste
+
+        if nombre_tecnico not in cupos_por_tecnico:
+            cupos_por_tecnico[nombre_tecnico] = {}
+
+        cupos_por_tecnico[nombre_tecnico][grado_str] = ct.cantidad
+
+    return JsonResponse(cupos_por_tecnico)
+
+
