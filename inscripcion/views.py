@@ -465,11 +465,3 @@ def cupo_seccion_inscripcion(request):
 
 
 #-----------------------------Listado d elos tecncios----------------------------------------#
-def listar_tecnicos(request):   #Poner en Reinscripcion
-    tecnicos = list(Tecnico.objects.values('nombre', 'estado'))
-    return JsonResponse(tecnicos, safe=False)
- 
-def listar_cupos_tecnico(request):   #Poner en Reinscripcion
-    registro = cupo.objects.filter(tipo="Inscripcion").values('cupos_tecnico').first()
-    valor = registro['cupos_tecnico'] if registro else 0
-    return JsonResponse({'cupos_tecnico': valor})

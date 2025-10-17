@@ -8,7 +8,6 @@ urlpatterns = [
     path('reinscripcion_insert/', views.reinscripcion_insert, name='reinscripcion_insert'),
     path('contrato/<str:codigo>/', views.generar_contrato, name='generar_contrato'),
     
-     path ('cupos/', views.cupo_seccion, name='mostrar_cupos'),
 
     
 ]

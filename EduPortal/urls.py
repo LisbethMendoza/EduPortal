@@ -34,6 +34,7 @@ urlpatterns = [
     path('inscripcion/', include('inscripcion.urls')),
     path('reinscripcion/', include('reinscripcion.urls')),
     path('cupo/', include('cupo.urls')),
+    path('cupotecnico/', include('cupotecnico.urls')),
     
     #Esto es para mostratr los grados en el formulario de inscripcion
     path('inscripcion/', views.C_Grado, name='inscripcion'),

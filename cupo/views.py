@@ -20,8 +20,6 @@ def configurar_cupos(request):
         cupos_3ro_B = request.POST.get("cupos_3ro_B") or 0
         cupos_3ro_C = request.POST.get("cupos_3ro_C") or 0
 
-        cupos_tecnico = request.POST.get("cupos_tecnico") or 0
-
         # Buscar si ya existe un registro con ese tipo
         registro = cupo.objects.filter(tipo=tipo).first()
 
@@ -38,7 +36,6 @@ def configurar_cupos(request):
             registro.cupos_3ro_A = cupos_3ro_A
             registro.cupos_3ro_B = cupos_3ro_B
             registro.cupos_3ro_C = cupos_3ro_C
-            registro.cupos_tecnico = cupos_tecnico
             registro.save()
         else:
     
@@ -55,7 +52,6 @@ def configurar_cupos(request):
                 cupos_3ro_A=cupos_3ro_A,
                 cupos_3ro_B=cupos_3ro_B,
                 cupos_3ro_C=cupos_3ro_C,
-                cupos_tecnico=cupos_tecnico
             )
 
         return render(request, "Cant_Estudiantes.html")

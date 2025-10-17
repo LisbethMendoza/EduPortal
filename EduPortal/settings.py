@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'reinscripcion',
     'tutor',
     'cupo',
+    'cupotecnico',
     ]
 
 MIDDLEWARE = [

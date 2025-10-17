@@ -21,7 +21,5 @@ class cupo(models.Model):
     cupos_3ro_B = models.PositiveIntegerField(default=0)
     cupos_3ro_C = models.PositiveIntegerField(default=0)
 
-    cupos_tecnico = models.PositiveIntegerField(default=0)  # técnico sigue global
-
     def __str__(self):
         return f"{self.tipo} ({self.fecha_inicio} - {self.fecha_limite})"

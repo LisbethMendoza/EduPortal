@@ -282,36 +282,3 @@ def reinscripcion_re(request):
 
 
 #---------------------------------Visualoizar Cantidad----------------------------------------------#
-def cupo_seccion(request):
-    cupo_actual = cupo.objects.filter(tipo="Reinscripcion").last()
-    tecnicos = list(Tecnico.objects.all())  # Trae todos los técnicos
-
-    cupos_por_seccion = {}
-
-    if cupo_actual:
-        # Cupos normales por sección (1ro, 2do, 3ro)
-        cupos_por_seccion = {
-            "1ro": {
-                "A": cupo_actual.cupos_1ro_A,
-                "B": cupo_actual.cupos_1ro_B,
-                "C": cupo_actual.cupos_1ro_C,
-            },
-            "2do": {
-                "A": cupo_actual.cupos_2do_A,
-                "B": cupo_actual.cupos_2do_B,
-                "C": cupo_actual.cupos_2do_C,
-            },
-            "3ro": {
-                "A": cupo_actual.cupos_3ro_A,
-                "B": cupo_actual.cupos_3ro_B,
-                "C": cupo_actual.cupos_3ro_C,
-            },
-        }
-
-        # Cupos técnicos (4to, 5to, 6to → por cada técnico)
-        for nivel in ["4to", "5to", "6to"]:
-            cupos_por_seccion[nivel] = {}
-            for tecnico in tecnicos:
-                cupos_por_seccion[nivel][tecnico.nombre] = cupo_actual.cupos_tecnico
-
-    return JsonResponse(cupos_por_seccion)
