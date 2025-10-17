@@ -156,11 +156,11 @@
     text-align: center;
   }
 
-  .center-panel .cupo-block input {
-    width: 60%;
-    padding: 5px;
-    font-size: 0.85rem;
-  }
+.center-panel .cupo-block input {
+  width: 40%;       /* antes 60% */
+  padding: 3px 4px; /* antes 5px */
+  font-size: 0.8rem;
+}
 
   .center-panel .cupo-block-tecnico input {
     width: 50%;
@@ -184,6 +184,8 @@
     .center-panel .cupo-block-tecnico input {
       width: 90%;
     }
+
+    
   }
   </style>
 </head>
@@ -234,7 +236,6 @@
 
     <!-- Cupos por grado y sección -->
     <div class="cupos-row">
-      <h3>1ro</h3>
       <div class="cupo-block">
         <label for="cupos_1ro_A">1ro A</label>
         <input type="number" id="cupos_1ro_A" name="cupos_1ro_A" min="0">
@@ -249,7 +250,6 @@
       </div>
     </div>
     <div class="cupos-row">
-      <h3>2do</h3>
       <div class="cupo-block">
         <label for="cupos_2do_A">2do A</label>
         <input type="number" id="cupos_2do_A" name="cupos_2do_A" min="0">
@@ -264,7 +264,6 @@
       </div>
     </div>
     <div class="cupos-row">
-      <h3>3ro</h3>
       <div class="cupo-block">
         <label for="cupos_3ro_A">3ro A</label>
         <input type="number" id="cupos_3ro_A" name="cupos_3ro_A" min="0">
@@ -279,13 +278,12 @@
       </div>
     </div>
     
-    <div class="cupos-row">
-    <h3>Cupos para todos los técnicos activos</h3>
-    <div class="cupo-block">
-    <label for="cupos_tecnicos">Cupos:</label>
-    <input type="number" id="cupos_tecnicos" name="cupos_tecnicos" min="0" value="0">
-    </div>
-    </div>
+   <div class="cupos-row" style="margin-top: 10px; justify-content: flex-start;">
+  <div class="cupo-block" style="display: flex; align-items: center; gap: 10px;">
+    <h3 class="titulo-azul" style="margin: 0; font-size: 1rem; color:#158599" >Cupos para todos los técnicos </h3>
+    <input type="number" id="cupos_tecnicos" name="cupos_tecnicos" min="0" value="0" style="width: 15%; padding: 5px; font-size: 0.85rem;">
+  </div>
+</div>
 
 
     <button type="submit" class="btn-agregar full-width-btn">Guardar</button>
@@ -329,6 +327,44 @@
     }
   });
 </script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Contenedor de "Añadir Nivel"
+    const adminNivel = document.querySelector('.admin-container:nth-of-type(3)'); 
+    const inputNivel = adminNivel.querySelector('#nombre_grado');
+    const btnAgregar = adminNivel.querySelector('.btn-agregar');
+    const btnEliminar = adminNivel.querySelector('.btn-eliminar');
+    const buttonGroup = adminNivel.querySelector('.button-group');
+
+    // Llamada AJAX para verificar niveles
+    fetch("{% url 'verificar_grados' %}")
+        .then(response => response.json())
+        .then(data => {
+            if(data.niveles_completos) {
+                // Deshabilitar input
+                inputNivel.disabled = true;
+
+                // Eliminar botones
+                btnAgregar.remove();
+                btnEliminar.remove();
+
+                // Crear mensaje
+                const mensaje = document.createElement('p');
+                mensaje.style.color = 'rgb(184, 134, 11)'; // amarillo oscuro
+                mensaje.style.textAlign = 'center';
+                mensaje.style.fontWeight = 'bold';
+                mensaje.style.marginTop = '10px';
+                mensaje.textContent = 'Ya existen todos los niveles del 1ro al 6to. No se pueden agregar ni eliminar niveles.';
+
+                buttonGroup.appendChild(mensaje);
+            }
+        })
+        .catch(error => console.error('Error al verificar niveles:', error));
+});
+</script>
+
 
 
 
