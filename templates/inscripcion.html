@@ -423,13 +423,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-
-
-
-
-
-
-
   <div id="mensaje-popup" style="
     display: none;
     position: fixed;
@@ -448,13 +441,12 @@ document.addEventListener("DOMContentLoaded", function() {
 "></div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    {% if mensaje %}
+    {% if mensaje_ins  %}
         const popup = document.getElementById('mensaje-popup');
-        const mensajeConSaltos = "{{ mensaje|escapejs }}".replace(/\n/g, '<br>');
+        const mensajeConSaltos = "{{ mensaje_ins |escapejs }}".replace(/\n/g, '<br>');
         popup.innerHTML = mensajeConSaltos;
         popup.style.display = 'block';
 
-        // Ocultar automáticamente después de 5 segundos
         setTimeout(() => {
             popup.style.display = 'none';
         }, 5000);

@@ -180,17 +180,14 @@
   <select name="estudiante" id="estudiante" onchange="this.form.submit()">
     <option value="">-- Selecciona --</option>
 
-    {% for e in estudiantes_inscripcion %}
-        <option value="{{ e.id }}" {% if estudiante and estudiante.id == e.id %}selected{% endif %}>
-            {{ e.nombre }} {{ e.apellido }} (Inscripción)
-        </option>
-    {% endfor %}
-
-    {% for e in estudiantes_reinscripcion %}
-        <option value="{{ e.id }}" {% if estudiante and estudiante.id == e.id %}selected{% endif %}>
-            {{ e.nombre }} {{ e.apellido }} (Reinscripción)
-        </option>
-    {% endfor %}
+     {% for e in estudiantes_pendientes %}
+      <option value="{{ e.id }}" {% if estudiante and estudiante.id == e.id %}selected{% endif %}>
+          {{ e.nombre }} {{ e.apellido }}
+          {% if e.reinscripcion_set.exists %}(Reinscripción){% else %}(Inscripción){% endif %}
+      </option>
+     {% endfor %}
+     
+   
 </select>
 
     </form>

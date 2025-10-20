@@ -274,6 +274,7 @@ def reinscripcion_insert(request):
 
 #----------------------------Dato de la subida de doc de la reinscripcion--------------------------------------------#
 from django.contrib import messages
+
 def reinscripcion_re(request):
     datos = request.session.get('reinscripcion_data')
     if not datos:

@@ -214,7 +214,7 @@ def Siguiente_inscripcion(request):
 
 def subir_documentos_view(request, inscripcion_id):
     inscripcion = Inscripcion.objects.get(id_inscripcion=inscripcion_id)
-    mensaje = None 
+
     if request.method == 'POST':
         cedula_tutor = request.FILES.get('cedula_tutor')
         foto_estudiante = request.FILES.get('foto_estudiante')
@@ -222,14 +222,13 @@ def subir_documentos_view(request, inscripcion_id):
         acta_nacimiento = request.FILES.get('acta_nacimiento')
         certificado_medico = request.FILES.get('certificado_medico')
 
-        # Función auxiliar para eliminar archivo existente
         def reemplazar_archivo(campo, nuevo_archivo):
             archivo_antiguo = getattr(inscripcion, campo)
             if archivo_antiguo:
                 ruta = os.path.join(settings.MEDIA_ROOT, archivo_antiguo.name)
                 if os.path.isfile(ruta):
-                    os.remove(ruta) 
-            setattr(inscripcion, campo, nuevo_archivo) 
+                    os.remove(ruta)
+            setattr(inscripcion, campo, nuevo_archivo)
 
         if cedula_tutor:
             reemplazar_archivo('cedula_tutor', cedula_tutor)
@@ -244,13 +243,19 @@ def subir_documentos_view(request, inscripcion_id):
 
         inscripcion.save()
 
-        mensaje = f"SU Solicitud fue realizada exitosamente. . Nota: anota '{inscripcion.estudiante.codigo}' para futuras consultas."
+        mensaje = f"SU Solicitud fue realizada exitosamente. Nota: anota '{inscripcion.estudiante.codigo}' para futuras consultas."
+
+        # Si es AJAX, devuelve JSON
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'mensaje': mensaje})
+
+        # Si no, renderiza normal
         return render(request, 'documentacion.html', {
             'inscripcion': inscripcion,
             'mensaje': mensaje,
         })
 
-    return render(request, 'documentacion.html', {'inscripcion': inscripcion}) #Queme retorne a Estudiante
+    return render(request, 'documentacion.html', {'inscripcion': inscripcion})
 
 
 
@@ -413,6 +418,8 @@ def obtener_estudiantes_pendientes(request):
 #---------------------DETALLE DEL ESTUDIANTE USADO EN ADM------------------------------------# 
 from django.shortcuts import render, get_object_or_404
 
+from django.shortcuts import render, get_object_or_404
+
 def detalle_estudiante(request):
     estudiante_id = request.GET.get("estudiante")
     estudiante = None
@@ -421,16 +428,18 @@ def detalle_estudiante(request):
     reinscripciones = None
     seccion_ultima = None
 
-    # Filtrar solo pendientes y ordenarlas por ID
     inscripciones_pendientes = Inscripcion.objects.filter(estado="Pendiente").order_by('id_inscripcion')
     reinscripciones_pendientes = Reinscripcion.objects.filter(estado="Pendiente").order_by('id_reinscripcion')
+
+    # Definir listas vacías por defecto
+    estudiantes_reinscripcion = []
+    estudiantes_inscripcion = []
 
     if estudiante_id:
         estudiante = Estudiante.objects.get(id=estudiante_id)
 
-        # Filtrar solo las inscripciones/reinscripciones del estudiante seleccionado
-        inscripciones = inscripciones_pendientes.filter(estudiante=estudiante)
         reinscripciones = reinscripciones_pendientes.filter(estudiante=estudiante)
+        inscripciones = inscripciones_pendientes.filter(estudiante=estudiante)
 
         # Traer la sección de la última inscripción (si existe)
         ultima_insc = Inscripcion.objects.filter(estudiante=estudiante).order_by('-fecha_inscripcion').first()
@@ -442,9 +451,12 @@ def detalle_estudiante(request):
         else:
             mostrar = "tecnico"
 
-    # Obtener todos los estudiantes pendientes separados por tipo
-    estudiantes_inscripcion = [i.estudiante for i in inscripciones_pendientes]
+    # Obtener todos los estudiantes pendientes
     estudiantes_reinscripcion = [r.estudiante for r in reinscripciones_pendientes]
+    estudiantes_inscripcion = [i.estudiante for i in inscripciones_pendientes]
+
+    # Combinar: primero reinscripciones, luego inscripciones
+    estudiantes_pendientes = estudiantes_reinscripcion + estudiantes_inscripcion
 
     return render(request, "Revision_E.html", {
         "estudiante": estudiante,
@@ -452,8 +464,7 @@ def detalle_estudiante(request):
         "reinscripciones": reinscripciones,
         "mostrar": mostrar,
         "seccion_ultima": seccion_ultima,
-        "estudiantes_inscripcion": estudiantes_inscripcion,
-        "estudiantes_reinscripcion": estudiantes_reinscripcion,
+        "estudiantes_pendientes": estudiantes_pendientes,
     })
 
     

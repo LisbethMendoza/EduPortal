@@ -153,11 +153,7 @@ button.upload-btn:hover {
     <h1>Entrega de Documentación</h1> 
     <p class="subtitulo">En esta pestaña deberás subir los documentos requeridos para culminar tu  solicitud de inscripción.</p>
 
-    {% if mensaje %}
-      <p style="color: green; text-align: center;">{{ mensaje }}</p>
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data" action="{% url 'subir_documentos_view' inscripcion.id_inscripcion %}">
+    <form method="post" enctype="multipart/form-data"  action="{% url 'subir_documentos_view' inscripcion.id_inscripcion %}" id="form-documentos" >
       {% csrf_token %}
 
       <!-- Foto Cédula del Tutor -->
@@ -231,46 +227,50 @@ addCheck("certificado_medico", "check_medico", "req_medico");
 
   </script>
   
-
-{% if mensaje %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const btnSubir = document.querySelector(".upload-btn");
+    document.getElementById("form-documentos").addEventListener("submit", function(e){
+        e.preventDefault(); 
 
-    // Crear contenedor del mensaje si no existe
-    let mensajeDiv = document.getElementById("mensaje-documentacion");
-    if (!mensajeDiv) {
-        mensajeDiv = document.createElement("div");
-        mensajeDiv.id = "mensaje-documentacion";
-        mensajeDiv.style.display = "none";
-        mensajeDiv.style.position = "fixed";
-        mensajeDiv.style.top = "50%";
-        mensajeDiv.style.left = "50%";
-        mensajeDiv.style.transform = "translate(-50%, -50%)";
-        mensajeDiv.style.padding = "20px 30px";
-        mensajeDiv.style.borderRadius = "10px";
-        mensajeDiv.style.color = "white";
-        mensajeDiv.style.fontSize = "1.1rem";
-        mensajeDiv.style.fontWeight = "bold";
-        mensajeDiv.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
-        mensajeDiv.style.zIndex = "10000";
-        document.body.appendChild(mensajeDiv);
-    }
+        const form = e.target;
+        const formData = new FormData(form);
 
-    btnSubir.addEventListener("click", function(event) {
-        event.preventDefault(); // Evita el envío inmediato
-        mensajeDiv.style.display = "block";
-        mensajeDiv.style.backgroundColor = "#43a047"; // verde para éxito
-        mensajeDiv.innerText = "{{ mensaje|escapejs }}";
+        fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const mensajeDiv = document.getElementById("mensaje-documentacion") || document.createElement("div");
+            mensajeDiv.id = "mensaje-documentacion";
+            mensajeDiv.style.position="fixed";
+            mensajeDiv.style.top="50%";
+            mensajeDiv.style.left="50%";
+            mensajeDiv.style.transform="translate(-50%,-50%)";
+            mensajeDiv.style.backgroundColor="#43a047";
+            mensajeDiv.style.color="white";
+            mensajeDiv.style.padding="20px 30px";
+            mensajeDiv.style.borderRadius="10px";
+            mensajeDiv.style.fontWeight="bold";
+            mensajeDiv.style.zIndex="10000";
+            mensajeDiv.innerHTML = data.mensaje;
+            document.body.appendChild(mensajeDiv);
 
-        // Opcional: enviar el formulario después de mostrar el mensaje
-        setTimeout(() => {
-            btnSubir.closest("form").submit();
-        }, 1000); // espera 1 segundo
+            setTimeout(()=>mensajeDiv.remove(),120000);
+            form.reset();
+            document.querySelectorAll('.checkmark').forEach(el => el.style.display='none');
+            document.querySelectorAll('.required').forEach(el => el.style.display='inline');
+        })
+        .catch(err=>{
+            alert("Error al subir archivos");
+            console.error(err);
+        });
     });
 });
+
 </script>
-{% endif %}
+
 
 
 
