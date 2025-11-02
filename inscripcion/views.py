@@ -189,7 +189,7 @@ def Siguiente_inscripcion(request):
         estudiante = crear_estudiante(data, tutor)
         inscripcion = crear_inscripcion(data, estudiante, tutor)
 
-        messages.success(request, "Inscripción guardada correctamente.")
+        messages.success(request, "")
         return redirect('subir_documentos_view', inscripcion_id=inscripcion.id_inscripcion)
 
     # ------------------- GET -------------------
@@ -522,6 +522,7 @@ def cupo_seccion_inscripcion(request):
 #-----------------------------Listado d elos tecncios----------------------------------------#
 from django.http import JsonResponse
 from cupotecnico.models import CupoTecnico
+from cupo.models import cupo
 
 def cupo_tecnicos_inscripcion(request):
     # Tomamos el último cupo de inscripción
@@ -529,15 +530,17 @@ def cupo_tecnicos_inscripcion(request):
     if not cupo_actual:
         return JsonResponse({"error": "No hay cupos disponibles."}, status=404)
 
-    # Buscamos todos los cupos de técnicos asociados a este cupo
-    cupos_tecnicos = CupoTecnico.objects.filter(cupo=cupo_actual)
+    # Filtramos solo los técnicos activos
+    cupos_tecnicos = CupoTecnico.objects.filter(
+        cupo=cupo_actual,
+        tecnico__estado="activo"  
+    )
 
-    # Preparamos el diccionario de respuesta
     cupos_por_tecnico = {}
 
     for ct in cupos_tecnicos:
         nombre_tecnico = ct.tecnico.nombre
-        grado_str = ct.grado.grado  # usamos el campo grado que agregaste
+        grado_str = ct.grado.grado if ct.grado else "Sin grado"
 
         if nombre_tecnico not in cupos_por_tecnico:
             cupos_por_tecnico[nombre_tecnico] = {}
@@ -545,5 +548,6 @@ def cupo_tecnicos_inscripcion(request):
         cupos_por_tecnico[nombre_tecnico][grado_str] = ct.cantidad
 
     return JsonResponse(cupos_por_tecnico)
+
 
 

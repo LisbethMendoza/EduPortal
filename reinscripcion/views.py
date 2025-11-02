@@ -197,6 +197,15 @@ def reinscripcion_insert(request):
         except Estudiante.DoesNotExist:
             mensaje = "Estudiante no encontrado."
             return render(request, 'reinscripcion.html', {'grados': grados, 'tecnicos': tecnicos, 'mensaje': mensaje})
+        
+         # ------------------- Validar si ya tuvo una reinscripción en 6to -------------------
+        if Reinscripcion.objects.filter(estudiante=estudiante, estudiante__grado__grado="6to").exists():
+            mensaje = "No puede realizar otra reinscripción. El estudiante ya completó 6to."
+            return render(request, 'reinscripcion.html', {
+                'grados': grados,
+                'tecnicos': tecnicos,
+                'mensaje': mensaje
+            })
 
         # ------------------- Reinscripción pendiente -------------------
         if Reinscripcion.objects.filter(estudiante=estudiante, estado="Pendiente").exists():
@@ -351,13 +360,23 @@ def cupo_seccion_reinscripcion(request):
 
 
 # ----------------------------- CUPOS POR TÉCNICO (4to, 5to, 6to) ----------------------------- #
+from django.http import JsonResponse
+from cupotecnico.models import CupoTecnico
+from cupo.models import cupo
+
 def cupo_tecnicos_reinscripcion(request):
+    # Tomamos el último cupo de reinscripción
     cupo_actual = cupo.objects.filter(tipo="Reinscripcion").last()
     if not cupo_actual:
         return JsonResponse({"error": "No hay cupos técnicos disponibles."}, status=404)
 
-    cupos_tecnicos = CupoTecnico.objects.filter(cupo=cupo_actual).select_related("tecnico", "grado")
+    # Buscamos los cupos de técnicos solo con estado "Activo"
+    cupos_tecnicos = CupoTecnico.objects.filter(
+        cupo=cupo_actual,
+        tecnico__estado="activo"  # ← Filtra solo técnicos activos
+    ).select_related("tecnico", "grado")
 
+    # Preparamos el diccionario de respuesta
     cupos_por_tecnico = {}
 
     for ct in cupos_tecnicos:
@@ -370,3 +389,4 @@ def cupo_tecnicos_reinscripcion(request):
         cupos_por_tecnico[nombre_tecnico][grado_str] = ct.cantidad
 
     return JsonResponse(cupos_por_tecnico)
+
